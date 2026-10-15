@@ -135,184 +135,195 @@
 
   <!-- ═════════ 1 · PARKEX ═════════ -->
   <article class="plate" id="parkex" aria-labelledby="parkex-title">
-    <div class="ph">
-      <span class="n" aria-hidden="true">1</span>
-      <h2 id="parkex-title">ParkEx</h2>
-    </div>
-    <div class="spec">
-      <dl>
-        <dt>Contexto</dt><dd>Concurso ConectaLab – Litoral Norte (UTU)</dd>
-        <dt>Equipo</dt><dd>5 estudiantes del ITSP, con un docente tutor</dd>
-        <dt>Rol</dt><dd>Cofundador · desarrollo de la plataforma</dd>
-        <dt>Repositorio</dt><dd><a href="https://github.com/facuduarte-dev/ConnectaLab" target="_blank" rel="noopener">github.com/facuduarte-dev/ConnectaLab</a></dd>
-        <dt>Stack</dt><dd>Arduino Uno + HC-SR04 · Node.js + Express · PostgreSQL en Supabase · Realtime · Java + Tesseract OCR · HTML, CSS y JS sin framework</dd>
-      </dl>
-      <dl>
-        <dt>Descripción</dt>
-        <dd>En los estacionamientos privados la gente recorre niveles enteros buscando lugar, y las plazas para personas con discapacidad se ocupan sin permiso. ParkEx muestra sobre el plano de cada nivel qué plazas están libres u ocupadas, y en las reservadas lee la matrícula por OCR y comprueba si termina en DI, el distintivo uruguayo de discapacidad.</dd>
-      </dl>
-    </div>
+    <details class="proj">
+      <summary class="ph">
+        <span class="n" aria-hidden="true">1</span>
+        <h2 id="parkex-title">ParkEx</h2>
+        <span class="more" aria-hidden="true"></span>
+      </summary>
+      <div class="spec">
+        <dl>
+          <dt>Contexto</dt><dd>Concurso ConectaLab – Litoral Norte (UTU)</dd>
+          <dt>Equipo</dt><dd>5 estudiantes del ITSP, con un docente tutor</dd>
+          <dt>Rol</dt><dd>Cofundador · desarrollo de la plataforma</dd>
+          <dt>Repositorio</dt><dd><a href="https://github.com/facuduarte-dev/ConnectaLab" target="_blank" rel="noopener">github.com/facuduarte-dev/ConnectaLab</a></dd>
+          <dt>Stack</dt><dd>Arduino Uno + HC-SR04 · Node.js + Express · PostgreSQL en Supabase · Realtime · Java + Tesseract OCR · HTML, CSS y JS sin framework</dd>
+        </dl>
+        <dl>
+          <dt>Descripción</dt>
+          <dd>En los estacionamientos privados la gente recorre niveles enteros buscando lugar, y las plazas para personas con discapacidad se ocupan sin permiso. ParkEx muestra sobre el plano de cada nivel qué plazas están libres u ocupadas, y en las reservadas lee la matrícula por OCR y comprueba si termina en DI, el distintivo uruguayo de discapacidad.</dd>
+        </dl>
+      </div>
 
-    <div class="two">
-      <div class="lot" role="group" aria-labelledby="lot-title">
-        <div class="lot-head">
-          <strong id="lot-title">Nivel 1 · plano en vivo</strong>
-          <span id="lot-count">7 libres de 12</span>
+      <div class="two">
+        <div class="lot" role="group" aria-labelledby="lot-title">
+          <div class="lot-head">
+            <strong id="lot-title">Nivel 1 · plano en vivo</strong>
+            <span id="lot-count">7 libres de 12</span>
+          </div>
+          <div class="row">
+            <div class="bay" data-n="01" data-state="libre"><span class="num">01</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="02" data-state="ocupado"><span class="num">02</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="03" data-state="ocupado"><span class="num">03</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="04" data-state="libre"><span class="num">04</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="05" data-state="ocupado"><span class="num">05</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="06" data-state="libre" data-res="1" data-auth="no_aplica"><span class="num">06</span><i class="car"></i><span class="tag"></span></div>
+          </div>
+          <div class="lane"><span>CIRCULACIÓN →</span></div>
+          <div class="row b">
+            <div class="bay" data-n="07" data-state="libre"><span class="num">07</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="08" data-state="ocupado"><span class="num">08</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="09" data-state="libre"><span class="num">09</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="10" data-state="libre"><span class="num">10</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="11" data-state="libre"><span class="num">11</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay just" data-n="12" data-state="ocupado" data-res="1" data-auth="autorizado"><span class="num">12</span><i class="car"></i><span class="tag">AUT</span></div>
+          </div>
+          <p class="lot-log" id="lot-log" aria-live="polite">POST /api/eventos · plaza 12 → ocupado<br>POST /api/lecturas · plaza 12 → autorizado</p>
+          <div class="lot-foot">
+            <div class="legend"><span><i></i>libre</span><span><i class="l-occ"></i>ocupado</span><span><i class="l-res"></i>reservada (D)</span><span><i class="l-new"></i>último cambio</span></div>
+            <button class="btn" id="lot-step" type="button">Simular evento</button>
+          </div>
         </div>
-        <div class="row">
-          <div class="bay" data-n="01" data-state="libre"><span class="num">01</span><i class="car"></i><span class="tag"></span></div>
-          <div class="bay" data-n="02" data-state="ocupado"><span class="num">02</span><i class="car"></i><span class="tag"></span></div>
-          <div class="bay" data-n="03" data-state="ocupado"><span class="num">03</span><i class="car"></i><span class="tag"></span></div>
-          <div class="bay" data-n="04" data-state="libre"><span class="num">04</span><i class="car"></i><span class="tag"></span></div>
-          <div class="bay" data-n="05" data-state="ocupado"><span class="num">05</span><i class="car"></i><span class="tag"></span></div>
-          <div class="bay" data-n="06" data-state="libre" data-res="1" data-auth="no_aplica"><span class="num">06</span><i class="car"></i><span class="tag"></span></div>
-        </div>
-        <div class="lane"><span>CIRCULACIÓN →</span></div>
-        <div class="row b">
-          <div class="bay" data-n="07" data-state="libre"><span class="num">07</span><i class="car"></i><span class="tag"></span></div>
-          <div class="bay" data-n="08" data-state="ocupado"><span class="num">08</span><i class="car"></i><span class="tag"></span></div>
-          <div class="bay" data-n="09" data-state="libre"><span class="num">09</span><i class="car"></i><span class="tag"></span></div>
-          <div class="bay" data-n="10" data-state="libre"><span class="num">10</span><i class="car"></i><span class="tag"></span></div>
-          <div class="bay" data-n="11" data-state="libre"><span class="num">11</span><i class="car"></i><span class="tag"></span></div>
-          <div class="bay just" data-n="12" data-state="ocupado" data-res="1" data-auth="autorizado"><span class="num">12</span><i class="car"></i><span class="tag">AUT</span></div>
-        </div>
-        <p class="lot-log" id="lot-log" aria-live="polite">POST /api/eventos · plaza 12 → ocupado<br>POST /api/lecturas · plaza 12 → autorizado</p>
-        <div class="lot-foot">
-          <div class="legend"><span><i></i>libre</span><span><i class="l-occ"></i>ocupado</span><span><i class="l-res"></i>reservada (D)</span><span><i class="l-new"></i>último cambio</span></div>
-          <button class="btn" id="lot-step" type="button">Simular evento</button>
+
+        <div class="side-stack">
+          <figure class="taped on-white" style="--r:1.6deg">
+            <img src="img/parkex-arquitectura.png" alt="Diagrama de arquitectura de ParkEx: sensor y Arduino en la plaza, puente serie y lector de chapas en la computadora del parking, API REST, PostgreSQL y Realtime en Supabase, y el navegador" width="1890" height="1330" loading="lazy">
+            <figcaption> Diagrama de la logica del sistema</figcaption>
+          </figure>
         </div>
       </div>
 
-      <div class="side-stack">
-        <figure class="taped on-white" style="--r:1.6deg">
-          <img src="img/parkex-arquitectura.png" alt="Diagrama de arquitectura de ParkEx: sensor y Arduino en la plaza, puente serie y lector de chapas en la computadora del parking, API REST, PostgreSQL y Realtime en Supabase, y el navegador" width="1890" height="1330" loading="lazy">
-          <figcaption> Diagrama de la logica del sistema</figcaption>
-        </figure>
+      <div class="spec process">
+        <dl>
+          <dt>Timeline</dt><dd>04/08/2026 → 29/08/2026 · circuito validado de punta a punta el 25/08/2026 sobre una plaza real</dd>
+          <dt>Proceso</dt><dd>Ocho fases incrementales, cinco sin depender del hardware.</dd>
+        </dl>
+        <dl>
+          <dt>Resultado</dt><dd>Proyecto realizado para el concurso ConectaLab - Litoral Norte (UTU), aun pendiente el resultado final. Presentado en la III Semana Academica de Ingeniería en Logistica, donde recibio un premio por mejor exposicion oral y excelencia academica.</dd>
+        </dl>
       </div>
-    </div>
-
-    <div class="spec process">
-      <dl>
-        <dt>Timeline</dt><dd>04/08/2026 → 29/08/2026 · circuito validado de punta a punta el 25/08/2026 sobre una plaza real</dd>
-        <dt>Proceso</dt><dd>Ocho fases incrementales, cinco sin depender del hardware.</dd>
-      </dl>
-      <dl>
-        <dt>Resultado</dt><dd>Proyecto realizado para el concurso ConectaLab - Litoral Norte (UTU), aun pendiente el resultado final. Presentado en la III Semana Academica de Ingeniería en Logistica, donde recibio un premio por mejor exposicion oral y excelencia academica.</dd>
-      </dl>
-    </div>
+    </details>
   </article>
 
   <!-- ═════════ 2 · ITSPACE ═════════ -->
   <article class="plate" id="itspace" aria-labelledby="itspace-title">
-    <div class="ph">
-      <span class="n" aria-hidden="true">2</span>
-      <h2 id="itspace-title">ITSpace</h2>
-    </div>
-    <div class="spec">
-      <dl>
-        <dt>Contexto</dt><dd>Web Design · ITSP</dd>
-        <dt>Rol</dt><dd>Maquetación y desarrollo del sitio</dd>
-        <dt>Stack</dt><dd>HTML · CSS · JavaScript · PHP · MySQL · XAMPP · Figma</dd>
-      </dl>
-      <dl>
-        <dt>Descripción</dt>
-        <dd>Una plataforma pensada dentro del instituto: cada lenguaje con teoría, práctica y ejercicios; un foro para pedir y dar ayuda con el código; cursos validados por el ITSP; y cuentas para guardar por dónde vas.</dd>
-      </dl>
-    </div>
+    <details class="proj">
+      <summary class="ph">
+        <span class="n" aria-hidden="true">2</span>
+        <h2 id="itspace-title">ITSpace</h2>
+        <span class="more" aria-hidden="true"></span>
+      </summary>
+      <div class="spec">
+        <dl>
+          <dt>Contexto</dt><dd>Web Design · ITSP</dd>
+          <dt>Rol</dt><dd>Maquetación y desarrollo del sitio</dd>
+          <dt>Stack</dt><dd>HTML · CSS · JavaScript · PHP · MySQL · XAMPP · Figma</dd>
+        </dl>
+        <dl>
+          <dt>Descripción</dt>
+          <dd>Una plataforma pensada dentro del instituto: cada lenguaje con teoría, práctica y ejercicios; un foro para pedir y dar ayuda con el código; cursos validados por el ITSP; y cuentas para guardar por dónde vas.</dd>
+        </dl>
+      </div>
 
-    <div class="two">
-      <div>
-        <div class="boards">
-          <figure class="board"><figcaption>index.html</figcaption><div class="art"></div></figure>
-          <figure class="board picked"><figcaption>language.html</figcaption><div class="art sel"></div>
-            <div class="langs"><span>C++</span><span>HTML y CSS</span><span>Java</span><span>JS</span><span>Python</span><span>SQL</span></div>
+      <div class="two">
+        <div>
+          <div class="boards">
+            <figure class="board"><figcaption>index.html</figcaption><div class="art"></div></figure>
+            <figure class="board picked"><figcaption>language.html</figcaption><div class="art sel"></div>
+              <div class="langs"><span>C++</span><span>HTML y CSS</span><span>Java</span><span>JS</span><span>Python</span><span>SQL</span></div>
+            </figure>
+            <figure class="board"><figcaption>courses.html</figcaption><div class="art"></div></figure>
+            <figure class="board"><figcaption>forum.html</figcaption><div class="art"></div></figure>
+            <figure class="board"><figcaption>ide.html</figcaption><div class="art"></div></figure>
+            <figure class="board form"><figcaption>login.php · register.php</figcaption><div class="art"></div></figure>
+          </div>
+        </div>
+        <div class="side-stack">
+          <figure class="taped logo-sheet">
+            <div class="logo-pad"><img src="img/itspace-logo.png" alt="Logo de ITSpace: la palabra ITSPACE con un cohete que atraviesa la letra C" width="3492" height="847" loading="lazy"></div>
+            <figcaption>Diseño de logo en GIMP</figcaption>
           </figure>
-          <figure class="board"><figcaption>courses.html</figcaption><div class="art"></div></figure>
-          <figure class="board"><figcaption>forum.html</figcaption><div class="art"></div></figure>
-          <figure class="board"><figcaption>ide.html</figcaption><div class="art"></div></figure>
-          <figure class="board form"><figcaption>login.php · register.php</figcaption><div class="art"></div></figure>
         </div>
       </div>
-      <div class="side-stack">
-        <figure class="taped logo-sheet">
-          <div class="logo-pad"><img src="img/itspace-logo.png" alt="Logo de ITSpace: la palabra ITSPACE con un cohete que atraviesa la letra C" width="3492" height="847" loading="lazy"></div>
-          <figcaption>Diseño de logo en GIMP</figcaption>
-        </figure>
-      </div>
-    </div>
 
-    <div class="spec process">
-      <dl>
-        <dt>Timeline</dt><dd>Desde julio de 2026 · en desarrollo</dd>
-      </dl>
-      <dl>
-        <dt>Proceso</dt><dd>Maqueta en Figma, paleta definida en Color Hunt, identidad propia con logo animado y documentación del proyecto. Se sirve en local con XAMPP.</dd>
-      </dl>
-    </div>
+      <div class="spec process">
+        <dl>
+          <dt>Timeline</dt><dd>Desde julio de 2026 · en desarrollo</dd>
+        </dl>
+        <dl>
+          <dt>Proceso</dt><dd>Maqueta en Figma, paleta definida en Color Hunt, identidad propia con logo animado y documentación del proyecto. Se sirve en local con XAMPP.</dd>
+        </dl>
+      </div>
+    </details>
   </article>
 
   <!-- ═════════ 3 · CODED BIAS ═════════ -->
   <article class="plate dark" id="coded-bias" aria-labelledby="coded-title">
-    <div class="ph">
-      <span class="n" aria-hidden="true">3</span>
-      <h2 id="coded-title">Coded Bias</h2>
-    </div>
-    <div class="spec">
-      <dl>
-        <dt>Contexto</dt><dd>Inglés Social y Cultural · ITSP</dd>
-        <dt>Formato</dt><dd>Documental en inglés + speech</dd>
-        <dt>Rol</dt><dd>Discurso, contacto con los entrevistados y doblaje de la versión en inglés y presentacion en público</dd>
-      </dl>
-      <dl>
-        <dt>Descripción</dt>
-        <dd>Empezó como un documental sobre igualdad de género y terminó siendo otra pregunta: si una sociedad no es igualitaria, ¿puede ser neutral la tecnología que construye? Dos hilos, uno con las máquinas y otro con las personas, que se juntan al final.</dd>
-      </dl>
-    </div>
+    <details class="proj">
+      <summary class="ph">
+        <span class="n" aria-hidden="true">3</span>
+        <h2 id="coded-title">Coded Bias</h2>
+        <span class="more" aria-hidden="true"></span>
+      </summary>
+      <div class="spec">
+        <dl>
+          <dt>Contexto</dt><dd>Inglés Social y Cultural · ITSP</dd>
+          <dt>Formato</dt><dd>Documental en inglés + speech</dd>
+          <dt>Rol</dt><dd>Discurso, contacto con los entrevistados y doblaje de la versión en inglés y presentacion en público</dd>
+        </dl>
+        <dl>
+          <dt>Descripción</dt>
+          <dd>Empezó como un documental sobre igualdad de género y terminó siendo otra pregunta: si una sociedad no es igualitaria, ¿puede ser neutral la tecnología que construye? Dos hilos, uno con las máquinas y otro con las personas, que se juntan al final.</dd>
+        </dl>
+      </div>
 
-    <p class="brush quote">“Prejudice doesn’t disappear. It migrates.”</p>
+      <p class="brush quote">“Prejudice doesn’t disappear. It migrates.”</p>
 
-    <div class="tl-wrap" style="margin-top:40px">
-      <div class="tl" role="img" aria-label="Estructura del documental en la línea de tiempo: opening, intro, side A, side B, interviews y conclusion en video, con música en la pista de audio">
-        <div class="tl-ruler"><div></div><div></div></div>
-        <div class="track"><b>V1</b>
-          <div class="clips">
-            <span class="clip">01 OPENING</span><span class="clip">02 INTRO</span><span class="clip">03 SIDE A</span><span class="clip">04 SIDE B</span><span class="clip">05 INTERVIEWS</span><span class="clip">06 CONCLUSION</span>
-            <span class="playhead" aria-hidden="true"></span>
+      <div class="tl-wrap" style="margin-top:40px">
+        <div class="tl" role="img" aria-label="Estructura del documental en la línea de tiempo: opening, intro, side A, side B, interviews y conclusion en video, con música en la pista de audio">
+          <div class="tl-ruler"><div></div><div></div></div>
+          <div class="track"><b>V1</b>
+            <div class="clips">
+              <span class="clip">01 OPENING</span><span class="clip">02 INTRO</span><span class="clip">03 SIDE A</span><span class="clip">04 SIDE B</span><span class="clip">05 INTERVIEWS</span><span class="clip">06 CONCLUSION</span>
+              <span class="playhead" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="track"><b>A1</b>
+            <div class="clips audio"><span class="clip">07 MUSIC</span></div>
           </div>
         </div>
-        <div class="track"><b>A1</b>
-          <div class="clips audio"><span class="clip">07 MUSIC</span></div>
-        </div>
       </div>
-    </div>
 
-    <dl class="kit">
-      <div><dt>Equipo</dt><dd>4 estudiantes</dd></div>
-      <div><dt>Tiempo</dt><dd>1 mes</dd></div>
-      <div><dt>Entrevistas</dt><dd>80 min grabados</dd></div>
-    </dl>
+      <dl class="kit">
+        <div><dt>Equipo</dt><dd>4 estudiantes</dd></div>
+        <div><dt>Tiempo</dt><dd>1 mes</dd></div>
+        <div><dt>Entrevistas</dt><dd>80 min grabados</dd></div>
+      </dl>
+    </details>
   </article>
 
   <!-- ═════════ 4 · ESCANEO IP ═════════ -->
   <article class="plate" id="escaneo" aria-labelledby="escaneo-title">
-    <div class="ph">
-      <span class="n" aria-hidden="true">4</span>
-      <h2 id="escaneo-title">Escaneo IP</h2>
-    </div>
-    <div class="spec">
-      <dl>
-        <dt>Contexto</dt><dd>Redes de Datos · ITSP</dd>
-        <dt>Equipo</dt><dd>3 estudiantes</dd>
-        <dt>Entrega</dt><dd>14/07/2026</dd>
-        <dt>Stack</dt><dd>Java · ExecutorService · ping y arp nativos · com.sun.net.httpserver · bash</dd>
-      </dl>
-      <dl>
-        <dt>Descripción</dt>
-        <dd>Un escáner que recibe una red en notación CIDR, hace ping a cada dirección en paralelo (hasta 100 hilos, 1 s de timeout) y cruza el resultado con la tabla ARP para mostrar IP, MAC y estado. Tiene un modo web con <code>POST /api/escanear</code> y detecta si corre dentro de Flatpak para ejecutar los comandos en el sistema anfitrión.</dd>
-      </dl>
-    </div>
+    <details class="proj">
+      <summary class="ph">
+        <span class="n" aria-hidden="true">4</span>
+        <h2 id="escaneo-title">Escaneo IP</h2>
+        <span class="more" aria-hidden="true"></span>
+      </summary>
+      <div class="spec">
+        <dl>
+          <dt>Contexto</dt><dd>Redes de Datos · ITSP</dd>
+          <dt>Equipo</dt><dd>3 estudiantes</dd>
+          <dt>Entrega</dt><dd>14/07/2026</dd>
+          <dt>Stack</dt><dd>Java · ExecutorService · ping y arp nativos · com.sun.net.httpserver · bash</dd>
+        </dl>
+        <dl>
+          <dt>Descripción</dt>
+          <dd>Un escáner que recibe una red en notación CIDR, hace ping a cada dirección en paralelo (hasta 100 hilos, 1 s de timeout) y cruza el resultado con la tabla ARP para mostrar IP, MAC y estado. Tiene un modo web con <code>POST /api/escanear</code> y detecta si corre dentro de Flatpak para ejecutar los comandos en el sistema anfitrión.</dd>
+        </dl>
+      </div>
 
-    <div class="two">
+      <div class="two">
 <pre class="term" aria-label="Salida del escáner en una terminal Linux"><span class="p">$</span> ./ejecutar.sh
 <span class="c">Compilado en out/</span>
 Ingrese la red a escanear en notacion CIDR: 192.168.1.0/24
@@ -328,55 +339,59 @@ IP              MAC                  Estado
 <span class="c">-----------------------------------------------</span>
 Equipos activos: 11 de 254
 Tiempo de escaneo: 4 s</pre>
-      <div class="side-stack">
-        <div class="spec" style="margin:0">
-          <dl>
-            <dt>Probado en</dt><dd>IDE de Java, terminal Linux y el servidor de la institucion</dd>
-            <dt>Problema</dt><dd>En Linux, la lectura de la tabla ARP fallaba; se resolvió con un script.</dd>
-          </dl>
+        <div class="side-stack">
+          <div class="spec" style="margin:0">
+            <dl>
+              <dt>Probado en</dt><dd>IDE de Java, terminal Linux y el servidor de la institucion</dd>
+              <dt>Problema</dt><dd>En Linux, la lectura de la tabla ARP fallaba; se resolvió con un script.</dd>
+            </dl>
+          </div>
         </div>
       </div>
-    </div>
+    </details>
   </article>
 
   <!-- ═════════ 5 · CINNIMINIES ═════════ -->
   <article class="plate" id="cinniminies" aria-labelledby="cinni-title">
-    <div class="ph">
-      <span class="n" aria-hidden="true">5</span>
-      <h2 id="cinni-title">Cinniminies</h2>
-    </div>
-    <div class="spec">
-      <dl>
-        <dt>Contexto</dt><dd>Emprendimiento propio, junto a mi novia · Paysandú</dd>
-        <dt>Rol</dt><dd>Cofundador · diseño y desarrollo del sitio</dd>
-        <dt>Desde</dt><dd>Mayo de 2026</dd>
-        <dt>Stack web</dt><dd>HTML · CSS · JavaScript · Vercel</dd>
-      </dl>
-      <dl>
-        <dt>Descripción</dt>
-        <dd>Cinnamon rolls de masa madre, horneados por encargue, con glaseados artesanales e ingredientes seleccionados. El sitio cuenta el proceso, muestra el menú y tiene un formulario de pedido con validación en vivo para coordinar cada caja.</dd>
-      </dl>
-    </div>
-
-    <div class="two cinni">
-      <figure class="taped" style="--r:-2.2deg">
-        <img src="img/cinni-oreo.jpg" alt="Caja con seis rolls de canela cubiertos de glaseado y galleta de chocolate triturada" width="688" height="917" loading="lazy">
-        <figcaption>Roll de Oreo</figcaption>
-      </figure>
-      <div class="side-stack">
-        <p class="tagline">Cinnamon Rolls hechos artesanalmente<small>Emprendimiento local sobre panadería</small></p>
-        <ul class="channels">
-          <li>
-            <span class="lab">Sitio</span>
-            <a href="https://cinniminies.vercel.app" target="_blank" rel="noopener">cinniminies.vercel.app</a>
-          </li>
-          <li>
-            <span class="lab">Instagram</span>
-            <a href="https://www.instagram.com/cinniminies.pay/" target="_blank" rel="noopener">@cinniminies.pay</a>
-          </li>
-        </ul>
+    <details class="proj">
+      <summary class="ph">
+        <span class="n" aria-hidden="true">5</span>
+        <h2 id="cinni-title">Cinniminies</h2>
+        <span class="more" aria-hidden="true"></span>
+      </summary>
+      <div class="spec">
+        <dl>
+          <dt>Contexto</dt><dd>Emprendimiento propio, junto a mi novia · Paysandú</dd>
+          <dt>Rol</dt><dd>Cofundador · diseño y desarrollo del sitio</dd>
+          <dt>Desde</dt><dd>Mayo de 2026</dd>
+          <dt>Stack web</dt><dd>HTML · CSS · JavaScript · Vercel</dd>
+        </dl>
+        <dl>
+          <dt>Descripción</dt>
+          <dd>Cinnamon rolls de masa madre, horneados por encargue, con glaseados artesanales e ingredientes seleccionados. El sitio cuenta el proceso, muestra el menú y tiene un formulario de pedido con validación en vivo para coordinar cada caja.</dd>
+        </dl>
       </div>
-    </div>
+
+      <div class="two cinni">
+        <figure class="taped" style="--r:-2.2deg">
+          <img src="img/cinni-oreo.jpg" alt="Caja con seis rolls de canela cubiertos de glaseado y galleta de chocolate triturada" width="688" height="917" loading="lazy">
+          <figcaption>Roll de Oreo</figcaption>
+        </figure>
+        <div class="side-stack">
+          <p class="tagline">Cinnamon Rolls hechos artesanalmente<small>Emprendimiento local sobre panadería</small></p>
+          <ul class="channels">
+            <li>
+              <span class="lab">Sitio</span>
+              <a href="https://cinniminies.vercel.app" target="_blank" rel="noopener">cinniminies.vercel.app</a>
+            </li>
+            <li>
+              <span class="lab">Instagram</span>
+              <a href="https://www.instagram.com/cinniminies.pay/" target="_blank" rel="noopener">@cinniminies.pay</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </details>
   </article>
 
   <!-- ═════════ CONTACTO ═════════ -->

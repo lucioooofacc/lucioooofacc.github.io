@@ -45,6 +45,20 @@
     setInterval(function () { if (!document.hidden) step(); }, 3200);
   }
 
+  function openProject(id) {
+    var el = id && document.getElementById(id);
+    var d = el && el.querySelector('details.proj');
+    if (d) d.open = true;
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.idx a'), function (a) {
+    a.addEventListener('click', function () { openProject(a.getAttribute('href').slice(1)); });
+  });
+  if (location.hash) {
+    openProject(location.hash.slice(1));
+    var target = document.getElementById(location.hash.slice(1));
+    if (target) target.scrollIntoView();
+  }
+
   var copyBtn = document.getElementById('copy-mail');
   var copyState = document.getElementById('copy-state');
   copyBtn.addEventListener('click', function () {

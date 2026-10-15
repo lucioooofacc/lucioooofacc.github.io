@@ -362,6 +362,30 @@ main {
   min-width: 0;
   overflow-wrap: anywhere;
 }
+/* Desplegable */
+.proj > summary { cursor: pointer; list-style: none; }
+.proj > summary::-webkit-details-marker { display: none; }
+.proj > summary:focus-visible { outline: 2px solid currentColor; outline-offset: 6px; }
+.more {
+  flex: none;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 11px/1 var(--f-mono);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 9px 12px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+.more::before { content: "Ver proyecto"; }
+.more::after { content: "+"; font-size: 15px; transition: transform .2s; }
+.proj[open] .more::before { content: "Cerrar"; }
+.proj[open] .more::after { transform: rotate(45deg); }
+.proj > summary:hover .more { background: currentColor; }
+.proj > summary:hover .more::before, .proj > summary:hover .more::after { color: var(--paper); }
+.dark .proj > summary:hover .more::before, .dark .proj > summary:hover .more::after { color: var(--slab); }
 .spec {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
@@ -617,6 +641,8 @@ main {
   .idx .n { font-size: 46px; }
   .ph { gap: 10px; }
   .ph .n { font-size: 48px; }
+  .ph { flex-wrap: wrap; }
+  .more::before { content: "Ver"; }
   .spec dl { grid-template-columns: minmax(0, 1fr); gap: 1px; }
   .spec dd { margin-bottom: 8px; }
   .bar { font-size: 11px; letter-spacing: .05em; }
