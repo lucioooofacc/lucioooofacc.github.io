@@ -379,13 +379,13 @@ main {
   border: 1px solid currentColor;
   border-radius: 2px;
 }
-.more::before { content: "Ver proyecto"; }
+.more .c, .proj[open] .more .o { display: none; }
+.proj[open] .more .c { display: inline; }
 .more::after { content: "+"; font-size: 15px; transition: transform .2s; }
-.proj[open] .more::before { content: "Cerrar"; }
 .proj[open] .more::after { transform: rotate(45deg); }
 .proj > summary:hover .more { background: currentColor; }
-.proj > summary:hover .more::before, .proj > summary:hover .more::after { color: var(--paper); }
-.dark .proj > summary:hover .more::before, .dark .proj > summary:hover .more::after { color: var(--slab); }
+.proj > summary:hover .more > *, .proj > summary:hover .more::after { color: var(--paper); }
+.dark .proj > summary:hover .more > *, .dark .proj > summary:hover .more::after { color: var(--slab); }
 .spec {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
@@ -603,8 +603,9 @@ main {
   display: flex;
   gap: 6px;
 }
-.quick a { font: 600 11px/1 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; text-decoration: none; padding: 9px 11px; background: var(--ink); color: var(--paper-hi); border-radius: 2px; box-shadow: 0 6px 18px -8px rgba(0,0,0,.6); }
-.quick a:hover { background: var(--pen); }
+.quick a, .lang-btn { font: 600 11px/1 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; text-decoration: none; padding: 9px 11px; background: var(--ink); color: var(--paper-hi); border: 0; border-radius: 2px; box-shadow: 0 6px 18px -8px rgba(0,0,0,.6); cursor: pointer; }
+.quick a:hover, .lang-btn:hover { background: var(--pen); }
+.lang-btn:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; }
 
 /* ───────── Responsive ───────── */
 /* Tablet: una columna por sección */
@@ -642,7 +643,6 @@ main {
   .ph { gap: 10px; }
   .ph .n { font-size: 48px; }
   .ph { flex-wrap: wrap; }
-  .more::before { content: "Ver"; }
   .spec dl { grid-template-columns: minmax(0, 1fr); gap: 1px; }
   .spec dd { margin-bottom: 8px; }
   .bar { font-size: 11px; letter-spacing: .05em; }
@@ -659,7 +659,7 @@ main {
   .channels li { grid-template-columns: minmax(0, 1fr); }
   .channels .btn { justify-self: start; }
   .channels a, .channels .val { font-size: 17px; }
-  .quick a { padding: 8px 9px; font-size: 10px; }
+  .quick a, .lang-btn { padding: 8px 9px; font-size: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
