@@ -37,7 +37,7 @@
       try { localStorage.setItem('lang', next); } catch (e) {}
     }
     if (cache[next]) return done(cache[next]);
-    fetch('lang/' + next + '.json')
+    fetch('lang/' + next + '.json', { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw r; return r.json(); })
       .then(done)
       .catch(function () { console.warn('No se pudo cargar lang/' + next + '.json'); });
