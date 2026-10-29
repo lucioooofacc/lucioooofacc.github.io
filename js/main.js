@@ -82,11 +82,20 @@
   }
 
   updateCount();
-  document.getElementById('lot-step').addEventListener('click', step);
+  // Solo se anuncia por lector de pantalla cuando el evento lo dispara la persona
+  document.getElementById('lot-step').addEventListener('click', function () {
+    log.setAttribute('aria-live', 'polite');
+    step();
+  });
+  var parkex = document.querySelector('#parkex details.proj');
 
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!reduce) {
-    setInterval(function () { if (!document.hidden) step(); }, 3200);
+    setInterval(function () {
+      if (document.hidden || !parkex.open) return;
+      log.setAttribute('aria-live', 'off');
+      step();
+    }, 3200);
   }
 
   function openProject(id) {
