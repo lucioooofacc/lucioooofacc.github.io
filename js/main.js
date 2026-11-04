@@ -39,11 +39,18 @@
       lang = next;
       // Cambio de idioma con fundido nativo (View Transitions) y, después,
       // se vuelven a dibujar los trazos de birome que están a la vista.
-      if (animate && !reduce && document.startViewTransition) {
-        document.startViewTransition(function () { apply(); redraw(); });
-      } else {
+      // El texto cambia de largo: se deshacen los splits, se traduce, se vuelven a
+      // partir y ScrollTrigger vuelve a medir todo.
+      function swap() {
+        scroll.beforeTranslate();
         apply();
         if (animate) redraw();
+        scroll.afterTranslate();
+      }
+      if (animate && !reduce && document.startViewTransition) {
+        document.startViewTransition(swap);
+      } else {
+        swap();
       }
       try { localStorage.setItem('lang', next); } catch (e) {}
     }
@@ -98,50 +105,19 @@
     log.setAttribute('aria-live', 'polite');
     step();
   });
-  var parkex = document.querySelector('#parkex details.proj');
-
-  if (!reduce) {
-    setInterval(function () {
-      if (document.hidden || !parkex.open) return;
-      log.setAttribute('aria-live', 'off');
-      step();
-    }, 3200);
+  // Evento disparado por el scroll (no por un timer): no se anuncia, para no
+  // llenar el lector de pantalla mientras la persona solo está bajando.
+  function autoStep() {
+    log.setAttribute('aria-live', 'off');
+    step();
   }
 
-  function openProject(id) {
-    var el = id && document.getElementById(id);
-    var d = el && el.querySelector('details.proj');
-    if (d) d.open = true;
-  }
-  Array.prototype.forEach.call(document.querySelectorAll('.idx a'), function (a) {
-    a.addEventListener('click', function () { openProject(a.getAttribute('href').slice(1)); });
-  });
-  if (location.hash) {
-    openProject(location.hash.slice(1));
-    var target = document.getElementById(location.hash.slice(1));
-    if (target) target.scrollIntoView({ behavior: 'instant' });
-  }
-
-  // ─── Revelado por scroll ───
-  // Sin JS, sin IntersectionObserver o con reduced-motion todo queda visible:
-  // la clase html.reveal es la que habilita los estados ocultos en CSS.
-  var revealOn = !reduce && 'IntersectionObserver' in window;
-  var watched = document.querySelectorAll('.plate:not(.cover), [data-wipe], [data-draw]');
-  if (revealOn) {
-    document.documentElement.classList.add('reveal');
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        e.target.classList.add('in');
-        io.unobserve(e.target);
-      });
-    }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
-    Array.prototype.forEach.call(watched, function (el) { io.observe(el); });
-  }
+  // ─── Scroll: revelados, riel, escenas (js/main.js · sección "scroll") ───
+  var scroll = setupScroll();
 
   // Tras cambiar de idioma el texto cambia de largo: los trazos visibles se rehacen
   function redraw() {
-    if (!revealOn) return;
+    if (!scroll.revealOn) return;
     Array.prototype.forEach.call(document.querySelectorAll('[data-draw].in, [data-wipe].in'), function (el) {
       var r = el.getBoundingClientRect();
       if (r.bottom < 0 || r.top > innerHeight) return;
@@ -331,6 +307,238 @@
         el.style.setProperty('--ty', '0deg');
       });
     });
+  }
+
+  // ════════ Scroll ════════
+  // Tres modos, decididos con gsap.matchMedia():
+  //  · desk  (≥1100 px, mouse, sin reduced-motion): escenas sticky que avanzan con el scroll.
+  //  · lite  (celular, touch, pantallas bajas): solo revelados cortos y contenido ligado al scroll, sin escenas largas.
+  //  · reduce (prefers-reduced-motion): nada se mueve; todo queda en su estado final.
+  // Sin JS o si GSAP no carga, la página es la misma, vertical y completa.
+  function setupScroll() {
+    var root = document.documentElement;
+    var api = { revealOn: false, beforeTranslate: function () {}, afterTranslate: function () {} };
+    if (!window.gsap || !window.ScrollTrigger) { root.classList.remove('motion'); return api; }
+    gsap.registerPlugin(ScrollTrigger);
+    var canSplit = !!window.SplitText;
+    if (canSplit) gsap.registerPlugin(SplitText);
+
+    var DESK = '(min-width: 1100px) and (min-height: 680px) and (pointer: fine) and (prefers-reduced-motion: no-preference)';
+    function $(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+    function q(sel, ctx) { return (ctx || document).querySelector(sel); }
+    var scenes = {
+      parkex: q('[data-scene="parkex"]'), itspace: q('[data-scene="itspace"]'),
+      coded: q('[data-scene="coded"]'), escaneo: q('[data-scene="escaneo"]'), cinni: q('[data-scene="cinni"]')
+    };
+    // Rango de una escena sticky: de que su tope toca el tope de la pantalla a que su fondo toca el fondo
+    function sceneST(el, scrub) { return { trigger: el, start: 'top top', end: 'bottom bottom', scrub: scrub == null ? 0.4 : scrub, invalidateOnRefresh: true }; }
+
+    // ─── Riel: marca con la birome el proyecto que está en pantalla (en todos los modos; es estado, no movimiento) ───
+    var railLinks = $('.rail a');
+    $('.proj').forEach(function (art, i) {
+      ScrollTrigger.create({
+        trigger: art, start: 'top 55%', end: 'bottom 55%',
+        onToggle: function (self) {
+          if (!self.isActive) return;
+          railLinks.forEach(function (a, j) {
+            if (j === i) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+          });
+        }
+      });
+    });
+
+    // ─── Frases manuscritas de cada proyecto: SplitText por palabra (se rehace al traducir) ───
+    var mode = 'reduce', splits = [], ledeTweens = [];
+    function splitLedes() {
+      if (!canSplit || mode === 'reduce') return;
+      $('[data-split]').forEach(function (el) {
+        var s = SplitText.create(el, { type: 'words', aria: 'auto' });
+        splits.push(s);
+        if (el.dataset.seen) return; // ya se leyó: después de traducir queda quieta
+        ledeTweens.push(gsap.from(s.words, {
+          opacity: 0, y: 10, rotation: -3, duration: 0.5, ease: 'power2.out', stagger: 0.07,
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true, onEnter: function () { el.dataset.seen = '1'; } }
+        }));
+      });
+    }
+    function killLedes() {
+      ledeTweens.forEach(function (t) { if (t.scrollTrigger) t.scrollTrigger.kill(); t.kill(); });
+      splits.forEach(function (s) { s.revert(); });
+      ledeTweens = []; splits = [];
+    }
+    api.beforeTranslate = killLedes;
+    api.afterTranslate = function () { splitLedes(); ScrollTrigger.refresh(); };
+
+    // ─── Revelados heredados del PR #1 (láminas, brush, trazos): ahora con ScrollTrigger en vez de IntersectionObserver ───
+    function reveals() {
+      ScrollTrigger.batch('.plate:not(.cover), [data-wipe], [data-draw]', {
+        start: 'top 92%', once: true,
+        onEnter: function (els) { els.forEach(function (el) { el.classList.add('in'); }); }
+      });
+    }
+
+    // ─── ParkEx: los eventos del plano los dispara el scroll (no un timer) ───
+    function lotEvents(desk) {
+      var lot = q('.lot', scenes.parkex), n = desk ? 8 : 4, last = -1;
+      ScrollTrigger.create({
+        trigger: desk ? scenes.parkex : lot,
+        start: desk ? 'top top' : 'top 75%',
+        end: desk ? 'bottom bottom' : 'bottom 25%',
+        onUpdate: function (self) {
+          var k = Math.min(n - 1, Math.floor(self.progress * n));
+          if (k !== last) { if (last !== -1) autoStep(); last = k; }
+        }
+      });
+    }
+
+    // Hojas que se deslizan desde el costado y se apilan sobre la anterior
+    function stackSheets(tl, sheets, at, span) {
+      sheets.forEach(function (sh, k) {
+        if (k === 0) return;
+        var t = at + (k - 1) * span;
+        tl.fromTo(sh, { xPercent: 112, yPercent: 6, rotation: 7, opacity: 0 },
+          { xPercent: 0, yPercent: 0, rotation: 0, opacity: 1, duration: span * 0.85, ease: 'power2.out' }, t);
+        for (var m = 0; m < k; m++) {
+          tl.to(sheets[m], { scale: 1 - 0.035 * (k - m), y: -14 * (k - m), duration: span * 0.85, ease: 'power1.out' }, t);
+        }
+      });
+    }
+
+    // ─── Escenas de escritorio ───
+    function plates() {
+      var arts = $('.proj');
+      arts.forEach(function (art, i) {
+        var side = i % 2 ? 1 : -1;
+        // La lámina se desliza sobre la mesa desde un costado y se asienta
+        gsap.fromTo(art, { x: side > 0 ? 110 : -50, rotation: side * 2.2, opacity: 0.25 }, {
+          x: 0, rotation: 0, opacity: 1, ease: 'power2.out',
+          scrollTrigger: { trigger: art, start: 'top bottom', end: 'top 30%', scrub: 0.6 }
+        });
+        // y cuando llega la siguiente, la anterior se achica apenas y se corre: queda abajo de la pila
+        var next = arts[i + 1];
+        if (next) gsap.to(art, {
+          scale: 0.965, xPercent: side * -1.2, transformOrigin: '50% 100%', ease: 'none',
+          scrollTrigger: { trigger: next, start: 'top bottom', end: 'top 30%', scrub: 0.6 }
+        });
+      });
+      // Cambio de composición: el riel entra desde la izquierda cuando empiezan los proyectos
+      gsap.fromTo('.rail', { x: -24, opacity: 0 }, { x: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: '.run', start: 'top 75%', end: 'top 25%', scrub: 0.5 } });
+      // Progreso: el trazo del riel se revela con dos traslaciones opuestas (solo transform)
+      var wipe = q('.rail-wipe');
+      gsap.timeline({ scrollTrigger: { trigger: '.sheaf', start: 'top 55%', end: 'bottom bottom', scrub: 0.3 } })
+        .fromTo(wipe, { yPercent: -100 }, { yPercent: 0, ease: 'none' }, 0)
+        .fromTo(q('svg', wipe), { yPercent: 100 }, { yPercent: 0, ease: 'none' }, 0);
+    }
+
+    function parkexScene() {
+      var tl = gsap.timeline({ scrollTrigger: sceneST(scenes.parkex) });
+      stackSheets(tl, $('.sheets > .sheet', scenes.parkex), 0.14, 0.34);
+      tl.to({}, { duration: 0.12 });
+    }
+
+    function itspaceScene(cleanups) {
+      var gal = q('.gallery', scenes.itspace), track = q('.track', gal);
+      function dist() {
+        var pad = parseFloat(getComputedStyle(gal).paddingLeft) || 0;
+        return Math.max(0, track.offsetWidth - (gal.clientWidth - 2 * pad));
+      }
+      // La escena mide lo que tiene que recorrer la cinta: 1 px vertical = 1 px horizontal
+      function size() { scenes.itspace.style.setProperty('--h', Math.round(innerHeight + dist()) + 'px'); }
+      size();
+      ScrollTrigger.addEventListener('refreshInit', size);
+      cleanups.push(function () {
+        ScrollTrigger.removeEventListener('refreshInit', size);
+        scenes.itspace.style.removeProperty('--h');
+      });
+      gsap.to(track, { x: function () { return -dist(); }, ease: 'none', scrollTrigger: sceneST(scenes.itspace, 0.3) });
+    }
+
+    function termPrint(desk) {
+      var lines = $('.term .l', scenes.escaneo);
+      var tl = gsap.timeline({
+        scrollTrigger: desk ? sceneST(scenes.escaneo, 0.2)
+          : { trigger: q('.term', scenes.escaneo), start: 'top 85%', end: 'bottom 55%', scrub: 0.2 }
+      });
+      var span = desk ? 0.5 : 1;
+      lines.forEach(function (l, k) {
+        if (k === 0) return; // el prompt ya está escrito; lo demás se imprime al bajar
+        tl.fromTo(l, { opacity: 0 }, { opacity: 1, duration: 0.01, ease: 'none' }, (k / lines.length) * span);
+      });
+      if (desk) {
+        stackSheets(tl, $('.sheets > .sheet', scenes.escaneo), 0.56, 0.2);
+        tl.to({}, { duration: 0.06 });
+      }
+    }
+
+    function codedScene(desk) {
+      var scene = scenes.coded, ph = q('.playhead', scene), host = ph.parentNode;
+      var clips = $('.clips:not(.audio) .clip', scene), monI = q('#mon-i'), monClip = q('#mon-clip'), cur = -1;
+      function monitor(p) {
+        var i = Math.min(clips.length - 1, Math.floor(p * clips.length));
+        if (i === cur) return;
+        cur = i;
+        clips.forEach(function (c, j) { c.classList.toggle('on', j === i); });
+        monI.textContent = ('0' + (i + 1)).slice(-2);
+        monClip.textContent = clips[i].textContent;
+      }
+      var tl = gsap.timeline({
+        scrollTrigger: desk ? sceneST(scene, 0.3)
+          : { trigger: q('.tl-wrap', scene), start: 'top 85%', end: 'bottom 35%', scrub: 0.3 },
+        onUpdate: function () { monitor(this.progress()); }
+      });
+      // El playhead recorre la pista de video de punta a punta
+      tl.fromTo(ph, { x: 0 }, { x: function () { return host.clientWidth - 2; }, ease: 'none', duration: 1 }, 0);
+      monitor(0);
+      // La cita se "enciende" palabra por palabra
+      var quote = q('[data-quote]', scene);
+      if (canSplit && quote) {
+        var words = SplitText.create(quote, { type: 'words', aria: 'auto' }).words;
+        if (desk) tl.fromTo(words, { opacity: 0.12 }, { opacity: 1, duration: 0.05, stagger: 0.45 / words.length, ease: 'none' }, 0.04);
+        else gsap.from(words, { opacity: 0.12, stagger: 0.08, duration: 0.4, scrollTrigger: { trigger: quote, start: 'top 85%', once: true } });
+      }
+    }
+
+    function cinniScene() {
+      var frame = q('.lp-frame', scenes.cinni), img = q('img', frame);
+      // La página impresa sube dentro del marco: se "lee" de arriba abajo mientras se baja
+      gsap.to(img, { y: function () { return -Math.max(0, img.offsetHeight - frame.clientHeight + 20); }, ease: 'none', scrollTrigger: sceneST(scenes.cinni, 0.4) });
+    }
+
+    var mm = gsap.matchMedia();
+    mm.add({ desk: DESK, reduce: '(prefers-reduced-motion: reduce)', any: '(min-width: 0px)' }, function (ctx) {
+      var c = ctx.conditions, cleanups = [];
+      if (c.reduce) { mode = 'reduce'; api.revealOn = false; root.classList.remove('motion', 'reveal'); return; }
+      mode = c.desk ? 'desk' : 'lite';
+      root.classList.toggle('motion', !!c.desk);
+      root.classList.add('reveal');
+      api.revealOn = true;
+      if (c.desk) { plates(); parkexScene(); itspaceScene(cleanups); cinniScene(); }
+      termPrint(c.desk);
+      codedScene(c.desk);
+      lotEvents(c.desk);
+      reveals();
+      splitLedes();
+      return function () {
+        killLedes();
+        cleanups.forEach(function (f) { f(); });
+        root.classList.remove('motion', 'reveal');
+      };
+    });
+
+    // Los hash (#parkex…) siguen siendo anchors nativos. Si la página se abrió con uno,
+    // se vuelve a llevar ahí cuando ScrollTrigger termina de medir (las escenas cambian de alto),
+    // salvo que la persona ya se haya movido.
+    var moved = false;
+    ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (ev) {
+      addEventListener(ev, function () { moved = true; }, { once: true, passive: true });
+    });
+    ScrollTrigger.addEventListener('refresh', function () {
+      if (moved || !location.hash) return;
+      var t = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      if (t) t.scrollIntoView({ behavior: 'instant' });
+    });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
+    return api;
   }
 
   var copyBtn = document.getElementById('copy-mail');

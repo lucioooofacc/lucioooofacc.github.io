@@ -7,8 +7,14 @@
 <title>Lucio Facchin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=JetBrains+Mono:wght@400;600&family=Reenie+Beanie&family=Sedgwick+Ave+Display&display=swap">
 <link rel="stylesheet" href="css/styles.css">
+<!-- Antes del primer pintado: decide si va la versión con escenas de scroll (escritorio, mouse y sin reduced-motion).
+     main.js la confirma con gsap.matchMedia() o la saca si GSAP no cargó. -->
+<script>
+  try { if (matchMedia('(min-width: 1100px) and (min-height: 680px) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) document.documentElement.classList.add('motion'); } catch (e) {}
+</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -155,29 +161,50 @@
     </div>
   </section>
 
-  <!-- ═════════ 1 · PARKEX ═════════ -->
-  <article class="plate" id="parkex" aria-labelledby="parkex-title">
-    <details class="proj">
-      <summary class="ph">
-        <span class="n" aria-hidden="true">1</span>
-        <h2 id="parkex-title">ParkEx</h2>
-        <span class="more" aria-hidden="true"><span class="o" data-i18n="ui.more">Ver proyecto</span><span class="c" data-i18n="ui.close">Cerrar</span></span>
-      </summary>
-      <div class="spec">
-        <dl>
-          <dt data-i18n="parkex.1">Contexto</dt><dd data-i18n="parkex.2">Concurso ConectaLab – Litoral Norte (UTU)</dd>
-          <dt data-i18n="parkex.3">Equipo</dt><dd data-i18n="parkex.4">5 estudiantes del ITSP, con un docente tutor</dd>
-          <dt data-i18n="parkex.5">Rol</dt><dd data-i18n="parkex.6">Cofundador · desarrollo de la plataforma</dd>
-          <dt data-i18n="parkex.7">Repositorio</dt><dd><a href="https://github.com/facuduarte-dev/ConnectaLab" target="_blank" rel="noopener">github.com/facuduarte-dev/ConnectaLab</a></dd>
-          <dt data-i18n="parkex.8">Stack</dt><dd data-i18n="parkex.9">Arduino Uno + HC-SR04 · Node.js + Express · PostgreSQL en Supabase · Realtime · Java + Tesseract OCR · HTML, CSS y JS sin framework</dd>
-        </dl>
-        <dl>
-          <dt data-i18n="parkex.10">Descripción</dt>
-          <dd data-i18n="parkex.11">En los estacionamientos privados la gente recorre niveles enteros buscando lugar, y las plazas para personas con discapacidad se ocupan sin permiso. ParkEx muestra sobre el plano de cada nivel qué plazas están libres u ocupadas, y en las reservadas lee la matrícula por OCR y comprueba si termina en DI, el distintivo uruguayo de discapacidad.</dd>
-        </dl>
-      </div>
+  <!-- ═════════ PROYECTOS ═════════
+       Corrida de láminas con un riel lateral (índice compacto + progreso).
+       Sin JS, con reduced-motion o en pantallas chicas: todo en columna, en su estado final. -->
+  <div class="run" id="proyectos">
+    <nav class="rail" data-i18n-aria-label="rail.aria" aria-label="Proyectos">
+      <p class="rail-t" data-i18n="nav.1">Índice</p>
+      <ol>
+        <li><a href="#parkex"><span class="rn">1<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span>ParkEx</a></li>
+        <li><a href="#itspace"><span class="rn">2<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span>ITSpace</a></li>
+        <li><a href="#coded-bias"><span class="rn">3<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span>Coded Bias</a></li>
+        <li><a href="#escaneo"><span class="rn">4<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span>Escaneo IP</a></li>
+        <li><a href="#cinniminies"><span class="rn">5<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span>Cinniminies</a></li>
+      </ol>
+      <!-- Progreso: un trazo de birome que se revela con el scroll (solo transform) -->
+      <div class="rail-line" aria-hidden="true"><div class="rail-wipe"><svg viewBox="0 0 12 400" preserveAspectRatio="none"><path d="M6 2 C 9 60, 3 110, 6 170 S 9 280, 5 330 S 7 380, 6 398"/></svg></div></div>
+    </nav>
 
-      <div class="two">
+    <div class="sheaf">
+
+  <!-- ═════════ 1 · PARKEX ═════════ -->
+  <article class="plate proj" id="parkex" aria-labelledby="parkex-title">
+    <header class="ph">
+      <span class="n" aria-hidden="true">1</span>
+      <h2 id="parkex-title">ParkEx</h2>
+      <a class="cta" href="https://github.com/facuduarte-dev/ConnectaLab" target="_blank" rel="noopener"><span data-i18n="ui.repo">Ver el repo</span><span class="arr" aria-hidden="true">↗</span></a>
+    </header>
+    <p class="lede pen" data-i18n="parkex.lede" data-split>un sensor por plaza, una cámara solo donde hace falta</p>
+    <div class="spec">
+      <dl>
+        <dt data-i18n="parkex.1">Contexto</dt><dd data-i18n="parkex.2">Concurso ConectaLab – Litoral Norte (UTU)</dd>
+        <dt data-i18n="parkex.3">Equipo</dt><dd data-i18n="parkex.4">5 estudiantes del ITSP, con un docente tutor</dd>
+        <dt data-i18n="parkex.5">Rol</dt><dd data-i18n="parkex.6">Cofundador · desarrollo de la plataforma</dd>
+        <dt data-i18n="parkex.7">Repositorio</dt><dd><a href="https://github.com/facuduarte-dev/ConnectaLab" target="_blank" rel="noopener">github.com/facuduarte-dev/ConnectaLab</a></dd>
+        <dt data-i18n="parkex.8">Stack</dt><dd data-i18n="parkex.9">Arduino Uno + HC-SR04 · Node.js + Express · PostgreSQL en Supabase · Realtime · Java + Tesseract OCR · HTML, CSS y JS sin framework</dd>
+      </dl>
+      <dl>
+        <dt data-i18n="parkex.10">Descripción</dt>
+        <dd data-i18n="parkex.11">En los estacionamientos privados la gente recorre niveles enteros buscando lugar, y las plazas para personas con discapacidad se ocupan sin permiso. ParkEx muestra sobre el plano de cada nivel qué plazas están libres u ocupadas, y en las reservadas lee la matrícula por OCR y comprueba si termina en DI, el distintivo uruguayo de discapacidad.</dd>
+      </dl>
+    </div>
+
+    <!-- Momento: el plano en vivo a la izquierda; a la derecha, impresiones del código real que se apilan -->
+    <div class="scene" data-scene="parkex">
+      <div class="stick">
         <div class="lot" role="group" aria-labelledby="lot-title">
           <div class="lot-head">
             <strong data-i18n="parkex.12" id="lot-title">Nivel 1 · plano en vivo</strong>
@@ -207,200 +234,276 @@
           </div>
         </div>
 
-        <div class="side-stack">
-          <figure class="taped on-white" style="--r:1.6deg">
-            <img data-i18n-alt="parkex.19" src="img/parkex-arquitectura.png" alt="Diagrama de arquitectura de ParkEx: sensor y Arduino en la plaza, puente serie y lector de chapas en la computadora del parking, API REST, PostgreSQL y Realtime en Supabase, y el navegador" width="1890" height="1330" loading="lazy">
-            <figcaption data-i18n="parkex.20">Diagrama de la lógica del sistema</figcaption>
+        <div class="sheets">
+          <figure class="sheet print" style="--r:-1.4deg">
+            <figcaption><span class="path">firmware/sensor_plaza/sensor_plaza.ino</span><span class="pen" data-i18n="parkex.s1">3 lecturas seguidas = ocupado; 5 = libre</span></figcaption>
+<pre class="code num"><code><span class="l"><span class="ln" aria-hidden="true">148</span><span class="t">if (distancia &lt;= UMBRAL_CM) {</span></span><span class="l"><span class="ln" aria-hidden="true">149</span><span class="t">  lecturasOcupado++;</span></span><span class="l"><span class="ln" aria-hidden="true">150</span><span class="t">  lecturasLibre = 0;</span></span><span class="l"><span class="ln" aria-hidden="true">151</span><span class="t">} else {</span></span><span class="l"><span class="ln" aria-hidden="true">152</span><span class="t">  lecturasLibre++;</span></span><span class="l"><span class="ln" aria-hidden="true">153</span><span class="t">  lecturasOcupado = 0;</span></span><span class="l"><span class="ln" aria-hidden="true">154</span><span class="t">}</span></span><span class="l"><span class="ln" aria-hidden="true">155</span><span class="t"> </span></span><span class="l"><span class="ln" aria-hidden="true">156</span><span class="t">if (!ocupado &amp;&amp; lecturasOcupado &gt;= LECTURAS_PARA_OCUPADO) {</span></span><span class="l"><span class="ln" aria-hidden="true">157</span><span class="t">  ocupado = true;</span></span><span class="l"><span class="ln" aria-hidden="true">158</span><span class="t">  cambiarEstado(distancia);</span></span><span class="l"><span class="ln" aria-hidden="true">159</span><span class="t">} else if (ocupado &amp;&amp; lecturasLibre &gt;= LECTURAS_PARA_LIBRE) {</span></span><span class="l"><span class="ln" aria-hidden="true">160</span><span class="t">  ocupado = false;</span></span><span class="l"><span class="ln" aria-hidden="true">161</span><span class="t">  cambiarEstado(distancia);</span></span><span class="l"><span class="ln" aria-hidden="true">162</span><span class="t">}</span></span></code></pre>
+          </figure>
+          <figure class="sheet print" style="--r:1.2deg">
+            <figcaption><span class="path">vision/…/ocr/Distintivo.java</span><span class="pen" data-i18n="parkex.s2">el permiso es de la persona, no del auto: lo dice la chapa</span></figcaption>
+<pre class="code num"><code><span class="l"><span class="ln" aria-hidden="true">18</span><span class="t">// El bloque de letras termina en DI: IDI 1483, ADI 4021. Se aplica sobre la</span></span><span class="l"><span class="ln" aria-hidden="true">19</span><span class="t">// matricula YA normalizada, asi que llega sin espacios ni guiones y con las</span></span><span class="l"><span class="ln" aria-hidden="true">20</span><span class="t">// confusiones de OCR corregidas por posicion (una O que en el bloque de</span></span><span class="l"><span class="ln" aria-hidden="true">21</span><span class="t">// letras es una O, y en el de digitos un 0).</span></span><span class="l"><span class="ln" aria-hidden="true">22</span><span class="t">private static final Pattern CON_DISTINTIVO = Pattern.compile(&quot;^[A-Z]DI[0-9]{4}$&quot;);</span></span><span class="l"><span class="ln" aria-hidden="true">23</span><span class="t"> </span></span><span class="l"><span class="ln" aria-hidden="true">24</span><span class="t">private Distintivo() { }</span></span><span class="l"><span class="ln" aria-hidden="true">25</span><span class="t"> </span></span><span class="l"><span class="ln" aria-hidden="true">26</span><span class="t">public static boolean presente(String matriculaNormalizada) {</span></span><span class="l"><span class="ln" aria-hidden="true">27</span><span class="t">    return matriculaNormalizada != null &amp;&amp; CON_DISTINTIVO.matcher(matriculaNormalizada).matches();</span></span><span class="l"><span class="ln" aria-hidden="true">28</span><span class="t">}</span></span></code></pre>
+          </figure>
+          <figure class="sheet print tree" style="--r:-.6deg">
+            <figcaption><span class="path">ParkEx/ · package.json · pom.xml</span><span class="pen" data-i18n="parkex.s3">seis carpetas, un solo circuito</span></figcaption>
+<pre class="code"><code><span class="l">ParkEx/</span>
+<span class="l">├─ firmware/sensor_plaza/   <i>sensor_plaza.ino</i></span>
+<span class="l">├─ gateway/                 <i>serialport ^13.0.0</i></span>
+<span class="l">├─ api/src/routes/          <i>eventos · lecturas · plazas · niveles · alertas</i></span>
+<span class="l">│                           <i>express ^4.19.2 · @supabase/supabase-js ^2.45.4</i></span>
+<span class="l">├─ db/                      <i>esquema.sql · funciones.sql · politicas.sql</i></span>
+<span class="l">├─ vision/                  <i>Java 17 · opencv 4.9.0-0 · jackson 2.18.2</i></span>
+<span class="l">└─ web/                     <i>index.html · admin.html · js/plano.js</i></span></code></pre>
           </figure>
         </div>
       </div>
+    </div>
 
-      <div class="spec process">
-        <dl>
-          <dt data-i18n="parkex.21">Timeline</dt><dd data-i18n="parkex.22">04/08/2026 → 29/08/2026 · circuito validado de punta a punta el 25/08/2026 sobre una plaza real</dd>
-          <dt data-i18n="parkex.23">Proceso</dt><dd data-i18n="parkex.24">Ocho fases incrementales, cinco sin depender del hardware.</dd>
-        </dl>
-        <dl>
-          <dt data-i18n="parkex.25">Resultado</dt><dd data-i18n="parkex.26">Premio a la mejor exposición oral y a la excelencia académica en la III Semana Académica de Ingeniería en Logística (UTEC). En el concurso ConectaLab – Litoral Norte (UTU), el resultado final sigue pendiente.</dd>
-        </dl>
-      </div>
-    </details>
+    <div class="two duo">
+      <figure class="taped" style="--r:-1.8deg">
+        <img data-i18n-alt="parkex.s4alt" src="img/proyectos/parkex-tinkercad.webp" width="1000" height="506" alt="Circuito armado en Tinkercad: un Arduino Uno conectado a un sensor ultrasónico HC-SR04 y a dos LED, uno rojo y uno verde" loading="lazy" decoding="async">
+        <figcaption data-i18n="parkex.s4">primer prototipo del sensor, en Tinkercad</figcaption>
+      </figure>
+      <figure class="taped on-white" style="--r:1.6deg">
+        <img data-i18n-alt="parkex.19" src="img/parkex-arquitectura.png" alt="Diagrama de arquitectura de ParkEx: sensor y Arduino en la plaza, puente serie y lector de chapas en la computadora del parking, API REST, PostgreSQL y Realtime en Supabase, y el navegador" width="1890" height="1330" loading="lazy" decoding="async">
+        <figcaption data-i18n="parkex.20">Diagrama de la lógica del sistema</figcaption>
+      </figure>
+    </div>
+
+    <div class="spec process">
+      <dl>
+        <dt data-i18n="parkex.21">Timeline</dt><dd data-i18n="parkex.22">04/08/2026 → 29/08/2026 · circuito validado de punta a punta el 25/08/2026 sobre una plaza real</dd>
+        <dt data-i18n="parkex.23">Proceso</dt><dd data-i18n="parkex.24">Ocho fases incrementales, cinco sin depender del hardware.</dd>
+      </dl>
+      <dl>
+        <dt data-i18n="parkex.25">Resultado</dt><dd data-i18n="parkex.26">Premio a la mejor exposición oral y a la excelencia académica en la III Semana Académica de Ingeniería en Logística (UTEC). En el concurso ConectaLab – Litoral Norte (UTU), el resultado final sigue pendiente.</dd>
+      </dl>
+    </div>
   </article>
 
   <!-- ═════════ 2 · ITSPACE ═════════ -->
-  <article class="plate" id="itspace" aria-labelledby="itspace-title">
-    <details class="proj">
-      <summary class="ph">
-        <span class="n" aria-hidden="true">2</span>
-        <h2 id="itspace-title">ITSpace</h2>
-        <span class="more" aria-hidden="true"><span class="o" data-i18n="ui.more">Ver proyecto</span><span class="c" data-i18n="ui.close">Cerrar</span></span>
-      </summary>
-      <div class="spec">
-        <dl>
-          <dt data-i18n="itspace.1">Contexto</dt><dd data-i18n="itspace.2">Web Design · ITSP</dd>
-          <dt data-i18n="itspace.3">Rol</dt><dd data-i18n="itspace.4">Maquetación y desarrollo del sitio</dd>
-          <dt data-i18n="itspace.5">Stack</dt><dd data-i18n="itspace.6">HTML · CSS · JavaScript · PHP · MySQL · XAMPP · Figma</dd>
-          <dt data-i18n="itspace.16">Sitio web</dt><dd><a href="https://itspvm.duckdns.org/proyectos/luciooofacc/ITSpace/html/index.php" target="_blank" rel="noopener">ITSpace</a></dd>
-        </dl>
-        <dl>
-          <dt data-i18n="itspace.7">Descripción</dt>
-          <dd data-i18n="itspace.8">Una plataforma pensada dentro del instituto: cada lenguaje con teoría, práctica y ejercicios; un foro para pedir y dar ayuda con el código; cursos validados por el ITSP; y cuentas para guardar por dónde vas.</dd>
-        </dl>
-      </div>
+  <article class="plate proj" id="itspace" aria-labelledby="itspace-title">
+    <header class="ph">
+      <span class="n" aria-hidden="true">2</span>
+      <h2 id="itspace-title">ITSpace</h2>
+      <a class="cta" href="https://itspvm.duckdns.org/proyectos/luciooofacc/ITSpace/html/index.php" target="_blank" rel="noopener"><span data-i18n="ui.site">Ver el sitio</span><span class="arr" aria-hidden="true">↗</span></a>
+    </header>
+    <p class="lede pen" data-i18n="itspace.lede" data-split>seis lenguajes, un foro y los cursos del ITSP en un mismo lugar</p>
+    <div class="spec">
+      <dl>
+        <dt data-i18n="itspace.1">Contexto</dt><dd data-i18n="itspace.2">Web Design · ITSP</dd>
+        <dt data-i18n="itspace.3">Rol</dt><dd data-i18n="itspace.4">Maquetación y desarrollo del sitio</dd>
+        <dt data-i18n="itspace.5">Stack</dt><dd data-i18n="itspace.6">HTML · CSS · JavaScript · PHP · MySQL · XAMPP · Figma</dd>
+        <dt data-i18n="itspace.16">Sitio web</dt><dd><a href="https://itspvm.duckdns.org/proyectos/luciooofacc/ITSpace/html/index.php" target="_blank" rel="noopener">ITSpace</a></dd>
+      </dl>
+      <dl>
+        <dt data-i18n="itspace.7">Descripción</dt>
+        <dd data-i18n="itspace.8">Una plataforma pensada dentro del instituto: cada lenguaje con teoría, práctica y ejercicios; un foro para pedir y dar ayuda con el código; cursos validados por el ITSP; y cuentas para guardar por dónde vas.</dd>
+      </dl>
+    </div>
 
-      <div class="two">
-        <div>
-          <div class="boards">
-            <figure class="board"><figcaption>index.html</figcaption><div class="art"></div></figure>
-            <figure class="board picked"><figcaption>language.html</figcaption><div class="art sel"></div>
-              <div class="langs"><span>C++</span><span data-i18n="itspace.9">HTML y CSS</span><span>Java</span><span>JS</span><span>Python</span><span>SQL</span></div>
+    <!-- Momento: galería horizontal de capturas reales (en escritorio avanza con el scroll vertical) -->
+    <div class="scene" data-scene="itspace">
+      <div class="stick">
+        <div class="gallery" role="group" data-i18n-aria-label="itspace.gal" aria-label="Capturas de ITSpace">
+          <div class="track">
+            <figure class="shot taped" style="--r:-1.5deg">
+              <img data-i18n-alt="itspace.a1" src="img/proyectos/itspace-inicio.webp" width="1200" height="750" alt="Captura de la página de inicio de ITSpace: barra azul petróleo con el logo y el buscador, menú lateral con Lenguajes, Foro, Cursos e IDE, un cohete ilustrado sobre la Luna con el título «Bienvenido a ITSpace» y, debajo, una foto del edificio del instituto" loading="lazy" decoding="async">
+              <figcaption><span data-i18n="itspace.g1">inicio: el cohete y el instituto</span><span class="path">html/index.php</span></figcaption>
             </figure>
-            <figure class="board"><figcaption>courses.html</figcaption><div class="art"></div></figure>
-            <figure class="board"><figcaption>forum.html</figcaption><div class="art"></div></figure>
-            <figure class="board"><figcaption>ide.html</figcaption><div class="art"></div></figure>
-            <figure class="board form"><figcaption>login.php · register.php</figcaption><div class="art"></div></figure>
+            <figure class="shot taped" style="--r:1.2deg">
+              <img data-i18n-alt="itspace.a2" src="img/proyectos/itspace-lenguajes.webp" width="1200" height="750" alt="Captura de la sección Lenguajes: seis tarjetas azules con los logos de Python, HTML y CSS, JavaScript, Java, C++ y SQL" loading="lazy" decoding="async">
+              <figcaption><span data-i18n="itspace.g2">seis lenguajes, seis tarjetas</span><span class="path">html/language.php</span></figcaption>
+            </figure>
+            <figure class="shot taped" style="--r:-.8deg">
+              <img data-i18n-alt="itspace.a3" src="img/proyectos/itspace-javascript.webp" width="1200" height="750" alt="Captura de la página de JavaScript: el título en un recuadro, la explicación de qué es el lenguaje, un bloque «Hola Mundo» con console.log y un índice de temas a la derecha" loading="lazy" decoding="async">
+              <figcaption><span data-i18n="itspace.g3">cada lenguaje, con teoría y ejemplos</span><span class="path">html/languages/js.php</span></figcaption>
+            </figure>
+            <figure class="shot taped" style="--r:1.6deg">
+              <img data-i18n-alt="itspace.a4" src="img/proyectos/itspace-login.webp" width="1200" height="750" alt="Captura del formulario de inicio de sesión sobre un fondo de estrellas, con un cohete que entra por la izquierda" loading="lazy" decoding="async">
+              <figcaption><span data-i18n="itspace.g4">iniciar sesión, bajo un cielo de estrellas</span><span class="path">html/login.php</span></figcaption>
+            </figure>
+            <figure class="shot taped phone" style="--r:-2deg">
+              <img data-i18n-alt="itspace.a5" src="img/proyectos/itspace-inicio-mobile.webp" width="390" height="844" alt="Captura de la página de inicio en un celular: el buscador arriba, el cohete con los botones «Ver lenguajes» y «Ver cursos» y la foto del instituto" loading="lazy" decoding="async">
+              <figcaption><span data-i18n="itspace.g5">en el celular</span><span class="path">390 px</span></figcaption>
+            </figure>
+            <figure class="shot taped phone" style="--r:1.4deg">
+              <img data-i18n-alt="itspace.a6" src="img/proyectos/itspace-javascript-mobile.webp" width="390" height="844" alt="Captura de la página de JavaScript en un celular, con el índice de temas apilado arriba del contenido" loading="lazy" decoding="async">
+              <figcaption><span data-i18n="itspace.g6">el índice sube arriba</span><span class="path">390 px</span></figcaption>
+            </figure>
           </div>
         </div>
-        <div class="side-stack">
-          <figure class="taped logo-sheet">
-            <div class="logo-pad"><img data-i18n-alt="itspace.10" src="img/itspace-logo.png" alt="Logo de ITSpace: la palabra ITSPACE con un cohete que atraviesa la letra C" width="3492" height="847" loading="lazy"></div>
-            <figcaption data-i18n="itspace.11">Diseño de logo en GIMP</figcaption>
-          </figure>
-        </div>
       </div>
+    </div>
 
-      <div class="spec process">
-        <dl>
-          <dt data-i18n="itspace.12">Timeline</dt><dd data-i18n="itspace.13">Desde julio de 2026 · en desarrollo</dd>
-        </dl>
-        <dl>
-          <dt data-i18n="itspace.14">Proceso</dt><dd data-i18n="itspace.15">Maqueta en Figma, paleta definida en Color Hunt, identidad propia con logo animado y documentación del proyecto. Se sirve en local con XAMPP.</dd>
-        </dl>
+    <div class="two duo">
+      <div class="langs-sheet">
+        <p class="pen" data-i18n="itspace.17">lo que se aprende adentro</p>
+        <div class="langs"><span>C++</span><span data-i18n="itspace.9">HTML y CSS</span><span>Java</span><span>JS</span><span>Python</span><span>SQL</span></div>
       </div>
-    </details>
+      <figure class="taped logo-sheet">
+        <div class="logo-pad"><img data-i18n-alt="itspace.10" src="img/itspace-logo.png" alt="Logo de ITSpace: la palabra ITSPACE con un cohete que atraviesa la letra C" width="3492" height="847" loading="lazy" decoding="async"></div>
+        <figcaption data-i18n="itspace.11">Diseño de logo en GIMP</figcaption>
+      </figure>
+    </div>
+
+    <div class="spec process">
+      <dl>
+        <dt data-i18n="itspace.12">Timeline</dt><dd data-i18n="itspace.13">Desde julio de 2026 · en desarrollo</dd>
+      </dl>
+      <dl>
+        <dt data-i18n="itspace.14">Proceso</dt><dd data-i18n="itspace.15">Maqueta en Figma, paleta definida en Color Hunt, identidad propia con logo animado y documentación del proyecto. Se sirve en local con XAMPP.</dd>
+      </dl>
+    </div>
   </article>
 
   <!-- ═════════ 3 · CODED BIAS ═════════ -->
-  <article class="plate dark" id="coded-bias" aria-labelledby="coded-title">
-    <details class="proj">
-      <summary class="ph">
-        <span class="n" aria-hidden="true">3</span>
-        <h2 id="coded-title">Coded Bias</h2>
-        <span class="more" aria-hidden="true"><span class="o" data-i18n="ui.more">Ver proyecto</span><span class="c" data-i18n="ui.close">Cerrar</span></span>
-      </summary>
-      <div class="spec">
-        <dl>
-          <dt data-i18n="coded-bias.1">Contexto</dt><dd data-i18n="coded-bias.2">Inglés Social y Cultural · ITSP</dd>
-          <dt data-i18n="coded-bias.3">Formato</dt><dd data-i18n="coded-bias.4">Documental en inglés + speech</dd>
-          <dt data-i18n="coded-bias.5">Rol</dt><dd data-i18n="coded-bias.6">Discurso, contacto con los entrevistados y doblaje de la versión en inglés y presentación en público</dd>
-        </dl>
-        <dl>
-          <dt data-i18n="coded-bias.7">Descripción</dt>
-          <dd data-i18n="coded-bias.8">Empezó como un documental sobre igualdad de género y terminó siendo otra pregunta: si una sociedad no es igualitaria, ¿puede ser neutral la tecnología que construye? Dos hilos, uno con las máquinas y otro con las personas, que se juntan al final.</dd>
-        </dl>
-      </div>
+  <article class="plate proj dark" id="coded-bias" aria-labelledby="coded-title">
+    <header class="ph">
+      <span class="n" aria-hidden="true">3</span>
+      <h2 id="coded-title">Coded Bias</h2>
+    </header>
+    <p class="lede pen" data-i18n="coded-bias.lede" data-split>dos hilos: las máquinas y las personas</p>
+    <div class="spec">
+      <dl>
+        <dt data-i18n="coded-bias.1">Contexto</dt><dd data-i18n="coded-bias.2">Inglés Social y Cultural · ITSP</dd>
+        <dt data-i18n="coded-bias.3">Formato</dt><dd data-i18n="coded-bias.4">Documental en inglés + speech</dd>
+        <dt data-i18n="coded-bias.5">Rol</dt><dd data-i18n="coded-bias.6">Discurso, contacto con los entrevistados y doblaje de la versión en inglés y presentación en público</dd>
+      </dl>
+      <dl>
+        <dt data-i18n="coded-bias.7">Descripción</dt>
+        <dd data-i18n="coded-bias.8">Empezó como un documental sobre igualdad de género y terminó siendo otra pregunta: si una sociedad no es igualitaria, ¿puede ser neutral la tecnología que construye? Dos hilos, uno con las máquinas y otro con las personas, que se juntan al final.</dd>
+      </dl>
+    </div>
 
-      <p class="brush quote">“Prejudice doesn’t disappear. It migrates.”</p>
-
-      <div class="tl-wrap" style="margin-top:40px">
-        <div data-i18n-aria-label="coded-bias.9" class="tl" role="img" aria-label="Estructura del documental en la línea de tiempo: opening, intro, side A, side B, interviews y conclusion en video, con música en la pista de audio">
-          <div class="tl-ruler"><div></div><div></div></div>
-          <div class="track"><b>V1</b>
-            <div class="clips">
-              <span class="clip">01 OPENING</span><span class="clip">02 INTRO</span><span class="clip">03 SIDE A</span><span class="clip">04 SIDE B</span><span class="clip">05 INTERVIEWS</span><span class="clip">06 CONCLUSION</span>
-              <span class="playhead" aria-hidden="true"></span>
+    <!-- Momento: el playhead recorre la línea de tiempo con el scroll y el monitor muestra el clip que pisa -->
+    <div class="scene" data-scene="coded">
+      <div class="stick">
+        <div class="monitor" aria-hidden="true">
+          <span class="mon-tc">V1 · <b id="mon-i">06</b>/06</span>
+          <span class="mon-clip" id="mon-clip">06 CONCLUSION</span>
+        </div>
+        <p class="brush quote" data-quote>“Prejudice doesn’t disappear. It migrates.”</p>
+        <div class="tl-wrap">
+          <div data-i18n-aria-label="coded-bias.9" class="tl" role="img" aria-label="Estructura del documental en la línea de tiempo: opening, intro, side A, side B, interviews y conclusion en video, con música en la pista de audio">
+            <div class="tl-ruler"><div></div><div></div></div>
+            <div class="track-v"><b>V1</b>
+              <div class="clips">
+                <span class="clip">01 OPENING</span><span class="clip">02 INTRO</span><span class="clip">03 SIDE A</span><span class="clip">04 SIDE B</span><span class="clip">05 INTERVIEWS</span><span class="clip">06 CONCLUSION</span>
+                <span class="playhead" aria-hidden="true"></span>
+              </div>
+            </div>
+            <div class="track-v"><b>A1</b>
+              <div class="clips audio"><span class="clip">07 MUSIC</span></div>
             </div>
           </div>
-          <div class="track"><b>A1</b>
-            <div class="clips audio"><span class="clip">07 MUSIC</span></div>
-          </div>
         </div>
+        <dl class="kit">
+          <div><dt data-i18n="coded-bias.10">Equipo</dt><dd data-i18n="coded-bias.11">4 estudiantes</dd></div>
+          <div><dt data-i18n="coded-bias.12">Tiempo</dt><dd data-i18n="coded-bias.13">1 mes</dd></div>
+          <div><dt data-i18n="coded-bias.14">Entrevistas</dt><dd data-i18n="coded-bias.15">80 min grabados</dd></div>
+        </dl>
       </div>
-
-      <dl class="kit">
-        <div><dt data-i18n="coded-bias.10">Equipo</dt><dd data-i18n="coded-bias.11">4 estudiantes</dd></div>
-        <div><dt data-i18n="coded-bias.12">Tiempo</dt><dd data-i18n="coded-bias.13">1 mes</dd></div>
-        <div><dt data-i18n="coded-bias.14">Entrevistas</dt><dd data-i18n="coded-bias.15">80 min grabados</dd></div>
-      </dl>
-    </details>
+    </div>
   </article>
 
   <!-- ═════════ 4 · ESCANEO IP ═════════ -->
-  <article class="plate" id="escaneo" aria-labelledby="escaneo-title">
-    <details class="proj">
-      <summary class="ph">
-        <span class="n" aria-hidden="true">4</span>
-        <h2 id="escaneo-title">Escaneo IP</h2>
-        <span class="more" aria-hidden="true"><span class="o" data-i18n="ui.more">Ver proyecto</span><span class="c" data-i18n="ui.close">Cerrar</span></span>
-      </summary>
-      <div class="spec">
-        <dl>
-          <dt data-i18n="escaneo.1">Contexto</dt><dd data-i18n="escaneo.2">Redes de Datos · ITSP</dd>
-          <dt data-i18n="escaneo.3">Equipo</dt><dd data-i18n="escaneo.4">3 estudiantes</dd>
-          <dt data-i18n="escaneo.5">Entrega</dt><dd>14/07/2026</dd>
-          <dt data-i18n="escaneo.6">Stack</dt><dd data-i18n="escaneo.7">Java · ExecutorService · ping y arp nativos · com.sun.net.httpserver · bash</dd>
-        </dl>
-        <dl>
-          <dt data-i18n="escaneo.8">Descripción</dt>
-          <dd data-i18n="escaneo.9">Un escáner que recibe una red en notación CIDR, hace ping a cada dirección en paralelo (hasta 100 hilos, 1 s de timeout) y cruza el resultado con la tabla ARP para mostrar IP, MAC y estado. Tiene un modo web con <code>POST /api/escanear</code> y detecta si corre dentro de Flatpak para ejecutar los comandos en el sistema anfitrión.</dd>
-        </dl>
-      </div>
+  <article class="plate proj" id="escaneo" aria-labelledby="escaneo-title">
+    <header class="ph">
+      <span class="n" aria-hidden="true">4</span>
+      <h2 id="escaneo-title">Escaneo IP</h2>
+      <a class="cta" href="https://github.com/lucioooofacc/EscaneoIP" target="_blank" rel="noopener"><span data-i18n="ui.repo">Ver el repo</span><span class="arr" aria-hidden="true">↗</span></a>
+    </header>
+    <p class="lede pen" data-i18n="escaneo.lede" data-split>254 direcciones, hasta 100 hilos, 4 segundos</p>
+    <div class="spec">
+      <dl>
+        <dt data-i18n="escaneo.1">Contexto</dt><dd data-i18n="escaneo.2">Redes de Datos · ITSP</dd>
+        <dt data-i18n="escaneo.3">Equipo</dt><dd data-i18n="escaneo.4">3 estudiantes</dd>
+        <dt data-i18n="escaneo.5">Entrega</dt><dd>14/07/2026</dd>
+        <dt data-i18n="escaneo.6">Stack</dt><dd data-i18n="escaneo.7">Java · ExecutorService · ping y arp nativos · com.sun.net.httpserver · bash</dd>
+        <dt data-i18n="escaneo.15">Repositorio</dt><dd><a href="https://github.com/lucioooofacc/EscaneoIP" target="_blank" rel="noopener">github.com/lucioooofacc/EscaneoIP</a></dd>
+      </dl>
+      <dl>
+        <dt data-i18n="escaneo.8">Descripción</dt>
+        <dd data-i18n="escaneo.9">Un escáner que recibe una red en notación CIDR, hace ping a cada dirección en paralelo (hasta 100 hilos, 1 s de timeout) y cruza el resultado con la tabla ARP para mostrar IP, MAC y estado. Tiene un modo web con <code>POST /api/escanear</code> y detecta si corre dentro de Flatpak para ejecutar los comandos en el sistema anfitrión.</dd>
+      </dl>
+    </div>
 
-      <div class="two">
-<pre data-i18n-aria-label="escaneo.10" class="term" aria-label="Salida del escáner en una terminal Linux"><span class="p">$</span> ./ejecutar.sh
-<span class="c">Compilado en out/</span>
-Ingrese la red a escanear en notacion CIDR: 192.168.1.0/24
-Escaneando 254 direcciones en 192.168.1.0/24...
-
-IP              MAC                  Estado
-<span class="c">-----------------------------------------------</span>
-192.168.1.1     a0:09:2e:••:••:••    <span class="ok">Activo</span>
-192.168.1.2     5c:e9:31:••:••:••    <span class="ok">Activo</span>
-192.168.1.4     Desconocida          <span class="ok">Activo</span>
-192.168.1.5     e8:94:f6:••:••:••    <span class="ok">Activo</span>
-192.168.1.10    Desconocida          <span class="ok">Activo</span>
-<span class="c">-----------------------------------------------</span>
-Equipos activos: 11 de 254
-Tiempo de escaneo: 4 s</pre>
-        <div class="side-stack">
-          <div class="spec" style="margin:0">
-            <dl>
-              <dt data-i18n="escaneo.11">Probado en</dt><dd data-i18n="escaneo.12">IDE de Java, terminal Linux y el servidor de la institución</dd>
-              <dt data-i18n="escaneo.13">Problema</dt><dd data-i18n="escaneo.14">En Linux, la lectura de la tabla ARP fallaba; se resolvió con un script.</dd>
-            </dl>
-          </div>
+    <!-- Momento: la terminal imprime su salida a medida que se baja; al lado, el código que la produce -->
+    <div class="scene" data-scene="escaneo">
+      <div class="stick">
+<pre data-i18n-aria-label="escaneo.10" class="term" aria-label="Salida del escáner en una terminal Linux"><span class="l"><span class="p">$</span> ./ejecutar.sh</span>
+<span class="l"><span class="c">Compilado en out/</span></span>
+<span class="l">Ingrese la red a escanear en notacion CIDR: 192.168.1.0/24</span>
+<span class="l">Escaneando 254 direcciones en 192.168.1.0/24...</span>
+<span class="l"> </span>
+<span class="l">IP              MAC                  Estado</span>
+<span class="l"><span class="c">-----------------------------------------------</span></span>
+<span class="l">192.168.1.1     a0:09:2e:••:••:••    <span class="ok">Activo</span></span>
+<span class="l">192.168.1.2     5c:e9:31:••:••:••    <span class="ok">Activo</span></span>
+<span class="l">192.168.1.4     Desconocida          <span class="ok">Activo</span></span>
+<span class="l">192.168.1.5     e8:94:f6:••:••:••    <span class="ok">Activo</span></span>
+<span class="l">192.168.1.10    Desconocida          <span class="ok">Activo</span></span>
+<span class="l"><span class="c">-----------------------------------------------</span></span>
+<span class="l">Equipos activos: 11 de 254</span>
+<span class="l">Tiempo de escaneo: 4 s</span></pre>
+        <div class="sheets">
+          <figure class="sheet print" style="--r:1.3deg">
+            <figcaption><span class="path">PingScanner.java</span><span class="pen" data-i18n="escaneo.s1">una tarea por dirección, hasta 100 a la vez</span></figcaption>
+<pre class="code num"><code><span class="l"><span class="ln" aria-hidden="true">18</span><span class="t">public static Map&lt;String, Boolean&gt; escanear(List&lt;String&gt; ips) throws InterruptedException {</span></span><span class="l"><span class="ln" aria-hidden="true">19</span><span class="t">    Map&lt;String, Boolean&gt; resultados = new ConcurrentHashMap&lt;&gt;();</span></span><span class="l"><span class="ln" aria-hidden="true">20</span><span class="t">    int hilos = Math.min(HILOS_MAXIMOS, Math.max(1, ips.size()));</span></span><span class="l"><span class="ln" aria-hidden="true">21</span><span class="t">    ExecutorService pool = Executors.newFixedThreadPool(hilos);</span></span><span class="l"><span class="ln" aria-hidden="true">22</span><span class="t"> </span></span><span class="l"><span class="ln" aria-hidden="true">23</span><span class="t">    for (String ip : ips) {</span></span><span class="l"><span class="ln" aria-hidden="true">24</span><span class="t">        pool.submit(() -&gt; resultados.put(ip, hacerPing(ip)));</span></span><span class="l"><span class="ln" aria-hidden="true">25</span><span class="t">    }</span></span><span class="l"><span class="ln" aria-hidden="true">26</span><span class="t"> </span></span><span class="l"><span class="ln" aria-hidden="true">27</span><span class="t">    pool.shutdown();</span></span><span class="l"><span class="ln" aria-hidden="true">28</span><span class="t">    pool.awaitTermination(ips.size() * 2L + 10, TimeUnit.SECONDS);</span></span><span class="l"><span class="ln" aria-hidden="true">29</span><span class="t">    return resultados;</span></span><span class="l"><span class="ln" aria-hidden="true">30</span><span class="t">}</span></span></code></pre>
+          </figure>
+          <figure class="sheet print" style="--r:-1deg">
+            <figcaption><span class="path">CidrRange.java</span><span class="pen" data-i18n="escaneo.s2">la máscara sale de correr bits</span></figcaption>
+<pre class="code num"><code><span class="l"><span class="ln" aria-hidden="true">34</span><span class="t">long mascara = prefijo == 0 ? 0 : (0xFFFFFFFFL &lt;&lt; (32 - prefijo)) &amp; 0xFFFFFFFFL;</span></span><span class="l"><span class="ln" aria-hidden="true">35</span><span class="t">long red = ip &amp; mascara;</span></span><span class="l"><span class="ln" aria-hidden="true">36</span><span class="t">long broadcast = red | (~mascara &amp; 0xFFFFFFFFL);</span></span></code></pre>
+          </figure>
+          <figure class="sheet shot-web taped" style="--r:-1.6deg">
+            <img data-i18n-alt="escaneo.a1" src="img/proyectos/escaneo-web.webp" width="960" height="300" alt="Captura del modo web de EscaneoIP: fondo azul oscuro, el título EscaneoIP, un campo «Red (notacion CIDR)» con el ejemplo 192.168.1.0/24 y el botón Escanear" loading="lazy" decoding="async">
+            <figcaption data-i18n="escaneo.s3">el modo web, servido por la misma app</figcaption>
+          </figure>
         </div>
       </div>
-    </details>
+    </div>
+
+    <div class="spec process">
+      <dl>
+        <dt data-i18n="escaneo.11">Probado en</dt><dd data-i18n="escaneo.12">IDE de Java, terminal Linux y el servidor de la institución</dd>
+      </dl>
+      <dl>
+        <dt data-i18n="escaneo.13">Problema</dt><dd data-i18n="escaneo.14">En Linux, la lectura de la tabla ARP fallaba; se resolvió con un script.</dd>
+      </dl>
+    </div>
   </article>
 
   <!-- ═════════ 5 · CINNIMINIES ═════════ -->
-  <article class="plate" id="cinniminies" aria-labelledby="cinni-title">
-    <details class="proj">
-      <summary class="ph">
-        <span class="n" aria-hidden="true">5</span>
-        <h2 id="cinni-title">Cinniminies</h2>
-        <span class="more" aria-hidden="true"><span class="o" data-i18n="ui.more">Ver proyecto</span><span class="c" data-i18n="ui.close">Cerrar</span></span>
-      </summary>
-      <div class="spec">
-        <dl>
-          <dt data-i18n="cinniminies.1">Contexto</dt><dd data-i18n="cinniminies.2">Emprendimiento propio, junto a mi novia · Paysandú</dd>
-          <dt data-i18n="cinniminies.3">Rol</dt><dd data-i18n="cinniminies.4">Cofundador · diseño y desarrollo del sitio</dd>
-          <dt data-i18n="cinniminies.5">Desde</dt><dd data-i18n="cinniminies.6">Mayo de 2026</dd>
-          <dt data-i18n="cinniminies.7">Stack web</dt><dd data-i18n="cinniminies.8">HTML · CSS · JavaScript · Vercel</dd>
-        </dl>
-        <dl>
-          <dt data-i18n="cinniminies.9">Descripción</dt>
-          <dd data-i18n="cinniminies.10">Cinnamon rolls de masa madre, horneados por encargue, con glaseados artesanales e ingredientes seleccionados. El sitio cuenta el proceso, muestra el menú y tiene un formulario de pedido con validación en vivo para coordinar cada caja.</dd>
-        </dl>
-      </div>
+  <article class="plate proj" id="cinniminies" aria-labelledby="cinni-title">
+    <header class="ph">
+      <span class="n" aria-hidden="true">5</span>
+      <h2 id="cinni-title">Cinniminies</h2>
+      <a class="cta" href="https://cinniminies.vercel.app" target="_blank" rel="noopener"><span data-i18n="ui.site">Ver el sitio</span><span class="arr" aria-hidden="true">↗</span></a>
+    </header>
+    <p class="lede pen" data-i18n="cinniminies.lede" data-split>masa madre, por encargue, de a cajas</p>
+    <div class="spec">
+      <dl>
+        <dt data-i18n="cinniminies.1">Contexto</dt><dd data-i18n="cinniminies.2">Emprendimiento propio, junto a mi novia · Paysandú</dd>
+        <dt data-i18n="cinniminies.3">Rol</dt><dd data-i18n="cinniminies.4">Cofundador · diseño y desarrollo del sitio</dd>
+        <dt data-i18n="cinniminies.5">Desde</dt><dd data-i18n="cinniminies.6">Mayo de 2026</dd>
+        <dt data-i18n="cinniminies.7">Stack web</dt><dd data-i18n="cinniminies.8">HTML · CSS · JavaScript · Vercel</dd>
+      </dl>
+      <dl>
+        <dt data-i18n="cinniminies.9">Descripción</dt>
+        <dd data-i18n="cinniminies.10">Cinnamon rolls de masa madre, horneados por encargue, con glaseados artesanales e ingredientes seleccionados. El sitio cuenta el proceso, muestra el menú y tiene un formulario de pedido con validación en vivo para coordinar cada caja.</dd>
+      </dl>
+    </div>
 
-      <div class="two cinni">
-        <figure class="taped" style="--r:-2.2deg">
-          <img data-i18n-alt="cinniminies.11" src="img/cinni-oreo.jpg" alt="Caja con seis rolls de canela cubiertos de glaseado y galleta de chocolate triturada" width="688" height="917" loading="lazy">
-          <figcaption data-i18n="cinniminies.12">Roll de Oreo</figcaption>
+    <!-- Momento: la página entera impresa, que se desliza dentro del marco mientras se baja -->
+    <div class="scene" data-scene="cinni">
+      <div class="stick">
+        <figure class="longprint">
+          <div class="lp-frame" tabindex="0" role="region" data-i18n-aria-label="cinniminies.lpAria" aria-label="Captura de la página completa de cinniminies.vercel.app (se puede desplazar)">
+            <img data-i18n-alt="cinniminies.a1" src="img/proyectos/cinni-pagina.webp" width="640" height="2084" alt="Captura de la página completa de Cinniminies: portada con rolls de canela y el título «El roll que se desenrolla en capas de canela», el armador de cajas de 6, 12 o de 3 a 12 rolls, las tarjetas de sabores, el retiro en Paysandú, las preguntas frecuentes y el contacto por WhatsApp e Instagram" loading="lazy" decoding="async">
+          </div>
+          <figcaption><span class="pen" data-i18n="cinniminies.lp">toda la página, de arriba abajo</span><span class="path">cinniminies.vercel.app · 1280 px</span></figcaption>
         </figure>
-        <div class="side-stack">
+        <div class="cinni-side">
           <p data-i18n="cinniminies.13" class="tagline">Cinnamon Rolls hechos artesanalmente<small>Emprendimiento local sobre panadería</small></p>
           <ul class="channels">
             <li>
@@ -412,10 +515,32 @@ Tiempo de escaneo: 4 s</pre>
               <a href="https://www.instagram.com/cinniminies.pay/" target="_blank" rel="noopener">@cinniminies.pay</a>
             </li>
           </ul>
+          <figure class="sheet print" style="--r:-1deg">
+            <figcaption><span class="path">cinniminies.js</span><span class="pen" data-i18n="cinniminies.s1">una caja a medio llenar no tiene precio</span></figcaption>
+<pre class="code num"><code><span class="l"><span class="ln" aria-hidden="true">150</span><span class="t">function boxIsComplete(box) {</span></span><span class="l"><span class="ln" aria-hidden="true">151</span><span class="t">  const filled = boxFilled(box);</span></span><span class="l"><span class="ln" aria-hidden="true">152</span><span class="t">  return isCustomBox(box) ? filled &gt;= CUSTOM_MIN : filled === box.size;</span></span><span class="l"><span class="ln" aria-hidden="true">153</span><span class="t">}</span></span><span class="l"><span class="ln" aria-hidden="true">154</span><span class="t"> </span></span><span class="l"><span class="ln" aria-hidden="true">155</span><span class="t">function customBoxPrice(box) {</span></span><span class="l"><span class="ln" aria-hidden="true">156</span><span class="t">  return Object.entries(box.flavors).reduce((sum, [flavorId, qty]) =&gt; {</span></span><span class="l"><span class="ln" aria-hidden="true">157</span><span class="t">    const unitPrice = CUSTOM_FLAVOR_PRICES[flavorId] || 0;</span></span><span class="l"><span class="ln" aria-hidden="true">158</span><span class="t">    return sum + qty * unitPrice;</span></span><span class="l"><span class="ln" aria-hidden="true">159</span><span class="t">  }, 0);</span></span><span class="l"><span class="ln" aria-hidden="true">160</span><span class="t">}</span></span><span class="l"><span class="ln" aria-hidden="true">161</span><span class="t"> </span></span><span class="l"><span class="ln" aria-hidden="true">162</span><span class="t">function boxPrice(box) {</span></span><span class="l"><span class="ln" aria-hidden="true">163</span><span class="t">  if (!boxIsComplete(box)) return 0;</span></span><span class="l"><span class="ln" aria-hidden="true">164</span><span class="t">  return isCustomBox(box) ? customBoxPrice(box) : BOX_PRICES[box.size];</span></span><span class="l"><span class="ln" aria-hidden="true">165</span><span class="t">}</span></span></code></pre>
+          </figure>
         </div>
       </div>
-    </details>
+    </div>
+
+    <div class="table3">
+      <figure class="taped" style="--r:-2.2deg">
+        <img data-i18n-alt="cinniminies.11" src="img/cinni-oreo.jpg" alt="Caja con seis rolls de canela cubiertos de glaseado y galleta de chocolate triturada" width="688" height="917" loading="lazy" decoding="async">
+        <figcaption data-i18n="cinniminies.12">Roll de Oreo</figcaption>
+      </figure>
+      <figure class="taped phone" style="--r:1.8deg">
+        <img data-i18n-alt="cinniminies.a2" src="img/proyectos/cinni-inicio-mobile.webp" width="390" height="844" alt="Portada de Cinniminies en un celular: una foto de rolls de canela de fondo, el título en tipografía con serifa y los botones «Ver el menú» y «Contactanos»" loading="lazy" decoding="async">
+        <figcaption data-i18n="cinniminies.g1">la portada en el celular</figcaption>
+      </figure>
+      <figure class="taped phone" style="--r:-1.2deg">
+        <img data-i18n-alt="cinniminies.a3" src="img/proyectos/cinni-menu-mobile.webp" width="390" height="844" alt="El menú de Cinniminies en un celular: «Cuatro rolls. Ninguno apurado.» y el selector del tamaño de la caja, de 6 o 12 rolls o de 3 a 12 a gusto" loading="lazy" decoding="async">
+        <figcaption data-i18n="cinniminies.g2">armá tu caja</figcaption>
+      </figure>
+    </div>
   </article>
+
+    </div>
+  </div>
 
   <!-- ═════════ CONTACTO ═════════ -->
   <section class="plate" id="contacto" aria-labelledby="contact-title">
@@ -463,6 +588,10 @@ Tiempo de escaneo: 4 s</pre>
 
 </main>
 
+<!-- GSAP 3.15.0 (ScrollTrigger + SplitText), versión fijada -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js" integrity="sha384-SWJ0lLVRoipvHh59xj0pL7uC7Ih51F+5smaFtrG+2nr+TlDZU5SYJHmxfolbeNTr" crossorigin="anonymous" defer></script>
 <script src="js/main.js" defer></script>
 
 </body>
