@@ -146,7 +146,7 @@
   "ui.copied": "Mail copiado",
   "ui.copyFail": "No se pudo copiar automáticamente: {mail}",
   "ui.lang": "EN",
-  "ui.langLabel": "Switch to English",
+  "ui.langLabel": "EN, switch to English",
   "rail.aria": "Proyectos",
   "ui.repo": "Ver el repo",
   "ui.site": "Ver el sitio",

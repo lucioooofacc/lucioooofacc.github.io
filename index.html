@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta data-i18n-content="meta.description" name="description" content="Portfolio de Lucio Facchin, desarrollador y diseñador web.">
 <title>Lucio Facchin</title>
+<link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=JetBrains+Mono:wght@400;600&family=Reenie+Beanie&family=Sedgwick+Ave+Display&display=swap">
 <link rel="stylesheet" href="css/styles.css">
 <!-- Antes del primer pintado: decide si va la versión con escenas de scroll (escritorio, mouse y sin reduced-motion).
@@ -34,7 +34,7 @@
 <nav data-i18n-aria-label="nav.aria" class="quick" aria-label="Accesos rápidos">
   <a data-i18n="nav.1" href="#indice">Índice</a>
   <a data-i18n="nav.2" href="#contacto">Contacto</a>
-  <button class="lang-btn" id="lang-btn" type="button" lang="en" data-i18n="ui.lang" data-i18n-aria-label="ui.langLabel" aria-label="Switch to English">EN</button>
+  <button class="lang-btn" id="lang-btn" type="button" lang="en" data-i18n="ui.lang" data-i18n-aria-label="ui.langLabel" aria-label="EN, switch to English">EN</button>
 </nav>
 
 <main>
@@ -175,7 +175,7 @@
         <li><a href="#cinniminies"><span class="rn">5<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span>Cinniminies</a></li>
       </ol>
       <!-- Progreso: un trazo de birome que se revela con el scroll (solo transform) -->
-      <div class="rail-line" aria-hidden="true"><div class="rail-wipe"><svg viewBox="0 0 12 400" preserveAspectRatio="none"><path d="M6 2 C 9 60, 3 110, 6 170 S 9 280, 5 330 S 7 380, 6 398"/></svg></div></div>
+      <div class="rail-line" aria-hidden="true"><div class="rail-wipe"><div class="rail-ink"><svg viewBox="0 0 12 400" preserveAspectRatio="none"><path d="M6 2 C 9 60, 3 110, 6 170 S 9 280, 5 330 S 7 380, 6 398"/></svg></div></div></div>
     </nav>
 
     <div class="sheaf">
@@ -431,21 +431,21 @@
     <!-- Momento: la terminal imprime su salida a medida que se baja; al lado, el código que la produce -->
     <div class="scene" data-scene="escaneo">
       <div class="stick">
-<pre data-i18n-aria-label="escaneo.10" class="term" aria-label="Salida del escáner en una terminal Linux"><span class="l"><span class="p">$</span> ./ejecutar.sh</span>
-<span class="l"><span class="c">Compilado en out/</span></span>
-<span class="l">Ingrese la red a escanear en notacion CIDR: 192.168.1.0/24</span>
-<span class="l">Escaneando 254 direcciones en 192.168.1.0/24...</span>
-<span class="l"> </span>
-<span class="l">IP              MAC                  Estado</span>
-<span class="l"><span class="c">-----------------------------------------------</span></span>
-<span class="l">192.168.1.1     a0:09:2e:••:••:••    <span class="ok">Activo</span></span>
-<span class="l">192.168.1.2     5c:e9:31:••:••:••    <span class="ok">Activo</span></span>
-<span class="l">192.168.1.4     Desconocida          <span class="ok">Activo</span></span>
-<span class="l">192.168.1.5     e8:94:f6:••:••:••    <span class="ok">Activo</span></span>
-<span class="l">192.168.1.10    Desconocida          <span class="ok">Activo</span></span>
-<span class="l"><span class="c">-----------------------------------------------</span></span>
-<span class="l">Equipos activos: 11 de 254</span>
-<span class="l">Tiempo de escaneo: 4 s</span></pre>
+<pre data-i18n-aria-label="escaneo.10" class="term" aria-label="Salida del escáner en una terminal Linux"><span class="l" style="--i:0"><span class="p">$</span> ./ejecutar.sh</span>
+<span class="l" style="--i:1"><span class="c">Compilado en out/</span></span>
+<span class="l" style="--i:2">Ingrese la red a escanear en notacion CIDR: 192.168.1.0/24</span>
+<span class="l" style="--i:3">Escaneando 254 direcciones en 192.168.1.0/24...</span>
+<span class="l" style="--i:4"> </span>
+<span class="l" style="--i:5">IP              MAC                  Estado</span>
+<span class="l" style="--i:6"><span class="c">-----------------------------------------------</span></span>
+<span class="l" style="--i:7">192.168.1.1     a0:09:2e:••:••:••    <span class="ok">Activo</span></span>
+<span class="l" style="--i:8">192.168.1.2     5c:e9:31:••:••:••    <span class="ok">Activo</span></span>
+<span class="l" style="--i:9">192.168.1.4     Desconocida          <span class="ok">Activo</span></span>
+<span class="l" style="--i:10">192.168.1.5     e8:94:f6:••:••:••    <span class="ok">Activo</span></span>
+<span class="l" style="--i:11">192.168.1.10    Desconocida          <span class="ok">Activo</span></span>
+<span class="l" style="--i:12"><span class="c">-----------------------------------------------</span></span>
+<span class="l" style="--i:13">Equipos activos: 11 de 254</span>
+<span class="l" style="--i:14">Tiempo de escaneo: 4 s</span></pre>
         <div class="sheets">
           <figure class="sheet print" style="--r:1.3deg">
             <figcaption><span class="path">PingScanner.java</span><span class="pen" data-i18n="escaneo.s1">una tarea por dirección, hasta 100 a la vez</span></figcaption>
@@ -588,10 +588,7 @@
 
 </main>
 
-<!-- GSAP 3.15.0 (ScrollTrigger + SplitText), versión fijada -->
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js" integrity="sha384-SWJ0lLVRoipvHh59xj0pL7uC7Ih51F+5smaFtrG+2nr+TlDZU5SYJHmxfolbeNTr" crossorigin="anonymous" defer></script>
+<!-- GSAP 3.15.0 se carga desde js/main.js solo en escritorio (con versión fijada e integridad SRI) -->
 <script src="js/main.js" defer></script>
 
 </body>
