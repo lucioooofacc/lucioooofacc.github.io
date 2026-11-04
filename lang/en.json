@@ -9,8 +9,6 @@
   "hero.help": "Movable photo: use the arrow keys to move it and Enter to bring it to the front.",
   "hero.alt1": "Selfie of Lucio wearing glasses, a grey sweater and a white shirt",
   "hero.alt2": "Full-length photo of Lucio in front of a brick wall with graffiti, at night",
-  "hero.cap1": "me, up close",
-  "hero.cap2": "me, head to toe",
   "hero.reset": "tidy the desk",
   "about.1": "About me",
   "about.2": "Bilingual IT student and web developer. I work where design meets engineering, from the interface down to the database, convinced that every technical decision should have a reason behind it.",
@@ -166,5 +164,7 @@
   "cinniminies.a3": "The Cinniminies menu on a phone: “Cuatro rolls. Ninguno apurado.” and the box size picker, 6 or 12 rolls or 3 to 12 of your choice",
   "ui.swipe": "swipe",
   "parkex.deck": "Printouts of the ParkEx code",
-  "escaneo.deck": "Printouts of the Escaneo IP code and a screenshot of its web mode"
+  "escaneo.deck": "Printouts of the Escaneo IP code and a screenshot of its web mode",
+  "hero.tag": "Portfolio · web development & design",
+  "hero.scroll": "scroll"
 }

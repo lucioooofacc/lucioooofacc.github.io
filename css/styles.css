@@ -36,6 +36,8 @@ body { margin: 0; }
 }
 
 html, body { background: var(--desk); color: var(--ink); }
+/* clip (no hidden): recorta lo que entra de costado sin crear un contenedor de scroll; en html para que el celular no ensanche el viewport */
+html { overflow-x: clip; }
 body {
   font-family: var(--f-sans);
   font-size: 15px;
@@ -157,66 +159,141 @@ main {
 
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
-/* ───────── Portada ───────── */
+/* ───────── Portada: la mesa desordenada ───────── */
+.cover {
+  position: relative;
+  margin: -36px calc(-1 * clamp(22px, 4vw, 56px)) 0;
+}
 .cover-stage {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
-  align-items: center;
-  gap: clamp(16px, 3vw, 40px);
-  padding-block: clamp(36px, 5vw, 64px) clamp(28px, 4vw, 48px);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100svh;
+  min-height: 600px;
+  padding: 18px clamp(22px, 4vw, 56px) 16px;
   overflow: clip;
 }
-.cover-text { position: relative; z-index: 1; display: grid; justify-items: start; }
-.owner {
-  margin: 0 0 clamp(6px, 1vw, 14px);
-  font-stretch: 125%;
-  font-weight: 300;
-  font-size: clamp(14px, 2vw, 24px);
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-.owner b { font-weight: 900; }
+.cover-desk { position: relative; }
 .ghost {
   position: absolute;
   left: 50%;
-  top: 47%;
+  top: 50%;
   translate: -50% -50%;
   margin: 0;
   font-stretch: 125%;
   font-weight: 900;
-  font-size: clamp(40px, 10.5vw, 150px);
+  font-size: clamp(60px, 15vw, 240px);
   line-height: 1;
-  letter-spacing: -.01em;
   white-space: nowrap;
   color: transparent;
-  -webkit-text-stroke: 1.5px rgba(20, 20, 20, .22);
+  -webkit-text-stroke: 1.5px rgba(20, 20, 20, .2);
   user-select: none;
   /* Corrimiento de fotocopia: sigue al cursor unos pocos px (js) */
   transform: translate(var(--gx, 0px), var(--gy, 0px));
   transition: transform var(--d-slow) var(--ease);
 }
-.cover h1 {
-  position: relative;
-  font-size: clamp(56px, 10.5vw, 150px);
-  rotate: -3deg;
-  margin-left: -.04em;
+.cover-title {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  pointer-events: none;
 }
-.stroke { width: min(560px, 100%); height: auto; margin-top: -2px; filter: url(#rough); }
-.cover-note {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: clamp(14px, 2vw, 24px) 0 0 clamp(0px, 3vw, 40px);
-  font-size: clamp(24px, 2.6vw, 32px);
-  rotate: -3deg;
+.name {
+  display: grid;
+  margin: 0;
+  font-size: clamp(84px, 17vw, 300px);
+  line-height: .82;
+  rotate: -4deg;
 }
+.name .nl:first-child { justify-self: start; margin-left: -.35em; }
+.name .nl:last-child { justify-self: end; margin-right: -.35em; }
+.stroke { width: min(620px, 74vw); height: auto; margin-top: .1em; rotate: -4deg; filter: url(#rough); }
+.cover-tag {
+  margin: 14px 0 0;
+  font: 600 clamp(11px, 1.1vw, 13px)/1.3 var(--f-mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+/* Recortes sobre la mesa. Posición y ancho en %, con un juego para celular */
+.pile { position: absolute; inset: 0; z-index: 2; }
+.snap {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  margin: 0;
+  padding: 7px;
+  background: var(--paper-hi);
+  rotate: calc(var(--r) + var(--tilt, 0deg));
+  box-shadow: 0 1px 1px rgba(0,0,0,.12), 0 16px 26px -16px rgba(0,0,0,.6);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: scale var(--d-fast) var(--ease);
+}
+.snap::after { /* sombra de "levantada": solo cambia su opacidad */
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: 0 30px 40px -20px rgba(0,0,0,.5);
+  opacity: 0;
+  transition: opacity var(--d-mid) var(--ease);
+}
+.snap img { width: 100%; pointer-events: none; filter: grayscale(1) contrast(1.08); transition: filter var(--d-mid) var(--ease); }
+.snap.photo { padding-bottom: 26px; }
+.snap:hover::after, .snap.held::after, .snap:focus-visible::after { opacity: 1; }
+.snap:hover img, .snap.held img, .snap:focus-visible img { filter: none; }
+.snap.held { cursor: grabbing; scale: 1.03; }
+.snap:focus-visible { outline: 2px solid var(--pen); outline-offset: 4px; }
+.scrap { display: grid; gap: 6px; padding: 10px 12px; }
+.scrap code { font: 600 clamp(11px, 1.3vw, 15px)/1.4 var(--f-mono); overflow-wrap: anywhere; }
+.scrap.term-strip { background: var(--slab); color: #D8D9D3; }
+.scrap.term-strip code { font-weight: 400; font-size: clamp(10px, 1vw, 12.5px); }
+.scrap.slab-card { background: var(--slab); color: var(--on-slab); padding: 14px; }
+.scrap.slab-card .brush { font-size: clamp(18px, 1.9vw, 30px); line-height: 1; }
+.pile-reset {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  padding: 2px 6px;
+  font-size: 26px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color var(--d-fast) var(--ease);
+}
+.pile-reset:hover { color: var(--ink); }
+.cover-note { position: absolute; left: 0; bottom: 30px; z-index: 3; margin: 0; font-size: clamp(24px, 2.2vw, 28px); rotate: -3deg; } /* ≥24px: texto grande, el azul sobre la mesa pasa el contraste */
 .hint-touch { display: none; }
-html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se mueven: no se promete (reserva el lugar, sin saltos) */
+html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se mueven: no se promete */
 @media (hover: none) {
   .hint-fine { display: none; }
   .hint-touch { display: inline; }
 }
+.cover-down {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  z-index: 3;
+  translate: -50% 0;
+  display: grid;
+  justify-items: center;
+  text-decoration: none;
+  color: var(--pen);
+}
+.cover-down .pen { font-size: 38px; line-height: 1; }
+.cover-down .pen-arrow { width: 30px; height: 44px; }
+.cover-down:focus-visible { outline: 2px solid var(--pen); outline-offset: 4px; }
 
 /* Trazos de birome: la firma del sitio. Todos se dibujan con stroke-dashoffset */
 .pen-arrow, .pen-ring, .pen-under { overflow: visible; pointer-events: none; }
@@ -229,77 +306,31 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
 }
-.pen-arrow { width: 58px; height: 40px; flex: none; }
 
-/* Fotos sueltas sobre la lámina */
-.pile {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  aspect-ratio: 20 / 21;
-}
-.snap {
-  position: absolute;
-  left: var(--x);
-  top: var(--y);
-  width: 50%;
-  margin: 0;
-  padding: 8px 8px 40px;
-  background: var(--paper-hi);
-  rotate: var(--r);
-  box-shadow: 0 1px 1px rgba(0,0,0,.12), 0 14px 24px -16px rgba(0,0,0,.55);
-  cursor: grab;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  transition: rotate var(--d-mid) var(--ease), scale var(--d-fast) var(--ease);
-}
-.snap::after { /* sombra de "levantada": solo cambia su opacidad */
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  box-shadow: 0 30px 40px -20px rgba(0,0,0,.5);
-  opacity: 0;
-  transition: opacity var(--d-mid) var(--ease);
-}
-.snap img { width: 100%; pointer-events: none; filter: grayscale(1) contrast(1.08); transition: filter var(--d-mid) var(--ease); }
-.snap figcaption { position: absolute; left: 12px; right: 12px; bottom: 8px; font-family: var(--f-pen); color: var(--pen); font-size: clamp(20px, 2vw, 25px); line-height: 1; }
-.snap:hover::after, .snap.held::after, .snap:focus-visible::after { opacity: 1; }
-.snap:hover img, .snap.held img, .snap:focus-visible img { filter: none; }
-.snap.held { cursor: grabbing; scale: 1.03; }
-.snap:focus-visible { outline: 2px solid var(--pen); outline-offset: 4px; }
-.pile-reset {
-  position: absolute;
-  right: 0;
-  bottom: -8px;
-  z-index: 1;
-  padding: 2px 6px;
-  font-size: 26px;
-  background: none;
-  border: 0;
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-  transition: color var(--d-fast) var(--ease);
-}
-.pile-reset:hover { color: var(--ink); }
-
-/* Entrada de la portada (una sola vez, solo CSS). fill-mode backwards:
-   al terminar no queda nada pisado, así el arrastre usa transform libre. */
+/* Entrada (una vez, solo CSS): el nombre se imprime y los recortes caen uno tras otro */
 @keyframes fade-rise { from { opacity: 0; translate: 0 10px; } }
 @keyframes ink-in { from { clip-path: inset(-15% 100% -15% -2%); } to { clip-path: inset(-15% -4% -15% -2%); } }
 @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@keyframes drop { from { opacity: 0; translate: 0 -18px; scale: 1.05; } }
-.cover .owner { animation: fade-rise var(--d-slow) var(--ease) backwards; }
-.cover h1 { animation: ink-in 900ms var(--ease) 120ms backwards; }
-.cover .stroke { animation: ink-in 500ms var(--ease) 820ms backwards; }
-.cover-note { animation: ink-in var(--d-slow) var(--ease) 1150ms backwards; }
-.cover-note .pen-arrow path { animation: draw 450ms var(--ease) 1750ms backwards; }
-.snap { animation: drop var(--d-slow) var(--ease) backwards; }
-.snap:nth-of-type(1) { animation-delay: 350ms; }
-.snap:nth-of-type(2) { animation-delay: 520ms; }
+@keyframes drop { from { opacity: 0; translate: 0 -60px; scale: 1.18; } }
+.name .nl { animation: ink-in 800ms var(--ease) backwards; }
+.name .nl:last-child { animation-delay: 220ms; }
+.cover .stroke { animation: ink-in 500ms var(--ease) 650ms backwards; }
+.cover-tag, .cover-note { animation: fade-rise var(--d-slow) var(--ease) 900ms backwards; }
+.snap { animation: drop 650ms cubic-bezier(.3, 1.3, .5, 1) calc(700ms + var(--i) * 110ms) backwards; }
+.cover-down .pen { animation: fade-rise var(--d-slow) var(--ease) 1700ms backwards; }
+.cover-down .pen-arrow path { animation: draw 500ms var(--ease) 1900ms backwards; }
+
+/* En escritorio la portada es una escena: queda fija mientras la mesa se vacía */
+.motion .cover { height: 165vh; }
+.motion .cover-stage { position: sticky; top: 0; height: 100vh; }
+
+@media (max-width: 900px) {
+  .snap { left: var(--mx); top: var(--my); width: var(--mw); }
+  .name { font-size: clamp(64px, 23vw, 200px); }
+  .cover-note { bottom: 64px; }
+  .cover-down { left: auto; right: 0; translate: none; bottom: 52px; }
+  .scrap.term-strip { display: none; } /* en celular, menos recortes: se lee mejor el nombre */
+}
 
 /* ───────── Sobre mí ───────── */
 .about { display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(30px, 5vw, 64px); align-items: start; }
@@ -900,11 +931,6 @@ html.gs .lp-frame { overflow: hidden; } /* el marco lo desplaza el scroll, no el
   .about-side { width: 100%; max-width: 460px; justify-self: center; }
   .index-word { font-size: clamp(84px, 24vw, 170px); }
   .contact-photo { width: min(100%, 320px); }
-  .cover-stage { grid-template-columns: minmax(0, 1fr); gap: 28px; }
-  .cover .ghost { top: 74%; z-index: 0; }
-  .cover h1 { font-size: clamp(56px, 19vw, 150px); }
-  .pile { max-width: 460px; justify-self: center; }
-  .pen-arrow { rotate: 70deg; }
 }
 
 /* Celular */
@@ -918,10 +944,6 @@ html.gs .lp-frame { overflow: hidden; } /* el marco lo desplaza el scroll, no el
   .channels li { grid-template-columns: minmax(0, 1fr) auto; }
   .channels .lab { grid-column: 1 / -1; }
   .copy-state { grid-column: 1 / -1; }
-  .cover-note { margin-left: 4px; }
-  .pile { aspect-ratio: 1 / .94; }
-  .snap figcaption { font-size: 18px; left: 8px; right: 8px; }
-  .snap { padding: 6px 6px 32px; }
   .tl { min-width: 0; }
   .clips { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .clip { white-space: normal; overflow-wrap: anywhere; }
