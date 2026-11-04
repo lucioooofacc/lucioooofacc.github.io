@@ -170,7 +170,7 @@ main {
   grid-template-rows: auto minmax(0, 1fr) auto;
   height: 100svh;
   min-height: 600px;
-  padding: 18px clamp(22px, 4vw, 56px) 16px;
+  padding: 18px clamp(22px, 4vw, 56px) 60px; /* abajo deja lugar a la botonera fija, que si no tapa GitHub */
   overflow: clip;
 }
 .cover-desk { position: relative; }
@@ -902,6 +902,7 @@ html.gs .lp-frame { overflow: hidden; } /* el marco lo desplaza el scroll, no el
   .rail .rn .pen-ring { width: 36px; height: 40px; }
   .rail .nm { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .rail-line { display: none; }
+  @media (max-width: 460px) { .rail-t { display: none; } .rail a { min-width: 36px; } }
   html.js .rail-now { display: block; flex: 1; min-width: 0; margin: 0; text-align: right; font-weight: 900; font-stretch: 125%; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   html.gs .rail-bar { display: block; position: absolute; left: clamp(22px, 4vw, 56px); right: clamp(22px, 4vw, 56px); bottom: 2px; height: 8px; overflow: hidden; }
   .rail-bar path { fill: none; stroke: var(--pen); stroke-width: 2.2; stroke-linecap: round; vector-effect: non-scaling-stroke; }
