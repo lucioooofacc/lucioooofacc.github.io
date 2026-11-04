@@ -155,15 +155,19 @@ main {
 .pen { font-family: var(--f-pen); color: var(--pen); line-height: .95; }
 .mono { font-family: var(--f-mono); }
 
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
 /* ───────── Portada ───────── */
 .cover-stage {
   position: relative;
   display: grid;
-  justify-items: center;
-  text-align: center;
-  padding-block: clamp(44px, 7vw, 92px) clamp(28px, 4vw, 48px);
-  overflow: hidden;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+  align-items: center;
+  gap: clamp(16px, 3vw, 40px);
+  padding-block: clamp(36px, 5vw, 64px) clamp(28px, 4vw, 48px);
+  overflow: clip;
 }
+.cover-text { position: relative; z-index: 1; display: grid; justify-items: start; }
 .owner {
   margin: 0 0 clamp(6px, 1vw, 14px);
   font-stretch: 125%;
@@ -188,24 +192,114 @@ main {
   color: transparent;
   -webkit-text-stroke: 1.5px rgba(20, 20, 20, .22);
   user-select: none;
+  /* Corrimiento de fotocopia: sigue al cursor unos pocos px (js) */
+  transform: translate(var(--gx, 0px), var(--gy, 0px));
+  transition: transform var(--d-slow) var(--ease);
 }
 .cover h1 {
   position: relative;
-  font-size: clamp(44px, 15.5vw, 200px);
+  font-size: clamp(56px, 10.5vw, 150px);
   rotate: -3deg;
+  margin-left: -.04em;
 }
-.stroke { width: min(760px, 86%); height: auto; margin-top: -6px; filter: url(#rough); }
+.stroke { width: min(560px, 100%); height: auto; margin-top: -2px; filter: url(#rough); }
 .cover-note {
-  justify-self: end;
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin: clamp(10px, 2vw, 22px) clamp(0px, 4vw, 60px) 0 0;
-  font-size: clamp(24px, 2.6vw, 34px);
-  rotate: -4deg;
-  text-align: left;
+  gap: 6px;
+  margin: clamp(14px, 2vw, 24px) 0 0 clamp(0px, 3vw, 40px);
+  font-size: clamp(24px, 2.6vw, 32px);
+  rotate: -3deg;
 }
-.cover-note svg { width: 54px; height: 40px; flex: none; }
+.hint-touch { display: none; }
+html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se mueven: no se promete (reserva el lugar, sin saltos) */
+@media (hover: none) {
+  .hint-fine { display: none; }
+  .hint-touch { display: inline; }
+}
+
+/* Trazos de birome: la firma del sitio. Todos se dibujan con stroke-dashoffset */
+.pen-arrow, .pen-ring, .pen-under { overflow: visible; pointer-events: none; }
+.pen-arrow path, .pen-ring path, .pen-under path {
+  fill: none;
+  stroke: var(--pen);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+.pen-arrow { width: 58px; height: 40px; flex: none; }
+
+/* Fotos sueltas sobre la lámina */
+.pile {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  aspect-ratio: 20 / 21;
+}
+.snap {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 50%;
+  margin: 0;
+  padding: 8px 8px 40px;
+  background: var(--paper-hi);
+  rotate: var(--r);
+  box-shadow: 0 1px 1px rgba(0,0,0,.12), 0 14px 24px -16px rgba(0,0,0,.55);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: rotate var(--d-mid) var(--ease), scale var(--d-fast) var(--ease);
+}
+.snap::after { /* sombra de "levantada": solo cambia su opacidad */
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: 0 30px 40px -20px rgba(0,0,0,.5);
+  opacity: 0;
+  transition: opacity var(--d-mid) var(--ease);
+}
+.snap img { width: 100%; pointer-events: none; filter: grayscale(1) contrast(1.08); transition: filter var(--d-mid) var(--ease); }
+.snap figcaption { position: absolute; left: 12px; right: 12px; bottom: 8px; font-family: var(--f-pen); color: var(--pen); font-size: clamp(20px, 2vw, 25px); line-height: 1; }
+.snap:hover::after, .snap.held::after, .snap:focus-visible::after { opacity: 1; }
+.snap:hover img, .snap.held img, .snap:focus-visible img { filter: none; }
+.snap.held { cursor: grabbing; scale: 1.03; }
+.snap:focus-visible { outline: 2px solid var(--pen); outline-offset: 4px; }
+.pile-reset {
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  z-index: 1;
+  padding: 2px 6px;
+  font-size: 26px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color var(--d-fast) var(--ease);
+}
+.pile-reset:hover { color: var(--ink); }
+
+/* Entrada de la portada (una sola vez, solo CSS). fill-mode backwards:
+   al terminar no queda nada pisado, así el arrastre usa transform libre. */
+@keyframes fade-rise { from { opacity: 0; translate: 0 10px; } }
+@keyframes ink-in { from { clip-path: inset(-15% 100% -15% -2%); } to { clip-path: inset(-15% -4% -15% -2%); } }
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes drop { from { opacity: 0; translate: 0 -18px; scale: 1.05; } }
+.cover .owner { animation: fade-rise var(--d-slow) var(--ease) backwards; }
+.cover h1 { animation: ink-in 900ms var(--ease) 120ms backwards; }
+.cover .stroke { animation: ink-in 500ms var(--ease) 820ms backwards; }
+.cover-note { animation: ink-in var(--d-slow) var(--ease) 1150ms backwards; }
+.cover-note .pen-arrow path { animation: draw 450ms var(--ease) 1750ms backwards; }
+.snap { animation: drop var(--d-slow) var(--ease) backwards; }
+.snap:nth-of-type(1) { animation-delay: 350ms; }
+.snap:nth-of-type(2) { animation-delay: 520ms; }
 
 /* ───────── Sobre mí ───────── */
 .about { display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(30px, 5vw, 64px); align-items: start; }
@@ -620,6 +714,11 @@ main {
   .about-side { width: 100%; max-width: 460px; justify-self: center; }
   .index-word { font-size: clamp(84px, 24vw, 170px); }
   .contact-photo { width: min(100%, 320px); }
+  .cover-stage { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .cover .ghost { top: 22%; }
+  .cover h1 { font-size: clamp(56px, 19vw, 150px); }
+  .pile { max-width: 460px; justify-self: center; }
+  .pen-arrow { rotate: 70deg; }
 }
 
 /* Celular */
@@ -633,7 +732,10 @@ main {
   .channels li { grid-template-columns: minmax(0, 1fr) auto; }
   .channels .lab { grid-column: 1 / -1; }
   .copy-state { grid-column: 1 / -1; }
-  .cover-note { justify-self: center; margin-right: 0; }
+  .cover-note { margin-left: 4px; }
+  .pile { aspect-ratio: 1 / .94; }
+  .snap figcaption { font-size: 18px; left: 8px; right: 8px; }
+  .snap { padding: 6px 6px 32px; }
   .tl { min-width: 0; }
   .clips { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .clip { white-space: normal; overflow-wrap: anywhere; }
