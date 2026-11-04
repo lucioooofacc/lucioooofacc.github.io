@@ -577,7 +577,8 @@
           .to('.cover .ghost', { opacity: 0, duration: 0.4, ease: 'none' }, 0)
           .to('.name', fixed ? { scale: 0.8, y: function () { return -innerHeight * 0.05; }, duration: 0.6, ease: 'power2.inOut' }
                              : { y: function () { return innerHeight * 0.22; }, scale: 0.9, opacity: 0.35, duration: 0.8, ease: 'none' }, 0.2)
-          .to('.cover .stroke', fixed ? { scaleX: 0.8, duration: 0.6, ease: 'power2.inOut' } : { y: function () { return innerHeight * 0.22; }, opacity: 0.35, duration: 0.8, ease: 'none' }, 0.2);
+          .to('.cover .stroke', fixed ? { scaleX: 0.8, y: function () { return -innerHeight * 0.1; }, duration: 0.6, ease: 'power2.inOut' } : { y: function () { return innerHeight * 0.22; }, opacity: 0.35, duration: 0.8, ease: 'none' }, 0.2)
+          .to('.cover-tag', fixed ? { y: function () { return -innerHeight * 0.1; }, duration: 0.6, ease: 'power2.inOut' } : { y: function () { return innerHeight * 0.22; }, opacity: 0.35, duration: 0.8, ease: 'none' }, 0.2);
         if (fixed) tl.to({}, { duration: 0.1 });
       }
 
