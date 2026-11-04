@@ -650,7 +650,8 @@
           if (k === 0) return; // el prompt ya está escrito
           tlE.fromTo(l, { opacity: 0 }, { opacity: 1, duration: 0.01, ease: 'none' }, (k / lines.length) * 0.5);
         });
-        stackSheets(tlE, $('.sheets > .sheet', scenes.escaneo), 0.56, 0.2);
+        // y después entra la captura del modo web
+        tlE.fromTo(q('.sheets > .sheet', scenes.escaneo), { xPercent: 112, rotation: 7, opacity: 0 }, { xPercent: 0, rotation: 0, opacity: 1, duration: 0.2, ease: 'power2.out' }, 0.58);
         tlE.to({}, { duration: 0.06 });
 
         cinniPrint(cleanups, sceneST(scenes.cinni, 0.4));
@@ -690,12 +691,6 @@
             { x: 0, rotation: 0, opacity: 1, ease: 'power2.out', stagger: 0.06, scrollTrigger: passST(d, 'top 92%', 'top 45%', 0.5) });
         });
 
-        // Código que se escribe: las líneas de cada impresión aparecen de arriba abajo
-        $('.print .code').forEach(function (c) {
-          var ls = $('.l', c);
-          gsap.fromTo(ls, { opacity: 0.06 }, { opacity: 1, ease: 'none', stagger: 0.5 / ls.length, duration: 0.5,
-            scrollTrigger: passST(c.closest('.deck') || c, 'top 85%', 'top 20%', 0.3) });
-        });
 
         // Terminal: imprime línea por línea mientras pasa
         var term = q('.term', scenes.escaneo), tls = $('.l', term).slice(1);
