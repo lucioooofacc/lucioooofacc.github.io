@@ -377,7 +377,7 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 .taped {
   position: relative;
   margin: 0;
-  padding: 10px 10px 50px;
+  padding: 10px 10px 14px;
   background: var(--paper-hi);
   rotate: var(--r, -2deg);
   box-shadow: 0 1px 1px rgba(0,0,0,.12), 0 18px 30px -18px rgba(0,0,0,.6);
@@ -398,11 +398,10 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 .taped img { width: 100%; filter: grayscale(1) contrast(1.08); transition: filter var(--d-mid) var(--ease); }
 .taped:hover { rotate: 0deg; }
 .taped:hover img { filter: none; }
+.taped:not(:has(figcaption)) { padding-bottom: 50px; } /* polaroid sin texto: conserva el borde ancho */
 .taped figcaption {
-  position: absolute;
-  left: 14px;
-  right: 14px;
-  bottom: 10px;
+  /* En el flujo, no absoluto: si el texto ocupa dos líneas, el papel crece en vez de taparle la foto */
+  margin: 10px 4px 0;
   font-family: var(--f-pen);
   color: var(--pen);
   font-size: 25px;
@@ -410,7 +409,7 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 }
 .taped.on-white img { mix-blend-mode: multiply; }
 .about-side .portrait { width: min(100%, 380px); }
-.about-side .second { width: min(60%, 230px); justify-self: end; margin-top: -64px; padding-bottom: 40px; }
+.about-side .second { width: min(60%, 230px); justify-self: end; margin-top: -64px; }
 .about-side .second figcaption { font-size: 21px; }
 .contact-photo { width: min(100%, 360px); justify-self: center; }
 
@@ -481,8 +480,6 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 .cta:hover { background: var(--ink); border-color: var(--ink); color: var(--paper-hi); }
 .cta:hover .arr { transform: translate(2px, -2px); }
 .dark .cta:hover { background: var(--on-slab); border-color: var(--on-slab); color: var(--slab); }
-.lede { margin: 10px 0 0 clamp(0px, 7vw, 92px); font-size: clamp(26px, 2.8vw, 36px); rotate: -1.5deg; max-width: 30ch; }
-.dark .lede { color: var(--pen-light); }
 .spec {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
@@ -595,7 +592,7 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 /* ITSpace */
 .langs { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
 .langs span { font-family: var(--f-mono); font-size: 10px; padding: 1px 5px; border: 1px solid var(--rule); background: var(--paper-hi); }
-.logo-sheet { --r: 1.5deg; padding-bottom: 46px; }
+.logo-sheet { --r: 1.5deg; }
 .logo-sheet .logo-pad { background: #fff; padding: clamp(18px, 3vw, 30px) clamp(14px, 2.4vw, 26px); }
 
 /* Coded Bias */
@@ -683,10 +680,10 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 
 /* Láminas: se revelan al entrar en pantalla (solo si js marcó html.reveal) */
 .plate { transition: opacity var(--d-slow) var(--ease), translate var(--d-slow) var(--ease); }
-/* En escritorio (html.motion) las láminas de proyecto entran con GSAP, no con esta transición */
+/* Con GSAP armado (html.gs) las láminas de proyecto entran con GSAP, no con esta transición */
 html.reveal .plate:not(.cover):not(.in) { opacity: 0; translate: 0 28px; }
-html.motion .plate.proj { transition: none; }
-html.reveal.motion .plate.proj:not(.in) { opacity: 1; translate: none; }
+html.gs .plate.proj { transition: none; }
+html.reveal.gs .plate.proj:not(.in) { opacity: 1; translate: none; }
 
 /* Palabras en brush: se "pintan" de izquierda a derecha */
 html.reveal [data-wipe] { clip-path: inset(-25% -6% -25% -6%); transition: clip-path 1s var(--ease) 120ms; }
@@ -717,20 +714,6 @@ html.reveal [data-draw]:not(.in) path { stroke-dashoffset: 1; transition: none; 
 
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
-  /* Versión liviana (celular, touch o sin GSAP): la terminal imprime y el playhead corre con el
-     scroll, en CSS nativo. Donde no hay soporte (Firefox), quedan en su estado final. */
-  @supports (animation-timeline: view()) {
-    html.reveal:not(.motion) .term { view-timeline: --term block; }
-    html.reveal:not(.motion) .term .l:not(:first-child) {
-      animation: print-line linear both;
-      animation-timeline: --term;
-      animation-range: cover calc(16% + var(--i) * 3%) cover calc(18% + var(--i) * 3%);
-    }
-    @keyframes print-line { from { opacity: 0; } to { opacity: 1; } }
-    html.reveal:not(.motion) .tl-wrap { view-timeline: --tl block; }
-    html.reveal:not(.motion) .clips .playhead { animation: scrub linear both; animation-timeline: --tl; animation-range: entry 100% exit 0%; }
-    @keyframes scrub { from { translate: 0 0; } to { translate: calc(100cqw - 2px) 0; } }
-  }
 }
 
 /* ───────── Proyectos: corrida de láminas con riel lateral ───────── */
@@ -796,10 +779,10 @@ html.reveal [data-draw]:not(.in) path { stroke-dashoffset: 1; transition: none; 
 }
 .print figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 14px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed var(--rule); }
 .path { font: 600 10.5px/1.3 var(--f-mono); letter-spacing: .02em; color: var(--graphite); overflow-wrap: anywhere; }
-.print .pen { font-size: 22px; line-height: 1; }
-.code { margin: 0; font: 11.5px/1.6 var(--f-mono); white-space: pre-wrap; overflow-wrap: anywhere; color: var(--ink); }
+.code { margin: 0; font: 11.5px/1.6 var(--f-mono); white-space: pre-wrap; overflow-wrap: break-word; color: var(--ink); }
 .code.num .l { display: grid; grid-template-columns: 2.6em minmax(0, 1fr); }
 .code .ln { color: #8B8C87; user-select: none; }
+.code .str { white-space: nowrap; } /* un string con guion ("^[A-Z]…") no se parte en el guion */
 .code i { font-style: normal; color: var(--graphite); }
 
 /* ParkEx */
@@ -808,16 +791,15 @@ html.reveal [data-draw]:not(.in) path { stroke-dashoffset: 1; transition: none; 
 /* ITSpace: galería de capturas pegadas sobre la lámina */
 .gallery { padding-block: 18px 6px; }
 .track { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 46px 30px; align-items: start; }
-.shot { padding: 8px 8px 46px; }
+.shot { padding: 8px 8px 12px; }
 .shot img { filter: grayscale(.85) contrast(1.05); }
 .shot figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 22px; }
 .shot figcaption .path { flex: none; font-size: 10px; }
 .shot.phone { width: min(100%, 210px); justify-self: center; }
 .langs-sheet { display: grid; gap: 10px; }
-.langs-sheet .pen { margin: 0; font-size: 26px; rotate: -2deg; }
 .langs { display: flex; flex-wrap: wrap; gap: 6px; }
 .langs span { font-family: var(--f-mono); font-size: 12px; padding: 3px 8px; border: 1px solid var(--rule); background: var(--paper-hi); }
-.logo-sheet { --r: 1.5deg; padding-bottom: 46px; }
+.logo-sheet { --r: 1.5deg; }
 .logo-sheet .logo-pad { background: #fff; padding: clamp(18px, 3vw, 30px) clamp(14px, 2.4vw, 26px); }
 
 /* Coded Bias: monitor + línea de tiempo */
@@ -828,12 +810,11 @@ html.reveal [data-draw]:not(.in) path { stroke-dashoffset: 1; transition: none; 
 .mon-clip { font-family: var(--f-sans); font-weight: 900; font-stretch: 125%; font-size: clamp(24px, 3.6vw, 48px); line-height: 1; letter-spacing: -.01em; }
 .quote { margin: 0; }
 .clip.on { background: #4A4B45; border-left-color: var(--pen-light); }
-html.motion .playhead { translate: none; } /* en escritorio la mueve GSAP (transform); si no, queda sobre el clip 06 */
+html.gs .playhead { translate: none; } /* con GSAP la mueve un transform; si no, queda sobre el clip 06 */
 .kit { margin: 0; }
 
 /* Escaneo IP */
 .term .l { transition: opacity var(--d-fast) linear; }
-.shot-web { padding-bottom: 44px; }
 .shot-web img { filter: none; }
 
 /* Cinniminies: la página impresa entera, dentro de un marco */
@@ -842,7 +823,6 @@ html.motion .playhead { translate: none; } /* en escritorio la mueve GSAP (trans
 .lp-frame:focus-visible { outline: 2px solid var(--pen); outline-offset: 4px; }
 .lp-frame img { width: 100%; filter: grayscale(.7) contrast(1.05); }
 .longprint figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; }
-.longprint .pen { font-size: 24px; }
 .cinni-side { display: grid; gap: 24px; align-content: start; }
 .cinni-side .channels li { grid-template-columns: 96px 1fr; }
 .table3 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .85fr) minmax(0, .85fr); gap: clamp(20px, 3vw, 40px); align-items: center; margin-top: 30px; }
@@ -866,8 +846,52 @@ html.motion .playhead { translate: none; } /* en escritorio la mueve GSAP (trans
 .motion .track { display: flex; width: max-content; gap: 64px; align-items: center; }
 .motion .track .shot { width: min(44vw, 600px); flex: none; }
 .motion .track .shot.phone { width: 230px; }
-.motion .lp-frame { overflow: hidden; }
+html.gs .lp-frame { overflow: hidden; } /* el marco lo desplaza el scroll, no el dedo */
 .motion [data-scene="coded"] .quote { font-size: clamp(36px, 5vw, 72px); }
+
+
+/* ───────── Celular y touch ─────────
+   html.swipe: hay JS, no hay reduced-motion y no es la versión de escritorio.
+   Sin JS o con reduced-motion todo sigue en columna. */
+.rail-now, .rail-bar, .deck-hint { display: none; }
+@media (max-width: 1099.98px) {
+  /* Riel compacto pegado arriba mientras pasan los proyectos: números, nombre actual y progreso */
+  .rail {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; gap: 4px 10px;
+    margin: 0 calc(-1 * clamp(22px, 4vw, 56px)) 22px;
+    padding: 6px clamp(22px, 4vw, 56px) 10px;
+    background: var(--desk);
+    box-shadow: 0 12px 18px -16px rgba(0,0,0,.5);
+  }
+  .rail-t { margin: 0 4px 0 0; font-size: 24px; rotate: -4deg; flex: none; }
+  .rail ol { display: flex; gap: 0; }
+  .rail a { display: grid; place-items: center; grid-template-columns: 1fr; min-width: 38px; min-height: 44px; padding: 0; }
+  .rail .rn { font-size: 30px; }
+  .rail .rn .pen-ring { width: 36px; height: 40px; }
+  .rail .nm { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .rail-line { display: none; }
+  html.js .rail-now { display: block; flex: 1; min-width: 0; margin: 0; text-align: right; font-weight: 900; font-stretch: 125%; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  html.gs .rail-bar { display: block; position: absolute; left: clamp(22px, 4vw, 56px); right: clamp(22px, 4vw, 56px); bottom: 2px; height: 8px; overflow: hidden; }
+  .rail-bar path { fill: none; stroke: var(--pen); stroke-width: 2.2; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .proj { scroll-margin-top: 66px; } /* el riel no tapa el encabezado al llegar por #ancla */
+
+  /* Mazos: impresiones y capturas que se pasan con el dedo, una al lado de la otra */
+  html.swipe .deck {
+    display: flex; gap: 16px; align-items: flex-start;
+    overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scrollbar-width: none;
+    margin-inline: calc(-1 * clamp(20px, 3.6vw, 48px));
+    padding: 22px clamp(20px, 3.6vw, 48px) 16px;
+    scroll-padding-inline: clamp(20px, 3.6vw, 48px);
+  }
+  html.swipe .deck::-webkit-scrollbar { display: none; }
+  html.swipe .deck > * { flex: 0 0 min(86%, 440px); scroll-snap-align: start; }
+  html.swipe .deck > .phone { flex-basis: min(58%, 240px); }
+  html.swipe .deck:focus-visible { outline: 2px solid var(--pen); outline-offset: -4px; }
+  html.swipe .gallery { padding-block: 0; }
+  html.swipe .deck-hint { display: block; grid-column: -2 / -1; margin: -4px 0 0; font-size: 24px; text-align: right; }
+}
 
 /* ───────── Responsive ───────── */
 /* Tablet: una columna por sección */
@@ -877,7 +901,7 @@ html.motion .playhead { translate: none; } /* en escritorio la mueve GSAP (trans
   .index-word { font-size: clamp(84px, 24vw, 170px); }
   .contact-photo { width: min(100%, 320px); }
   .cover-stage { grid-template-columns: minmax(0, 1fr); gap: 28px; }
-  .cover .ghost { top: 22%; }
+  .cover .ghost { top: 74%; z-index: 0; }
   .cover h1 { font-size: clamp(56px, 19vw, 150px); }
   .pile { max-width: 460px; justify-self: center; }
   .pen-arrow { rotate: 70deg; }
@@ -903,9 +927,10 @@ html.motion .playhead { translate: none; } /* en escritorio la mueve GSAP (trans
   .clip { white-space: normal; overflow-wrap: anywhere; }
   .playhead { display: none; } /* con los clips en dos filas no hay una sola pista que recorrer */
   .term { font-size: 11.5px; padding: 14px 16px; }
+  .certs li:has(time) { grid-template-columns: minmax(0, 1fr); }
+  .certs li:has(time) time { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 4px; }
   .table3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .table3 > :first-child { grid-column: 1 / -1; max-width: 400px; }
-  .lede { margin-left: 4px; }
   .proj .ph { flex-wrap: wrap; }
   .proj .ph h2 { flex: 1 1 auto; overflow-wrap: normal; }
   .proj .ph .cta { order: 3; }
@@ -934,6 +959,7 @@ html.motion .playhead { translate: none; } /* en escritorio la mueve GSAP (trans
   .channels li, .cinni-side .channels li { grid-template-columns: minmax(0, 1fr); }
   .channels .btn { justify-self: start; }
   .channels a, .channels .val { font-size: 17px; }
+  .term { font-size: 10px; padding: 12px 14px; white-space: pre-wrap; margin-inline: calc(-1 * clamp(20px, 3.6vw, 48px)); border-radius: 0; } /* tira impresa de borde a borde: entran las 47 columnas */
   .quick a, .lang-btn { padding: 8px 9px; font-size: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
