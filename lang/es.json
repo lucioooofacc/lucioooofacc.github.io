@@ -163,8 +163,19 @@
   "cinniminies.a2": "Portada de Cinniminies en un celular: una foto de rolls de canela de fondo, el título en tipografía con serifa y los botones «Ver el menú» y «Contactanos»",
   "cinniminies.a3": "El menú de Cinniminies en un celular: «Cuatro rolls. Ninguno apurado.» y el selector del tamaño de la caja, de 6 o 12 rolls o de 3 a 12 a gusto",
   "ui.swipe": "deslizá",
-  "parkex.deck": "Impresiones del código de ParkEx",
-  "escaneo.deck": "Impresiones del código de Escaneo IP y captura del modo web",
+  "parkex.deck": "Cómo funciona ParkEx, el prototipo y el diagrama",
   "hero.tag": "Portfolio · desarrollo y diseño web",
-  "hero.scroll": "bajá"
+  "hero.scroll": "bajá",
+  "parkex.howT": "Cómo funciona",
+  "parkex.how1": "Un sensor ultrasónico en cada plaza detecta si hay un auto.",
+  "parkex.how2": "Un puente en la computadora del parking manda cada cambio a la API.",
+  "parkex.how3": "La API lo guarda en Supabase y el plano se actualiza solo en el navegador.",
+  "parkex.how4": "En las plazas reservadas, una cámara lee la matrícula y busca el distintivo DI. Si no está, avisa a una persona.",
+  "escaneo.web": "modo web, en el navegador",
+  "itspace.p1": "Inicio",
+  "itspace.p2": "Lenguajes",
+  "itspace.p3": "JavaScript",
+  "itspace.p4": "Iniciar sesión",
+  "itspace.p5": "Inicio, en el celular",
+  "itspace.p6": "JavaScript, en el celular"
 }

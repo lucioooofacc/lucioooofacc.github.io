@@ -71,8 +71,8 @@
           <figure class="snap" aria-hidden="true" style="--i:2; --d:.55; --r:-3deg; --x:64%; --y:2%; --w:15%; --mx:30%; --my:1%; --mw:40%">
             <img src="img/proyectos/hero-tinkercad.webp" width="460" height="233" alt="" decoding="async" draggable="false">
           </figure>
-          <figure class="snap scrap code" aria-hidden="true" style="--i:3; --d:.7; --r:2deg; --x:21%; --y:8%; --w:16%; --mx:54%; --my:57%; --mw:46%">
-            <span class="path">Distintivo.java</span><code>^[A-Z]DI[0-9]{4}$</code>
+          <figure class="snap logo-scrap" aria-hidden="true" style="--i:3; --d:.7; --r:2deg; --x:21%; --y:8%; --w:16%; --mx:54%; --my:57%; --mw:44%">
+            <img src="img/proyectos/hero-itspace-logo.webp" width="480" height="116" alt="" decoding="async" draggable="false">
           </figure>
           <figure class="snap" aria-hidden="true" style="--i:4; --d:.6; --r:3deg; --x:59%; --y:62%; --w:26%; --mx:34%; --my:64%; --mw:62%">
             <img src="img/proyectos/hero-itspace.webp" width="560" height="350" alt="" decoding="async" draggable="false">
@@ -255,41 +255,29 @@
           </div>
         </div>
 
-        <div class="sheets deck" role="group" data-i18n-aria-label="parkex.deck" aria-label="Impresiones del código de ParkEx">
-          <figure class="sheet print" style="--r:-1.4deg">
-            <figcaption><span class="path">firmware/<wbr>sensor_plaza/<wbr>sensor_plaza.ino</span></figcaption>
-<pre class="code num"><code><span class="l"><span class="ln" aria-hidden="true">148</span><span class="t">if (<wbr>distancia &lt;= UMBRAL_CM) {</span></span><span class="l"><span class="ln" aria-hidden="true">149</span><span class="t">  lecturasOcupado++;</span></span><span class="l"><span class="ln" aria-hidden="true">150</span><span class="t">  lecturasLibre = 0;</span></span><span class="l"><span class="ln" aria-hidden="true">151</span><span class="t">} else {</span></span><span class="l"><span class="ln" aria-hidden="true">152</span><span class="t">  lecturasLibre++;</span></span><span class="l"><span class="ln" aria-hidden="true">153</span><span class="t">  lecturasOcupado = 0;</span></span><span class="l"><span class="ln" aria-hidden="true">154</span><span class="t">}</span></span><span class="l"><span class="ln" aria-hidden="true">155</span><span class="t"> </span></span><span class="l"><span class="ln" aria-hidden="true">156</span><span class="t">if (<wbr>!ocupado &amp;&amp; lecturasOcupado &gt;= LECTURAS_PARA_OCUPADO) {</span></span><span class="l"><span class="ln" aria-hidden="true">157</span><span class="t">  ocupado = true;</span></span><span class="l"><span class="ln" aria-hidden="true">158</span><span class="t">  cambiarEstado(<wbr>distancia);</span></span><span class="l"><span class="ln" aria-hidden="true">159</span><span class="t">} else if (<wbr>ocupado &amp;&amp; lecturasLibre &gt;= LECTURAS_PARA_LIBRE) {</span></span><span class="l"><span class="ln" aria-hidden="true">160</span><span class="t">  ocupado = false;</span></span><span class="l"><span class="ln" aria-hidden="true">161</span><span class="t">  cambiarEstado(<wbr>distancia);</span></span><span class="l"><span class="ln" aria-hidden="true">162</span><span class="t">}</span></span></code></pre>
+        <div class="sheets deck" role="group" data-i18n-aria-label="parkex.deck" aria-label="Cómo funciona ParkEx, el prototipo y el diagrama">
+          <figure class="sheet print how" style="--r:-1.2deg">
+            <figcaption data-i18n="parkex.howT">Cómo funciona</figcaption>
+            <ol>
+              <li data-i18n="parkex.how1">Un sensor ultrasónico en cada plaza detecta si hay un auto.</li>
+              <li data-i18n="parkex.how2">Un puente en la computadora del parking manda cada cambio a la API.</li>
+              <li data-i18n="parkex.how3">La API lo guarda en Supabase y el plano se actualiza solo en el navegador.</li>
+              <li data-i18n="parkex.how4">En las plazas reservadas, una cámara lee la matrícula y busca el distintivo DI. Si no está, avisa a una persona.</li>
+            </ol>
           </figure>
-          <figure class="sheet print" style="--r:1.2deg">
-            <figcaption><span class="path">vision/<wbr>…/<wbr>ocr/<wbr>Distintivo.java</span></figcaption>
-<pre class="code num"><code><span class="l"><span class="ln" aria-hidden="true">18</span><span class="t">// El bloque de letras termina en DI: IDI 1483, ADI 4021. Se aplica sobre la</span></span><span class="l"><span class="ln" aria-hidden="true">19</span><span class="t">// matricula YA normalizada, asi que llega sin espacios ni guiones y con las</span></span><span class="l"><span class="ln" aria-hidden="true">20</span><span class="t">// confusiones de OCR corregidas por posicion (<wbr>una O que en el bloque de</span></span><span class="l"><span class="ln" aria-hidden="true">21</span><span class="t">// letras es una O, y en el de digitos un 0).</span></span><span class="l"><span class="ln" aria-hidden="true">22</span><span class="t">private static final Pattern CON_DISTINTIVO = Pattern.<wbr>compile(<wbr><span class="str">&quot;^[A-Z]DI[0-9]{4}$&quot;</span>);</span></span><span class="l"><span class="ln" aria-hidden="true">23</span><span class="t"> </span></span><span class="l"><span class="ln" aria-hidden="true">24</span><span class="t">private Distintivo() { }</span></span><span class="l"><span class="ln" aria-hidden="true">25</span><span class="t"> </span></span><span class="l"><span class="ln" aria-hidden="true">26</span><span class="t">public static boolean presente(<wbr>String matriculaNormalizada) {</span></span><span class="l"><span class="ln" aria-hidden="true">27</span><span class="t">    return matriculaNormalizada != null &amp;&amp; CON_DISTINTIVO.<wbr>matcher(<wbr>matriculaNormalizada).<wbr>matches();</span></span><span class="l"><span class="ln" aria-hidden="true">28</span><span class="t">}</span></span></code></pre>
+          <figure class="sheet taped" style="--r:-1.8deg">
+            <img data-i18n-alt="parkex.s4alt" src="img/proyectos/parkex-tinkercad.webp" width="1000" height="506" alt="Circuito armado en Tinkercad: un Arduino Uno conectado a un sensor ultrasónico HC-SR04 y a dos LED, uno rojo y uno verde" loading="lazy" decoding="async">
+            <figcaption data-i18n="parkex.s4">primer prototipo del sensor, en Tinkercad</figcaption>
           </figure>
-          <figure class="sheet print tree" style="--r:-.6deg">
-            <figcaption><span class="path">ParkEx/<wbr> · package.json · pom.xml</span></figcaption>
-<pre class="code"><code><span class="l">ParkEx/</span>
-<span class="l">├─ firmware/sensor_plaza/   <i>sensor_plaza.ino</i></span>
-<span class="l">├─ gateway/                 <i>serialport ^13.0.0</i></span>
-<span class="l">├─ api/src/routes/          <i>eventos · lecturas · plazas · niveles · alertas</i></span>
-<span class="l">│                           <i>express ^4.19.2 · @supabase/supabase-js ^2.45.4</i></span>
-<span class="l">├─ db/                      <i>esquema.sql · funciones.sql · politicas.sql</i></span>
-<span class="l">├─ vision/                  <i>Java 17 · opencv 4.9.0-0 · jackson 2.18.2</i></span>
-<span class="l">└─ web/                     <i>index.html · admin.html · js/plano.js</i></span></code></pre>
+          <figure class="sheet taped on-white" style="--r:1.6deg">
+            <img data-i18n-alt="parkex.19" src="img/parkex-arquitectura.png" alt="Diagrama de arquitectura de ParkEx: sensor y Arduino en la plaza, puente serie y lector de chapas en la computadora del parking, API REST, PostgreSQL y Realtime en Supabase, y el navegador" width="1890" height="1330" loading="lazy" decoding="async">
+            <figcaption data-i18n="parkex.20">Diagrama de la lógica del sistema</figcaption>
           </figure>
         </div>
         <p class="deck-hint pen" aria-hidden="true"><span class="deck-n">1</span> / 3 · <span data-i18n="ui.swipe">deslizá</span> →</p>
       </div>
     </div>
 
-    <div class="two duo">
-      <figure class="taped" style="--r:-1.8deg">
-        <img data-i18n-alt="parkex.s4alt" src="img/proyectos/parkex-tinkercad.webp" width="1000" height="506" alt="Circuito armado en Tinkercad: un Arduino Uno conectado a un sensor ultrasónico HC-SR04 y a dos LED, uno rojo y uno verde" loading="lazy" decoding="async">
-        <figcaption data-i18n="parkex.s4">primer prototipo del sensor, en Tinkercad</figcaption>
-      </figure>
-      <figure class="taped on-white" style="--r:1.6deg">
-        <img data-i18n-alt="parkex.19" src="img/parkex-arquitectura.png" alt="Diagrama de arquitectura de ParkEx: sensor y Arduino en la plaza, puente serie y lector de chapas en la computadora del parking, API REST, PostgreSQL y Realtime en Supabase, y el navegador" width="1890" height="1330" loading="lazy" decoding="async">
-        <figcaption data-i18n="parkex.20">Diagrama de la lógica del sistema</figcaption>
-      </figure>
-    </div>
 
     <div class="spec process">
       <dl>
@@ -329,27 +317,27 @@
           <div class="track deck" role="group" data-i18n-aria-label="itspace.gal" aria-label="Capturas de ITSpace">
             <figure class="shot taped" style="--r:-1.5deg">
               <img data-i18n-alt="itspace.a1" src="img/proyectos/itspace-inicio.webp" width="1200" height="750" alt="Captura de la página de inicio de ITSpace: barra azul petróleo con el logo y el buscador, menú lateral con Lenguajes, Foro, Cursos e IDE, un cohete ilustrado sobre la Luna con el título «Bienvenido a ITSpace» y, debajo, una foto del edificio del instituto" loading="lazy" decoding="async">
-              <figcaption><span class="path">html/<wbr>index.php</span></figcaption>
+              <figcaption><span class="path" data-i18n="itspace.p1">Inicio</span></figcaption>
             </figure>
             <figure class="shot taped" style="--r:1.2deg">
               <img data-i18n-alt="itspace.a2" src="img/proyectos/itspace-lenguajes.webp" width="1200" height="750" alt="Captura de la sección Lenguajes: seis tarjetas azules con los logos de Python, HTML y CSS, JavaScript, Java, C++ y SQL" loading="lazy" decoding="async">
-              <figcaption><span class="path">html/<wbr>language.php</span></figcaption>
+              <figcaption><span class="path" data-i18n="itspace.p2">Lenguajes</span></figcaption>
             </figure>
             <figure class="shot taped" style="--r:-.8deg">
               <img data-i18n-alt="itspace.a3" src="img/proyectos/itspace-javascript.webp" width="1200" height="750" alt="Captura de la página de JavaScript: el título en un recuadro, la explicación de qué es el lenguaje, un bloque «Hola Mundo» con console.log y un índice de temas a la derecha" loading="lazy" decoding="async">
-              <figcaption><span class="path">html/<wbr>languages/<wbr>js.php</span></figcaption>
+              <figcaption><span class="path" data-i18n="itspace.p3">JavaScript</span></figcaption>
             </figure>
             <figure class="shot taped" style="--r:1.6deg">
               <img data-i18n-alt="itspace.a4" src="img/proyectos/itspace-login.webp" width="1200" height="750" alt="Captura del formulario de inicio de sesión sobre un fondo de estrellas, con un cohete que entra por la izquierda" loading="lazy" decoding="async">
-              <figcaption><span class="path">html/<wbr>login.php</span></figcaption>
+              <figcaption><span class="path" data-i18n="itspace.p4">Iniciar sesión</span></figcaption>
             </figure>
             <figure class="shot taped phone" style="--r:-2deg">
               <img data-i18n-alt="itspace.a5" src="img/proyectos/itspace-inicio-mobile.webp" width="390" height="844" alt="Captura de la página de inicio en un celular: el buscador arriba, el cohete con los botones «Ver lenguajes» y «Ver cursos» y la foto del instituto" loading="lazy" decoding="async">
-              <figcaption><span class="path">390 px</span></figcaption>
+              <figcaption><span class="path" data-i18n="itspace.p5">Inicio, en el celular</span></figcaption>
             </figure>
             <figure class="shot taped phone" style="--r:1.4deg">
               <img data-i18n-alt="itspace.a6" src="img/proyectos/itspace-javascript-mobile.webp" width="390" height="844" alt="Captura de la página de JavaScript en un celular, con el índice de temas apilado arriba del contenido" loading="lazy" decoding="async">
-              <figcaption><span class="path">390 px</span></figcaption>
+              <figcaption><span class="path" data-i18n="itspace.p6">JavaScript, en el celular</span></figcaption>
             </figure>
           </div>
         </div>
@@ -465,21 +453,12 @@
 <span class="l" style="--i:12"><span class="c">-----------------------------------------------</span></span>
 <span class="l" style="--i:13">Equipos activos: 11 de 254</span>
 <span class="l" style="--i:14">Tiempo de escaneo: 4 s</span></pre>
-        <div class="sheets deck" role="group" data-i18n-aria-label="escaneo.deck" aria-label="Impresiones del código de Escaneo IP y captura del modo web">
-          <figure class="sheet print" style="--r:1.3deg">
-            <figcaption><span class="path">PingScanner.java</span></figcaption>
-<pre class="code num"><code><span class="l"><span class="ln" aria-hidden="true">18</span><span class="t">public static Map&lt;String, Boolean&gt; escanear(<wbr>List&lt;String&gt; ips) throws InterruptedException {</span></span><span class="l"><span class="ln" aria-hidden="true">19</span><span class="t">    Map&lt;String, Boolean&gt; resultados = new ConcurrentHashMap&lt;&gt;();</span></span><span class="l"><span class="ln" aria-hidden="true">20</span><span class="t">    int hilos = Math.<wbr>min(<wbr>HILOS_MAXIMOS, Math.<wbr>max(<wbr>1, ips.<wbr>size()));</span></span><span class="l"><span class="ln" aria-hidden="true">21</span><span class="t">    ExecutorService pool = Executors.<wbr>newFixedThreadPool(<wbr>hilos);</span></span><span class="l"><span class="ln" aria-hidden="true">22</span><span class="t"> </span></span><span class="l"><span class="ln" aria-hidden="true">23</span><span class="t">    for (<wbr>String ip : ips) {</span></span><span class="l"><span class="ln" aria-hidden="true">24</span><span class="t">        pool.<wbr>submit(() -&gt; resultados.<wbr>put(<wbr>ip, hacerPing(<wbr>ip)));</span></span><span class="l"><span class="ln" aria-hidden="true">25</span><span class="t">    }</span></span><span class="l"><span class="ln" aria-hidden="true">26</span><span class="t"> </span></span><span class="l"><span class="ln" aria-hidden="true">27</span><span class="t">    pool.<wbr>shutdown();</span></span><span class="l"><span class="ln" aria-hidden="true">28</span><span class="t">    pool.<wbr>awaitTermination(<wbr>ips.<wbr>size() * 2L + 10, TimeUnit.<wbr>SECONDS);</span></span><span class="l"><span class="ln" aria-hidden="true">29</span><span class="t">    return resultados;</span></span><span class="l"><span class="ln" aria-hidden="true">30</span><span class="t">}</span></span></code></pre>
-          </figure>
-          <figure class="sheet print" style="--r:-1deg">
-            <figcaption><span class="path">CidrRange.java</span></figcaption>
-<pre class="code num"><code><span class="l"><span class="ln" aria-hidden="true">34</span><span class="t">long mascara = prefijo == 0 ? 0 : (<wbr>0xFFFFFFFFL &lt;&lt; (<wbr>32 - prefijo)) &amp; 0xFFFFFFFFL;</span></span><span class="l"><span class="ln" aria-hidden="true">35</span><span class="t">long red = ip &amp; mascara;</span></span><span class="l"><span class="ln" aria-hidden="true">36</span><span class="t">long broadcast = red | (<wbr>~mascara &amp; 0xFFFFFFFFL);</span></span></code></pre>
-          </figure>
+        <div class="sheets">
           <figure class="sheet shot-web taped" style="--r:-1.6deg">
             <img data-i18n-alt="escaneo.a1" src="img/proyectos/escaneo-web.webp" width="960" height="300" alt="Captura del modo web de EscaneoIP: fondo azul oscuro, el título EscaneoIP, un campo «Red (notacion CIDR)» con el ejemplo 192.168.1.0/24 y el botón Escanear" loading="lazy" decoding="async">
-            <figcaption><span class="path">WebAssets.java</span></figcaption>
+            <figcaption><span class="path" data-i18n="escaneo.web">modo web, en el navegador</span></figcaption>
           </figure>
         </div>
-        <p class="deck-hint pen" aria-hidden="true"><span class="deck-n">1</span> / 3 · <span data-i18n="ui.swipe">deslizá</span> →</p>
       </div>
     </div>
 
@@ -520,7 +499,7 @@
           <div class="lp-frame" tabindex="0" role="region" data-i18n-aria-label="cinniminies.lpAria" aria-label="Captura de la página completa de cinniminies.emprendeuy.com (se puede desplazar)">
             <img data-i18n-alt="cinniminies.a1" src="img/proyectos/cinni-pagina.webp" width="640" height="2084" alt="Captura de la página completa de Cinniminies: portada con rolls de canela y el título «El roll que se desenrolla en capas de canela», el armador de cajas de 6, 12 o de 3 a 12 rolls, las tarjetas de sabores, el retiro en Paysandú, las preguntas frecuentes y el contacto por WhatsApp e Instagram" loading="lazy" decoding="async">
           </div>
-          <figcaption><span class="path">cinniminies.emprendeuy.com · 1280 px</span></figcaption>
+          <figcaption><span class="path">cinniminies.emprendeuy.com</span></figcaption>
         </figure>
         <div class="cinni-side">
           <p data-i18n="cinniminies.13" class="tagline">Cinnamon Rolls hechos artesanalmente<small>Emprendimiento local sobre panadería</small></p>
@@ -534,10 +513,6 @@
               <a href="https://www.instagram.com/cinniminies.pay/" target="_blank" rel="noopener">@cinniminies.pay</a>
             </li>
           </ul>
-          <figure class="sheet print" style="--r:-1deg">
-            <figcaption><span class="path">cinniminies.js</span></figcaption>
-<pre class="code num"><code><span class="l"><span class="ln" aria-hidden="true">150</span><span class="t">function boxIsComplete(<wbr>box) {</span></span><span class="l"><span class="ln" aria-hidden="true">151</span><span class="t">  const filled = boxFilled(<wbr>box);</span></span><span class="l"><span class="ln" aria-hidden="true">152</span><span class="t">  return isCustomBox(<wbr>box) ? filled &gt;= CUSTOM_MIN : filled === box.<wbr>size;</span></span><span class="l"><span class="ln" aria-hidden="true">153</span><span class="t">}</span></span><span class="l"><span class="ln" aria-hidden="true">154</span><span class="t"> </span></span><span class="l"><span class="ln" aria-hidden="true">155</span><span class="t">function customBoxPrice(<wbr>box) {</span></span><span class="l"><span class="ln" aria-hidden="true">156</span><span class="t">  return Object.<wbr>entries(<wbr>box.<wbr>flavors).<wbr>reduce((<wbr>sum, [flavorId, qty]) =&gt; {</span></span><span class="l"><span class="ln" aria-hidden="true">157</span><span class="t">    const unitPrice = CUSTOM_FLAVOR_PRICES[flavorId] || 0;</span></span><span class="l"><span class="ln" aria-hidden="true">158</span><span class="t">    return sum + qty * unitPrice;</span></span><span class="l"><span class="ln" aria-hidden="true">159</span><span class="t">  }, 0);</span></span><span class="l"><span class="ln" aria-hidden="true">160</span><span class="t">}</span></span><span class="l"><span class="ln" aria-hidden="true">161</span><span class="t"> </span></span><span class="l"><span class="ln" aria-hidden="true">162</span><span class="t">function boxPrice(<wbr>box) {</span></span><span class="l"><span class="ln" aria-hidden="true">163</span><span class="t">  if (<wbr>!boxIsComplete(<wbr>box)) return 0;</span></span><span class="l"><span class="ln" aria-hidden="true">164</span><span class="t">  return isCustomBox(<wbr>box) ? customBoxPrice(<wbr>box) : BOX_PRICES[box.<wbr>size];</span></span><span class="l"><span class="ln" aria-hidden="true">165</span><span class="t">}</span></span></code></pre>
-          </figure>
         </div>
       </div>
     </div>

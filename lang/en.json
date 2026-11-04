@@ -163,8 +163,19 @@
   "cinniminies.a2": "Cinniminies cover on a phone: a photo of cinnamon rolls behind a serif title and the “Ver el menú” and “Contactanos” buttons",
   "cinniminies.a3": "The Cinniminies menu on a phone: “Cuatro rolls. Ninguno apurado.” and the box size picker, 6 or 12 rolls or 3 to 12 of your choice",
   "ui.swipe": "swipe",
-  "parkex.deck": "Printouts of the ParkEx code",
-  "escaneo.deck": "Printouts of the Escaneo IP code and a screenshot of its web mode",
+  "parkex.deck": "How ParkEx works, the prototype and the diagram",
   "hero.tag": "Portfolio · web development & design",
-  "hero.scroll": "scroll"
+  "hero.scroll": "scroll",
+  "parkex.howT": "How it works",
+  "parkex.how1": "An ultrasonic sensor in each bay detects whether a car is there.",
+  "parkex.how2": "A bridge on the parking lot's computer sends every change to the API.",
+  "parkex.how3": "The API stores it in Supabase and the map updates itself in the browser.",
+  "parkex.how4": "In reserved bays, a camera reads the plate and looks for the DI badge. If it isn't there, it alerts a person.",
+  "escaneo.web": "web mode, in the browser",
+  "itspace.p1": "Home",
+  "itspace.p2": "Languages",
+  "itspace.p3": "JavaScript",
+  "itspace.p4": "Log in",
+  "itspace.p5": "Home, on a phone",
+  "itspace.p6": "JavaScript, on a phone"
 }
