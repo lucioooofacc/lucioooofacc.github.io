@@ -9,8 +9,6 @@
   "hero.help": "Foto movible: usá las flechas para moverla y Enter para traerla al frente.",
   "hero.alt1": "Selfie de Lucio con anteojos, suéter gris y camisa blanca",
   "hero.alt2": "Lucio de cuerpo entero frente a una pared de ladrillo con grafitis, de noche",
-  "hero.cap1": "yo, de cerca",
-  "hero.cap2": "yo, de cuerpo entero",
   "hero.reset": "ordenar la mesa",
   "about.1": "Sobre mí",
   "about.2": "Estudiante de IT Bilingüe y desarrollador web. Trabajo en el cruce entre diseño e ingeniería, desde la interfaz hasta la base de datos, con la convicción de que cada decisión técnica debe tener un porqué.",
@@ -166,5 +164,7 @@
   "cinniminies.a3": "El menú de Cinniminies en un celular: «Cuatro rolls. Ninguno apurado.» y el selector del tamaño de la caja, de 6 o 12 rolls o de 3 a 12 a gusto",
   "ui.swipe": "deslizá",
   "parkex.deck": "Impresiones del código de ParkEx",
-  "escaneo.deck": "Impresiones del código de Escaneo IP y captura del modo web"
+  "escaneo.deck": "Impresiones del código de Escaneo IP y captura del modo web",
+  "hero.tag": "Portfolio · desarrollo y diseño web",
+  "hero.scroll": "bajá"
 }

@@ -141,7 +141,10 @@
   var order = snaps.slice(); // el último está arriba
 
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
-  function render(s) { s.el.style.transform = 'translate(' + s.x.toFixed(1) + 'px,' + s.y.toFixed(1) + 'px) rotate(' + s.rot.toFixed(2) + 'deg)'; }
+  function render(s) {
+    s.el.style.translate = s.x.toFixed(1) + 'px ' + s.y.toFixed(1) + 'px';
+    s.el.style.setProperty('--tilt', s.rot.toFixed(2) + 'deg');
+  }
   function stack() {
     order.forEach(function (s, i) { s.el.style.zIndex = i + 1; });
     resetBtn.style.zIndex = order.length + 1;
@@ -259,7 +262,7 @@
     snaps.forEach(function (s) {
       cancelAnimationFrame(s.raf);
       s.x = s.y = s.vx = s.vy = s.rot = 0;
-      s.el.style.transition = reduce ? '' : 'transform var(--d-slow) var(--ease), rotate var(--d-mid) var(--ease)';
+      s.el.style.transition = reduce ? '' : 'translate var(--d-slow) var(--ease)';
       render(s);
       setTimeout(function () { s.el.style.transition = ''; }, 800);
     });
@@ -454,6 +457,17 @@
       };
       ['scroll', 'touchstart', 'wheel', 'keydown', 'pointerdown'].forEach(function (ev) { addEventListener(ev, first, { passive: true }); });
       if (location.hash || scrollY > 0) first();
+      // Mientras tanto, se precargan en un momento ocioso: el primer gesto ya los encuentra en caché
+      addEventListener('load', function () {
+        (window.requestIdleCallback || setTimeout)(function () {
+          if (loading) return;
+          FILES.forEach(function (f) {
+            var l = document.createElement('link');
+            l.rel = 'prefetch'; l.as = 'script'; l.crossOrigin = 'anonymous'; l.href = CDN + f[0];
+            document.head.appendChild(l);
+          });
+        });
+      });
     }
     onChange(deskMq, function () { if (deskMq.matches) loadGsap(); });
 
@@ -537,8 +551,39 @@
         };
       }
 
+      // Portada: la mesa se vacía. Cada recorte sale hacia su lado según su profundidad (--d)
+      // y el nombre queda limpio. En escritorio la portada está fija; en celular pasa sin pin.
+      function heroFly(fixed) {
+        var pile = q('#pile');
+        var tl = gsap.timeline({ scrollTrigger: fixed
+          ? { trigger: '.cover', start: 'top top', end: 'bottom bottom', scrub: 0.5, invalidateOnRefresh: true }
+          : { trigger: '.cover', start: 'top top', end: 'bottom 20%', scrub: 0.4, invalidateOnRefresh: true } });
+        function side(el, axis) {
+          var c = axis === 'x' ? el.offsetLeft + el.offsetWidth / 2 - pile.offsetWidth / 2 : el.offsetTop + el.offsetHeight / 2 - pile.offsetHeight / 2;
+          return c >= 0 ? 1 : -1;
+        }
+        $('.snap', pile).forEach(function (el) {
+          var d = parseFloat(el.style.getPropertyValue('--d')) || 1;
+          tl.to(el, {
+            x: function () { return side(el, 'x') * innerWidth * (0.3 + 0.35 * d); },
+            y: function () { return (fixed && side(el, 'y') > 0 ? 0.6 : -1) * innerHeight * (0.25 + 0.4 * d); },
+            rotation: function () { return side(el, 'x') * (12 + 24 * d); },
+            scale: 1 + 0.18 * d,
+            ease: 'power1.in',
+            duration: 0.5
+          }, (1.1 - d) * 0.25);
+        });
+        tl.to('.cover-note, .cover-down, .pile-reset', { opacity: 0, y: 16, duration: 0.15, ease: 'none' }, 0)
+          .to('.cover .ghost', { opacity: 0, duration: 0.4, ease: 'none' }, 0)
+          .to('.name', fixed ? { scale: 0.8, y: function () { return -innerHeight * 0.05; }, duration: 0.6, ease: 'power2.inOut' }
+                             : { y: function () { return innerHeight * 0.22; }, scale: 0.9, opacity: 0.35, duration: 0.8, ease: 'none' }, 0.2)
+          .to('.cover .stroke', fixed ? { scaleX: 0.8, duration: 0.6, ease: 'power2.inOut' } : { y: function () { return innerHeight * 0.22; }, opacity: 0.35, duration: 0.8, ease: 'none' }, 0.2);
+        if (fixed) tl.to({}, { duration: 0.1 });
+      }
+
       // ═════ Escritorio: escenas sticky ═════
       function desk(cleanups) {
+        heroFly(true);
         var arts = $('.proj');
         arts.forEach(function (art, i) {
           var side = i % 2 ? 1 : -1;
@@ -620,6 +665,7 @@
 
       // ═════ Celular / touch: todo pasa mientras se baja, sin pins ═════
       function hand(cleanups) {
+        heroFly(false);
         // Láminas: entran deslizándose desde un costado, como papel que se empuja sobre la mesa
         $('.proj').forEach(function (art, i) {
           var side = i % 2 ? 1 : -1;
