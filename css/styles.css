@@ -27,6 +27,12 @@ body { margin: 0; }
   --f-sans: "Archivo", "Arial Narrow", Arial, system-ui, sans-serif;
   --f-pen: "Reenie Beanie", "Segoe Print", "Bradley Hand", cursive;
   --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+
+  /* Motion: una sola curva y tres duraciones para todo el sitio */
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --d-fast: 150ms;  /* respuesta: hover, press */
+  --d-mid: 300ms;   /* cambios de estado */
+  --d-slow: 700ms;  /* entradas, trazos de birome */
 }
 
 html, body { background: var(--desk); color: var(--ink); }
@@ -149,15 +155,19 @@ main {
 .pen { font-family: var(--f-pen); color: var(--pen); line-height: .95; }
 .mono { font-family: var(--f-mono); }
 
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
 /* ───────── Portada ───────── */
 .cover-stage {
   position: relative;
   display: grid;
-  justify-items: center;
-  text-align: center;
-  padding-block: clamp(44px, 7vw, 92px) clamp(28px, 4vw, 48px);
-  overflow: hidden;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+  align-items: center;
+  gap: clamp(16px, 3vw, 40px);
+  padding-block: clamp(36px, 5vw, 64px) clamp(28px, 4vw, 48px);
+  overflow: clip;
 }
+.cover-text { position: relative; z-index: 1; display: grid; justify-items: start; }
 .owner {
   margin: 0 0 clamp(6px, 1vw, 14px);
   font-stretch: 125%;
@@ -182,24 +192,114 @@ main {
   color: transparent;
   -webkit-text-stroke: 1.5px rgba(20, 20, 20, .22);
   user-select: none;
+  /* Corrimiento de fotocopia: sigue al cursor unos pocos px (js) */
+  transform: translate(var(--gx, 0px), var(--gy, 0px));
+  transition: transform var(--d-slow) var(--ease);
 }
 .cover h1 {
   position: relative;
-  font-size: clamp(44px, 15.5vw, 200px);
+  font-size: clamp(56px, 10.5vw, 150px);
   rotate: -3deg;
+  margin-left: -.04em;
 }
-.stroke { width: min(760px, 86%); height: auto; margin-top: -6px; filter: url(#rough); }
+.stroke { width: min(560px, 100%); height: auto; margin-top: -2px; filter: url(#rough); }
 .cover-note {
-  justify-self: end;
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin: clamp(10px, 2vw, 22px) clamp(0px, 4vw, 60px) 0 0;
-  font-size: clamp(24px, 2.6vw, 34px);
-  rotate: -4deg;
-  text-align: left;
+  gap: 6px;
+  margin: clamp(14px, 2vw, 24px) 0 0 clamp(0px, 3vw, 40px);
+  font-size: clamp(24px, 2.6vw, 32px);
+  rotate: -3deg;
 }
-.cover-note svg { width: 54px; height: 40px; flex: none; }
+.hint-touch { display: none; }
+html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se mueven: no se promete (reserva el lugar, sin saltos) */
+@media (hover: none) {
+  .hint-fine { display: none; }
+  .hint-touch { display: inline; }
+}
+
+/* Trazos de birome: la firma del sitio. Todos se dibujan con stroke-dashoffset */
+.pen-arrow, .pen-ring, .pen-under { overflow: visible; pointer-events: none; }
+.pen-arrow path, .pen-ring path, .pen-under path {
+  fill: none;
+  stroke: var(--pen);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+.pen-arrow { width: 58px; height: 40px; flex: none; }
+
+/* Fotos sueltas sobre la lámina */
+.pile {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  aspect-ratio: 20 / 21;
+}
+.snap {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 50%;
+  margin: 0;
+  padding: 8px 8px 40px;
+  background: var(--paper-hi);
+  rotate: var(--r);
+  box-shadow: 0 1px 1px rgba(0,0,0,.12), 0 14px 24px -16px rgba(0,0,0,.55);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: rotate var(--d-mid) var(--ease), scale var(--d-fast) var(--ease);
+}
+.snap::after { /* sombra de "levantada": solo cambia su opacidad */
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: 0 30px 40px -20px rgba(0,0,0,.5);
+  opacity: 0;
+  transition: opacity var(--d-mid) var(--ease);
+}
+.snap img { width: 100%; pointer-events: none; filter: grayscale(1) contrast(1.08); transition: filter var(--d-mid) var(--ease); }
+.snap figcaption { position: absolute; left: 12px; right: 12px; bottom: 8px; font-family: var(--f-pen); color: var(--pen); font-size: clamp(20px, 2vw, 25px); line-height: 1; }
+.snap:hover::after, .snap.held::after, .snap:focus-visible::after { opacity: 1; }
+.snap:hover img, .snap.held img, .snap:focus-visible img { filter: none; }
+.snap.held { cursor: grabbing; scale: 1.03; }
+.snap:focus-visible { outline: 2px solid var(--pen); outline-offset: 4px; }
+.pile-reset {
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  z-index: 1;
+  padding: 2px 6px;
+  font-size: 26px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color var(--d-fast) var(--ease);
+}
+.pile-reset:hover { color: var(--ink); }
+
+/* Entrada de la portada (una sola vez, solo CSS). fill-mode backwards:
+   al terminar no queda nada pisado, así el arrastre usa transform libre. */
+@keyframes fade-rise { from { opacity: 0; translate: 0 10px; } }
+@keyframes ink-in { from { clip-path: inset(-15% 100% -15% -2%); } to { clip-path: inset(-15% -4% -15% -2%); } }
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes drop { from { opacity: 0; translate: 0 -18px; scale: 1.05; } }
+.cover .owner { animation: fade-rise var(--d-slow) var(--ease) backwards; }
+.cover h1 { animation: ink-in 900ms var(--ease) 120ms backwards; }
+.cover .stroke { animation: ink-in 500ms var(--ease) 820ms backwards; }
+.cover-note { animation: ink-in var(--d-slow) var(--ease) 1150ms backwards; }
+.cover-note .pen-arrow path { animation: draw 450ms var(--ease) 1750ms backwards; }
+.snap { animation: drop var(--d-slow) var(--ease) backwards; }
+.snap:nth-of-type(1) { animation-delay: 350ms; }
+.snap:nth-of-type(2) { animation-delay: 520ms; }
 
 /* ───────── Sobre mí ───────── */
 .about { display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(30px, 5vw, 64px); align-items: start; }
@@ -281,7 +381,7 @@ main {
   background: var(--paper-hi);
   rotate: var(--r, -2deg);
   box-shadow: 0 1px 1px rgba(0,0,0,.12), 0 18px 30px -18px rgba(0,0,0,.6);
-  transition: rotate .35s ease;
+  transition: rotate var(--d-mid) var(--ease);
 }
 .taped::before, .taped::after {
   content: "";
@@ -295,7 +395,7 @@ main {
 }
 .taped::before { left: 12%; rotate: -7deg; }
 .taped::after { right: 10%; rotate: 5deg; }
-.taped img { width: 100%; filter: grayscale(1) contrast(1.08); transition: filter .4s ease; }
+.taped img { width: 100%; filter: grayscale(1) contrast(1.08); transition: filter var(--d-mid) var(--ease); }
 .taped:hover { rotate: 0deg; }
 .taped:hover img { filter: none; }
 .taped figcaption {
@@ -338,7 +438,7 @@ main {
   padding: 12px 14px;
   text-decoration: none;
   outline: 1px solid transparent;
-  transition: outline-color .15s ease;
+  transition: outline-color var(--d-fast) var(--ease);
 }
 .idx a:hover, .idx a:focus-visible { --h: var(--pen); --hf: var(--paper-lo); outline: 1px solid var(--pen); outline-offset: 0; }
 .n { font-weight: 100; font-stretch: 62%; font-size: 60px; line-height: 1; font-variant-numeric: tabular-nums; text-align: center; }
@@ -381,7 +481,7 @@ main {
 }
 .more .c, .proj[open] .more .o { display: none; }
 .proj[open] .more .c { display: inline; }
-.more::after { content: "+"; font-size: 15px; transition: transform .2s; }
+.more::after { content: "+"; font-size: 15px; transition: transform var(--d-mid) var(--ease); }
 .proj[open] .more::after { transform: rotate(45deg); }
 .proj > summary:hover .more { background: currentColor; }
 .proj > summary:hover .more > *, .proj > summary:hover .more::after { color: var(--paper); }
@@ -433,7 +533,7 @@ main {
   background: var(--ink);
   opacity: 0;
   translate: 0 -25%;
-  transition: opacity .35s ease, translate .45s cubic-bezier(.2,.8,.2,1);
+  transition: opacity var(--d-mid) var(--ease), translate var(--d-slow) var(--ease);
 }
 .car::after { content: ""; position: absolute; left: 14%; right: 14%; top: 16%; height: 18%; border-radius: 3px; background: rgba(240,240,236,.35); }
 .row.b .car::after { top: auto; bottom: 16%; }
@@ -461,7 +561,7 @@ main {
   inset: 6%;
   border: 2px solid var(--pen);
   border-radius: 50%;
-  animation: ping .9s ease-out both;
+  animation: ping var(--d-slow) var(--ease) both;
   pointer-events: none;
 }
 @keyframes ping { from { scale: .5; opacity: 1; } to { scale: 1.25; opacity: 0; } }
@@ -579,7 +679,6 @@ main {
 .contact { display: grid; grid-template-columns: .75fr 1.25fr; gap: clamp(28px, 5vw, 72px); align-items: center; padding-block: clamp(24px, 4vw, 50px); }
 .contact-main { display: grid; gap: 26px; }
 .contact-word { font-size: clamp(48px, 14vw, 180px); rotate: -5deg; }
-.contact-word + .pen { font-size: clamp(26px, 2.6vw, 34px); margin: 18px 0 0 6%; rotate: -3deg; max-width: 20ch; }
 .channels { list-style: none; margin: 0; padding: 0; display: grid; }
 .channels li { display: grid; grid-template-columns: 96px 1fr auto; align-items: center; gap: 6px 16px; padding-block: 16px; border-bottom: 1px solid var(--ink); }
 .channels li:first-child { border-top: 1px solid var(--ink); }
@@ -607,6 +706,76 @@ main {
 .quick a:hover, .lang-btn:hover { background: var(--pen); }
 .lang-btn:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; }
 
+/* ───────── Interacción y movimiento ───────── */
+/* Press: escala mínima en todo lo que se toca */
+.btn, .quick a, .lang-btn, .more, .pile-reset { transition: background-color var(--d-fast) var(--ease), color var(--d-fast) var(--ease), scale var(--d-fast) var(--ease); }
+.btn:active, .quick a:active, .lang-btn:active, .pile-reset:active, .proj > summary:active .more { scale: .96; }
+
+/* Láminas: se revelan al entrar en pantalla (solo si js marcó html.reveal) */
+.plate { transition: opacity var(--d-slow) var(--ease), translate var(--d-slow) var(--ease); }
+html.reveal .plate:not(.cover):not(.in) { opacity: 0; translate: 0 28px; }
+
+/* Palabras en brush: se "pintan" de izquierda a derecha */
+html.reveal [data-wipe] { clip-path: inset(-25% -6% -25% -6%); transition: clip-path 1s var(--ease) 120ms; }
+html.reveal [data-wipe]:not(.in) { clip-path: inset(-25% 106% -25% -6%); transition: none; }
+
+/* Trazos de birome que se dibujan al llegar con el scroll */
+[data-draw] path { transition: stroke-dashoffset var(--d-slow) var(--ease) 450ms; }
+html.reveal [data-draw]:not(.in) path { stroke-dashoffset: 1; transition: none; }
+
+/* Sobre mí: círculo de birome alrededor del nivel C1 */
+.certs li { position: relative; }
+.certs .pen-ring { position: absolute; right: -16px; top: 50%; translate: 0 -50%; width: 70px; height: 46px; }
+
+/* Índice: al pasar o enfocar, la birome encierra el número */
+.idx .n { position: relative; }
+.idx .pen-ring { position: absolute; left: 50%; top: 52%; translate: -50% -50%; width: 58px; height: 66px; rotate: -8deg; }
+.idx .pen-ring path { stroke-dashoffset: 1; transition: stroke-dashoffset var(--d-mid) var(--ease); }
+.idx a:hover .pen-ring path, .idx a:focus-visible .pen-ring path { stroke-dashoffset: 0; }
+
+/* Contacto: subrayado de birome bajo "Hablemos" */
+.word-mark { display: inline-grid; justify-items: stretch; }
+.pen-under { width: 100%; height: 22px; margin-top: 2px; rotate: -4deg; }
+.word-mark + .pen { font-size: clamp(26px, 2.6vw, 34px); margin: 14px 0 0 6%; rotate: -3deg; max-width: 20ch; }
+
+/* Proyectos: la lámina se levanta de la mesa al pasar por su encabezado */
+article.plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: 0 46px 60px -34px rgba(0,0,0,.55);
+  opacity: 0;
+  transition: opacity var(--d-mid) var(--ease);
+}
+article.plate:has(> .proj > summary:hover) { translate: 0 -4px; transition-duration: var(--d-mid); }
+article.plate:has(> .proj > summary:hover)::before { opacity: 1; }
+
+/* Al abrir un proyecto, su contenido sube en cascada */
+@keyframes rise { from { opacity: 0; translate: 0 12px; } }
+.proj[open] > :not(summary) { animation: rise var(--d-slow) var(--ease) backwards; }
+.proj[open] > :nth-child(3) { animation-delay: 80ms; }
+.proj[open] > :nth-child(4) { animation-delay: 160ms; }
+.proj[open] > :nth-child(5) { animation-delay: 240ms; }
+/* La terminal "imprime" su salida línea por línea */
+@keyframes print { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+.proj[open] .term { animation: print 1.1s steps(17) 250ms backwards; }
+
+/* Fotos pegadas: se inclinan levemente hacia el cursor (js, solo mouse) */
+.taped.tilt { transform: perspective(900px) rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg)); transition: rotate var(--d-mid) var(--ease), transform var(--d-fast) linear; }
+
+/* Coded Bias: el playhead recorre la línea de tiempo con el scroll (CSS nativo) */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+  @supports (animation-timeline: view()) {
+    /* .tl-wrap tiene overflow propio: la línea de tiempo se nombra ahí para seguir el scroll de la página */
+    .tl-wrap { view-timeline: --tl block; }
+    .clips { container-type: inline-size; }
+    .clips .playhead { left: 0; animation: scrub linear both; animation-timeline: --tl; animation-range: entry 100% exit 0%; }
+    @keyframes scrub { from { translate: 0; } to { translate: calc(100cqw - 2px); } }
+  }
+}
+
 /* ───────── Responsive ───────── */
 /* Tablet: una columna por sección */
 @media (max-width: 900px) {
@@ -614,6 +783,11 @@ main {
   .about-side { width: 100%; max-width: 460px; justify-self: center; }
   .index-word { font-size: clamp(84px, 24vw, 170px); }
   .contact-photo { width: min(100%, 320px); }
+  .cover-stage { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .cover .ghost { top: 22%; }
+  .cover h1 { font-size: clamp(56px, 19vw, 150px); }
+  .pile { max-width: 460px; justify-self: center; }
+  .pen-arrow { rotate: 70deg; }
 }
 
 /* Celular */
@@ -627,7 +801,10 @@ main {
   .channels li { grid-template-columns: minmax(0, 1fr) auto; }
   .channels .lab { grid-column: 1 / -1; }
   .copy-state { grid-column: 1 / -1; }
-  .cover-note { justify-self: center; margin-right: 0; }
+  .cover-note { margin-left: 4px; }
+  .pile { aspect-ratio: 1 / .94; }
+  .snap figcaption { font-size: 18px; left: 8px; right: 8px; }
+  .snap { padding: 6px 6px 32px; }
   .tl { min-width: 0; }
   .clips { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .clip { white-space: normal; overflow-wrap: anywhere; }

@@ -40,15 +40,36 @@
       <span>UY</span>
     </div>
 
-    <div class="cover-stage">
+    <div class="cover-stage" id="cover-stage">
       <p class="ghost" aria-hidden="true">PORTFOLIO</p>
-      <p class="owner">Lucio <b>Facchin</b></p>
-      <h1 class="brush">Portfolio</h1>
-      <svg class="stroke" viewBox="0 0 760 56" aria-hidden="true">
-        <path d="M8 34 C 120 20, 330 10, 560 12 C 640 13, 710 16, 752 22 L 748 32 C 640 30, 520 32, 400 36 C 250 41, 120 46, 16 52 Z" fill="#141414"/>
-      </svg>
-      <p class="cover-note pen">
-      </p>
+
+      <div class="cover-text">
+        <p class="owner">Lucio <b>Facchin</b></p>
+        <h1 class="brush">Portfolio</h1>
+        <svg class="stroke" viewBox="0 0 760 56" aria-hidden="true">
+          <path d="M8 34 C 120 20, 330 10, 560 12 C 640 13, 710 16, 752 22 L 748 32 C 640 30, 520 32, 400 36 C 250 41, 120 46, 16 52 Z" fill="#141414"/>
+        </svg>
+        <p class="cover-note pen">
+          <span class="hint-fine" data-i18n="hero.note">arrastrá las fotos por la mesa</span>
+          <span class="hint-touch" data-i18n="hero.noteTouch">tocá las fotos para mezclarlas</span>
+          <!-- Flecha de birome: se dibuja al cargar -->
+          <svg class="pen-arrow" viewBox="0 0 64 44" aria-hidden="true"><path pathLength="1" d="M4 30 C 18 38, 38 36, 54 16 M42 14 L 55 14 L 56 27"/></svg>
+        </p>
+      </div>
+
+      <!-- Fotos sueltas sobre la lámina: se arrastran (mouse), se mezclan (toque) o se mueven con flechas (teclado) -->
+      <div class="pile" id="pile" role="group" data-i18n-aria-label="hero.pile" aria-label="Fotos de Lucio sobre la mesa">
+        <p class="sr-only" id="pile-help" data-i18n="hero.help">Foto movible: usá las flechas para moverla y Enter para traerla al frente.</p>
+        <figure class="snap" tabindex="0" aria-describedby="pile-help" style="--r:-6deg; --x:2%; --y:4%">
+          <img data-i18n-alt="hero.alt1" src="img/hero-retrato.jpg" width="640" height="853" alt="Selfie de Lucio con anteojos, suéter gris y camisa blanca" loading="lazy" decoding="async" draggable="false">
+          <figcaption data-i18n="hero.cap1">yo, de cerca</figcaption>
+        </figure>
+        <figure class="snap" tabindex="0" aria-describedby="pile-help" style="--r:5deg; --x:44%; --y:14%">
+          <img data-i18n-alt="hero.alt2" src="img/hero-muro.jpg" width="640" height="853" alt="Lucio de cuerpo entero frente a una pared de ladrillo con grafitis, de noche" loading="lazy" decoding="async" draggable="false">
+          <figcaption data-i18n="hero.cap2">yo, de cuerpo entero</figcaption>
+        </figure>
+        <button class="pile-reset pen" id="pile-reset" type="button" data-i18n="hero.reset" hidden>ordenar la mesa</button>
+      </div>
     </div>
 
     <div class="bar bottom">
@@ -86,7 +107,7 @@
           <h2 data-i18n="about.6" class="bh">Idiomas</h2>
           <ul class="certs">
             <li><strong data-i18n="about.7">Español</strong><span data-i18n="about.8">Lengua materna</span><b data-i18n="about.9" class="lvl">Nativo</b></li>
-            <li><strong data-i18n="about.10">Inglés</strong><span data-i18n="about.11">Expositor en el XIII Regional Seminar for Teachers of English (Rivera, Uruguay)</span><b class="lvl">C1</b></li>
+            <li><strong data-i18n="about.10">Inglés</strong><span data-i18n="about.11">Expositor en el XIII Regional Seminar for Teachers of English (Rivera, Uruguay)</span><b class="lvl">C1</b><svg class="pen-ring" data-draw viewBox="0 0 80 48" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></li>
           </ul>
         </div>
 
@@ -107,9 +128,9 @@
       </div>
 
       <div class="about-side">
-        <p data-i18n="about.19" class="brush hola" aria-hidden="true">Hola</p>
+        <p data-i18n="about.19" class="brush hola" data-wipe aria-hidden="true">Hola</p>
         <figure class="taped portrait" style="--r:-3deg">
-          <img data-i18n-alt="about.20" src="img/lucio-retrato.jpg" width="900" height="1200" alt="Retrato de Lucio Facchin con suéter gris y camisa blanca sobre fondo claro">
+          <img data-i18n-alt="about.20" src="img/lucio-retrato.jpg" width="900" height="1200" alt="Retrato de Lucio Facchin con suéter gris y camisa blanca sobre fondo claro" loading="lazy">
           <figcaption>Lucio Facchin</figcaption>
         </figure>
         <figure class="taped second" style="--r:4deg">
@@ -123,13 +144,13 @@
   <!-- ═════════ ÍNDICE ═════════ -->
   <section class="plate lo" id="indice" aria-labelledby="index-title">
     <div class="index">
-      <h2 data-i18n-aria-label="indice.1" class="brush index-word" id="index-title" aria-label="Índice"><span data-i18n="indice.2">ÍNDICE</span></h2>
+      <h2 data-i18n-aria-label="indice.1" class="brush index-word" data-wipe id="index-title" aria-label="Índice"><span data-i18n="indice.2">ÍNDICE</span></h2>
       <ol class="idx">
-        <li><a class="sel" href="#parkex"><span class="n">1</span><span><span data-i18n="indice.3" class="k">Contexto:</span> <span data-i18n="indice.4" class="v">Concurso ConectaLab · UTU</span><span data-i18n="indice.5" class="p"><span class="k">Proyecto:</span> ParkEx</span></span></a></li>
-        <li><a class="sel" href="#itspace"><span class="n">2</span><span><span data-i18n="indice.6" class="k">Contexto:</span> <span data-i18n="indice.7" class="v">Web Design · ITSP</span><span data-i18n="indice.8" class="p"><span class="k">Proyecto:</span> ITSpace</span></span></a></li>
-        <li><a class="sel" href="#coded-bias"><span class="n">3</span><span><span data-i18n="indice.9" class="k">Contexto:</span> <span data-i18n="indice.10" class="v">Inglés</span><span data-i18n="indice.11" class="p"><span class="k">Proyecto:</span> Coded Bias</span></span></a></li>
-        <li><a class="sel" href="#escaneo"><span class="n">4</span><span><span data-i18n="indice.12" class="k">Contexto:</span> <span data-i18n="indice.13" class="v">Redes de Datos</span><span data-i18n="indice.14" class="p"><span class="k">Proyecto:</span> Escaneo IP</span></span></a></li>
-        <li><a class="sel" href="#cinniminies"><span class="n">5</span><span><span data-i18n="indice.15" class="k">Contexto:</span> <span data-i18n="indice.16" class="v">Emprendimiento propio</span><span data-i18n="indice.17" class="p"><span class="k">Proyecto:</span> Cinniminies</span></span></a></li>
+        <li><a class="sel" href="#parkex"><span class="n">1<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span><span><span data-i18n="indice.3" class="k">Contexto:</span> <span data-i18n="indice.4" class="v">Concurso ConectaLab · UTU</span><span data-i18n="indice.5" class="p"><span class="k">Proyecto:</span> ParkEx</span></span></a></li>
+        <li><a class="sel" href="#itspace"><span class="n">2<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span><span><span data-i18n="indice.6" class="k">Contexto:</span> <span data-i18n="indice.7" class="v">Web Design · ITSP</span><span data-i18n="indice.8" class="p"><span class="k">Proyecto:</span> ITSpace</span></span></a></li>
+        <li><a class="sel" href="#coded-bias"><span class="n">3<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span><span><span data-i18n="indice.9" class="k">Contexto:</span> <span data-i18n="indice.10" class="v">Inglés</span><span data-i18n="indice.11" class="p"><span class="k">Proyecto:</span> Coded Bias</span></span></a></li>
+        <li><a class="sel" href="#escaneo"><span class="n">4<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span><span><span data-i18n="indice.12" class="k">Contexto:</span> <span data-i18n="indice.13" class="v">Redes de Datos</span><span data-i18n="indice.14" class="p"><span class="k">Proyecto:</span> Escaneo IP</span></span></a></li>
+        <li><a class="sel" href="#cinniminies"><span class="n">5<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span><span><span data-i18n="indice.15" class="k">Contexto:</span> <span data-i18n="indice.16" class="v">Emprendimiento propio</span><span data-i18n="indice.17" class="p"><span class="k">Proyecto:</span> Cinniminies</span></span></a></li>
       </ol>
     </div>
   </section>
@@ -409,7 +430,8 @@ Tiempo de escaneo: 4 s</pre>
       </figure>
       <div class="contact-main">
         <div>
-          <h2 data-i18n="contacto.3" class="brush contact-word" id="contact-title">Hablemos</h2>
+          <div class="word-mark"><h2 data-i18n="contacto.3" class="brush contact-word" data-wipe id="contact-title">Hablemos</h2>
+          <svg class="pen-under" data-draw viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M6 15 C 70 9, 160 7, 294 11 M40 20 C 110 16, 190 15, 262 17"/></svg></div>
           <p data-i18n="contacto.4" class="pen">Abierto a proyectos, colaboraciones y nuevas oportunidades.</p>
         </div>
       <ul class="channels">
