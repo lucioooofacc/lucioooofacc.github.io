@@ -1,0 +1,6 @@
+Fuentes servidas desde el propio sitio (subconjuntos latin y latin-ext, woff2).
+Todas se distribuyen bajo la SIL Open Font License 1.1: https://openfontlicense.org
+
+- Archivo: Copyright 2016 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo)
+- JetBrains Mono: Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono)
+- Sedgwick Ave Display: Copyright 2017 The Sedgwick Ave Project Authors (https://github.com/Fonthausen/SedgwickAve)

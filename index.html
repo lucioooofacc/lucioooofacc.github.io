@@ -6,9 +6,26 @@
 <meta data-i18n-content="meta.description" name="description" content="Portfolio de Lucio Facchin, desarrollador y diseñador web.">
 <title>Lucio Facchin</title>
 <link rel="icon" href="data:,">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=JetBrains+Mono:wght@400;600&family=Reenie+Beanie&family=Sedgwick+Ave+Display&display=swap">
+<link rel="canonical" href="https://luciofacchin.me/">
+<!-- Vista previa al compartir (WhatsApp, LinkedIn, X, Slack…) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lucio Facchin">
+<meta property="og:title" content="Lucio Facchin · Portfolio">
+<meta property="og:description" content="Portfolio de Lucio Facchin, desarrollador y diseñador web.">
+<meta property="og:url" content="https://luciofacchin.me/">
+<meta property="og:image" content="https://luciofacchin.me/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Portada del portfolio: el nombre Lucio Facchin en letras de pincel rodeado de fotos de Lucio y capturas de sus proyectos sobre una mesa gris">
+<meta property="og:locale" content="es_UY">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lucio Facchin · Portfolio">
+<meta name="twitter:description" content="Portfolio de Lucio Facchin, desarrollador y diseñador web.">
+<meta name="twitter:image" content="https://luciofacchin.me/img/og.jpg">
+<meta name="twitter:image:alt" content="Portada del portfolio: el nombre Lucio Facchin en letras de pincel rodeado de fotos de Lucio y capturas de sus proyectos sobre una mesa gris">
+<link rel="preload" href="fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/sedgwick-ave-display-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/styles.css">
 <!-- Antes del primer pintado: decide si va la versión con escenas de scroll (escritorio, mouse y sin reduced-motion).
      main.js la confirma con gsap.matchMedia() o la saca si GSAP no cargó. -->
@@ -86,17 +103,27 @@
           <figure class="snap scrap slab-card" aria-hidden="true" style="--i:7; --d:1.1; --r:4deg; --x:76%; --y:42%; --w:15%; --mx:60%; --my:31%; --mw:38%">
             <span class="brush">“Prejudice doesn’t disappear. It migrates.”</span>
           </figure>
-          <button class="pile-reset pen" id="pile-reset" type="button" data-i18n="hero.reset" hidden>ordenar la mesa</button>
+          <button class="pile-reset" id="pile-reset" type="button" data-i18n="hero.reset" hidden>ordenar la mesa</button>
         </div>
 
-        <p class="cover-note pen">
+        <p class="cover-note">
           <span class="hint-fine" data-i18n="hero.note">arrastrá las fotos por la mesa</span>
           <span class="hint-touch" data-i18n="hero.noteTouch">tocá las fotos para mezclarlas</span>
         </p>
         <a class="cover-down" href="#sobre-mi">
-          <span class="pen" data-i18n="hero.scroll">bajá</span>
+          <span class="cover-down-t" data-i18n="hero.scroll">bajá</span>
           <svg class="pen-arrow" viewBox="0 0 44 64" aria-hidden="true"><path pathLength="1" d="M22 4 C 18 22, 26 38, 22 56 M10 44 L 22 58 L 34 44"/></svg>
         </a>
+      </div>
+
+
+      <!-- Celular: el afiche. Una sola columna que se adapta a cualquier alto de pantalla -->
+      <div class="cover-poster">
+        <h1 class="poster-name"><span class="pl">Lucio</span> <span class="poster-photo" aria-hidden="true"><img src="img/poster-muro.webp" width="640" height="853" alt="" decoding="async" fetchpriority="high"></span> <span class="pl">Facchin</span></h1>
+        <p class="poster-tag" data-i18n="hero.tag">Portfolio · desarrollo y diseño web</p>
+        <nav class="poster-work" data-i18n-aria-label="rail.aria" aria-label="Proyectos">
+          <a href="#parkex"><b>1</b>ParkEx</a><a href="#itspace"><b>2</b>ITSpace</a><a href="#coded-bias"><b>3</b>Coded Bias</a><a href="#escaneo"><b>4</b>Escaneo IP</a><a href="#cinniminies"><b>5</b>Cinniminies</a>
+        </nav>
       </div>
 
       <div class="bar bottom">
@@ -274,7 +301,7 @@
             <figcaption data-i18n="parkex.20">Diagrama de la lógica del sistema</figcaption>
           </figure>
         </div>
-        <p class="deck-hint pen" aria-hidden="true"><span class="deck-n">1</span> / 3 · <span data-i18n="ui.swipe">deslizá</span> →</p>
+        <p class="deck-hint" aria-hidden="true"><span class="deck-n">1</span> / 3 · <span data-i18n="ui.swipe">deslizá</span> →</p>
       </div>
     </div>
 
@@ -341,7 +368,7 @@
             </figure>
           </div>
         </div>
-        <p class="deck-hint pen" aria-hidden="true"><span class="deck-n">1</span> / 6 · <span data-i18n="ui.swipe">deslizá</span> →</p>
+        <p class="deck-hint" aria-hidden="true"><span class="deck-n">1</span> / 6 · <span data-i18n="ui.swipe">deslizá</span> →</p>
       </div>
     </div>
 
@@ -549,7 +576,7 @@
         <div>
           <div class="word-mark"><h2 data-i18n="contacto.3" class="brush contact-word" data-wipe id="contact-title">Hablemos</h2>
           <svg class="pen-under" data-draw viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M6 15 C 70 9, 160 7, 294 11 M40 20 C 110 16, 190 15, 262 17"/></svg></div>
-          <p data-i18n="contacto.4" class="pen">Abierto a proyectos, colaboraciones y nuevas oportunidades.</p>
+          <p data-i18n="contacto.4" class="contact-line">Abierto a proyectos, colaboraciones y nuevas oportunidades.</p>
         </div>
       <ul class="channels">
         <li>

@@ -175,8 +175,8 @@
       var dt = Math.min(32, now - last); last = now;
       var f = Math.pow(0.9, dt / 16.7);
       s.x += s.vx * dt; s.y += s.vy * dt;
-      if (s.x < b.minX || s.x > b.maxX) { s.x = clamp(s.x, b.minX, b.maxX); s.vx *= -0.35; }
-      if (s.y < b.minY || s.y > b.maxY) { s.y = clamp(s.y, b.minY, b.maxY); s.vy *= -0.35; }
+      if (s.x < b.minX || s.x > b.maxX) { s.x = clamp(s.x, b.minX, b.maxX); s.vx = 0; }
+      if (s.y < b.minY || s.y > b.maxY) { s.y = clamp(s.y, b.minY, b.maxY); s.vy = 0; }
       s.vx *= f; s.vy *= f; s.rot *= f;
       render(s);
       if (Math.abs(s.vx) + Math.abs(s.vy) > 0.02 || Math.abs(s.rot) > 0.1) s.raf = requestAnimationFrame(frame);
@@ -348,7 +348,7 @@
     };
     var deskOn = false; // true mientras las escenas de escritorio están armadas
 
-    // ─── Revelados del PR #1: la clase html.reveal habilita los estados ocultos en CSS ───
+    // ─── Barridos del brush y trazos de birome: la clase html.reveal habilita su estado inicial en CSS ───
     api.revealOn = !reduce && hasIO;
     if (api.revealOn) {
       root.classList.add('reveal');
@@ -359,7 +359,7 @@
           io.unobserve(e.target);
         });
       }, { rootMargin: '0px 0px -8% 0px', threshold: 0 });
-      $('.plate:not(.cover), [data-wipe], [data-draw]').forEach(function (el) { io.observe(el); });
+      $('[data-wipe], [data-draw]').forEach(function (el) { io.observe(el); });
     }
 
     // ─── Riel: la birome encierra el proyecto que cruza la mitad de la pantalla (estado, no movimiento) ───
@@ -484,11 +484,11 @@
       // En celular se parten recién cuando se acercan a la pantalla, para no medir todo de entrada.
       var splits = [], ledeTriggers = [], mode = null;
       function splitOne(el) {
-        var s = SplitText.create(el, { type: 'words', tag: 'span', aria: 'none' });
+        var s = SplitText.create(el, { type: 'words', tag: 'span', aria: 'none', mask: 'words' });
         splits.push(s);
         if (el.dataset.seen) return; // ya se leyó: después de traducir queda quieta
         var t = gsap.from(s.words, {
-          opacity: 0, y: 10, rotation: -3, duration: 0.5, ease: 'power2.out', stagger: 0.07,
+          yPercent: 100, duration: 0.5, ease: 'power2.out', stagger: 0.07,
           scrollTrigger: { trigger: el, start: 'top 88%', once: true, onEnter: function () { el.dataset.seen = '1'; } }
         });
         ledeTriggers.push(t.scrollTrigger, t);
@@ -513,8 +513,8 @@
         sheets.forEach(function (sh, k) {
           if (k === 0) return;
           var t = at + (k - 1) * span;
-          tl.fromTo(sh, { xPercent: 112, yPercent: 6, rotation: 7, opacity: 0 },
-            { xPercent: 0, yPercent: 0, rotation: 0, opacity: 1, duration: span * 0.85, ease: 'power2.out' }, t);
+          tl.fromTo(sh, { xPercent: 112, yPercent: 6, rotation: 7 },
+            { xPercent: 0, yPercent: 0, rotation: 0, duration: span * 0.85, ease: 'power2.out' }, t);
           for (var m = 0; m < k; m++) {
             tl.to(sheets[m], { scale: 1 - 0.035 * (k - m), y: -14 * (k - m), duration: span * 0.85, ease: 'power1.out' }, t);
           }
@@ -589,8 +589,8 @@
         arts.forEach(function (art, i) {
           var side = i % 2 ? 1 : -1;
           // La lámina se desliza sobre la mesa desde un costado y se asienta
-          gsap.fromTo(art, { x: side > 0 ? 110 : -50, rotation: side * 2.2, opacity: 0.25 }, {
-            x: 0, rotation: 0, opacity: 1, ease: 'power2.out',
+          gsap.fromTo(art, { x: side > 0 ? 110 : -50, rotation: side * 2.2 }, {
+            x: 0, rotation: 0, ease: 'power2.out',
             scrollTrigger: { trigger: art, start: 'top bottom', end: 'top 30%', scrub: 0.6 }
           });
           // y cuando llega la siguiente, la anterior se achica apenas y se corre: queda abajo de la pila
@@ -601,7 +601,7 @@
           });
         });
         // Cambio de composición: el riel entra desde la izquierda cuando empiezan los proyectos
-        gsap.fromTo('.rail', { x: -24, opacity: 0 }, { x: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: '.run', start: 'top 75%', end: 'top 25%', scrub: 0.5 } });
+        gsap.fromTo('.rail', { x: -24 }, { x: 0, ease: 'none', scrollTrigger: { trigger: '.run', start: 'top 75%', end: 'top 25%', scrub: 0.5 } });
         railProgress('.rail-line', 'y');
 
         // ParkEx: las impresiones se apilan junto al plano; el avance de la escena dispara eventos
@@ -651,7 +651,7 @@
           tlE.fromTo(l, { opacity: 0 }, { opacity: 1, duration: 0.01, ease: 'none' }, (k / lines.length) * 0.5);
         });
         // y después entra la captura del modo web
-        tlE.fromTo(q('.sheets > .sheet', scenes.escaneo), { xPercent: 112, rotation: 7, opacity: 0 }, { xPercent: 0, rotation: 0, opacity: 1, duration: 0.2, ease: 'power2.out' }, 0.58);
+        tlE.fromTo(q('.sheets > .sheet', scenes.escaneo), { xPercent: 112, rotation: 7 }, { xPercent: 0, rotation: 0, duration: 0.2, ease: 'power2.out' }, 0.58);
         tlE.to({}, { duration: 0.06 });
 
         cinniPrint(cleanups, sceneST(scenes.cinni, 0.4));
@@ -665,30 +665,36 @@
         gsap.to(img, { y: function () { return -Math.max(0, img.offsetHeight - frame.clientHeight + 20); }, ease: 'none', scrollTrigger: st });
       }
 
+      // Afiche (celular): al bajar, las dos palabras se abren hacia los costados y la foto se acerca
+      function posterFly() {
+        gsap.timeline({ scrollTrigger: { trigger: '.cover', start: 'top top', end: 'bottom top', scrub: 0.4 } })
+          .to('.poster-name .pl:first-child', { xPercent: -38, ease: 'none' }, 0)
+          .to('.poster-name .pl:last-child', { xPercent: 38, ease: 'none' }, 0)
+          .to('.poster-photo img', { scale: 1.22, yPercent: 6, ease: 'none' }, 0);
+      }
+
       // ═════ Celular / touch: todo pasa mientras se baja, sin pins ═════
-      function hand(cleanups) {
-        heroFly(false);
+      function hand(cleanups, poster) {
+        if (poster) posterFly(); else heroFly(false);
         // Láminas: entran deslizándose desde un costado, como papel que se empuja sobre la mesa
         $('.proj').forEach(function (art, i) {
           var side = i % 2 ? 1 : -1;
-          gsap.fromTo(art, { x: side * 34, rotation: side * 1.8, opacity: 0.35 },
-            { x: 0, rotation: 0, opacity: 1, ease: 'power2.out', scrollTrigger: passST(art, 'top bottom', 'top 55%', 0.4) });
+          gsap.fromTo(art, { x: side * 34, rotation: side * 1.8 },
+            { x: 0, rotation: 0, ease: 'power2.out', scrollTrigger: passST(art, 'top bottom', 'top 55%', 0.4) });
         });
-        // Índice: las entradas se reparten una tras otra
-        gsap.from('.idx li', { x: -18, opacity: 0, stagger: 0.08, duration: 0.5, ease: 'power2.out', scrollTrigger: { trigger: '.idx', start: 'top 85%', once: true } });
         railProgress('.rail-bar', 'x');
 
         // Fotos pegadas: caen sobre la mesa (las de los mazos se reparten aparte)
         $('.taped').forEach(function (f) {
           if (f.closest('.deck')) return;
-          gsap.fromTo(f, { y: -26, rotation: 5, scale: 1.06, opacity: 0.4 },
-            { y: 0, rotation: 0, scale: 1, opacity: 1, ease: 'power2.out', scrollTrigger: passST(f, 'top 95%', 'top 60%', 0.5) });
+          gsap.fromTo(f, { y: -26, rotation: 5, scale: 1.06 },
+            { y: 0, rotation: 0, scale: 1, ease: 'power2.out', scrollTrigger: passST(f, 'top 95%', 'top 60%', 0.5) });
         });
 
         // Mazos: las cartas se reparten desde la derecha al entrar en pantalla
         decks.forEach(function (d) {
-          gsap.fromTo(d.children, { x: function (i) { return 60 + i * 40; }, rotation: function (i) { return 5 + i * 2; }, opacity: 0.25 },
-            { x: 0, rotation: 0, opacity: 1, ease: 'power2.out', stagger: 0.06, scrollTrigger: passST(d, 'top 92%', 'top 45%', 0.5) });
+          gsap.fromTo(d.children, { x: function (i) { return 60 + i * 40; }, rotation: function (i) { return 5 + i * 2; } },
+            { x: 0, rotation: 0, ease: 'power2.out', stagger: 0.06, scrollTrigger: passST(d, 'top 92%', 'top 45%', 0.5) });
         });
 
 
@@ -712,14 +718,14 @@
         cinniPrint(cleanups, passST(q('.lp-frame', scenes.cinni), 'top 85%', 'bottom 15%', 0.4));
       }
 
-      gsap.matchMedia().add({ desk: DESK, ok: '(prefers-reduced-motion: no-preference)' }, function (ctx) {
+      gsap.matchMedia().add({ desk: DESK, ok: '(prefers-reduced-motion: no-preference)', poster: '(max-width: 900px)' }, function (ctx) {
         var c = ctx.conditions, cleanups = [];
         if (!c.ok) return; // reduced-motion: nada
         mode = c.desk ? 'desk' : 'hand';
         deskOn = !!c.desk;
         root.classList.add('gs');
         root.classList.toggle('motion', deskOn);
-        if (deskOn) desk(cleanups); else hand(cleanups);
+        if (deskOn) desk(cleanups); else hand(cleanups, !!c.poster);
         splitLedes();
         return function () {
           killLedes();

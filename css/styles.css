@@ -1,5 +1,101 @@
 /* Lucio Facchin · Portfolio */
 
+/* Fuentes: servidas desde /fonts (OFL, ver fonts/LICENCIAS.txt) */
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: italic;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url('../fonts/archivo-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: italic;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url('../fonts/archivo-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url('../fonts/archivo-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url('../fonts/archivo-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/jetbrains-mono-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/jetbrains-mono-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/jetbrains-mono-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/jetbrains-mono-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Sedgwick Ave Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/sedgwick-ave-display-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Sedgwick Ave Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/sedgwick-ave-display-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* Base */
 body { margin: 0; }
 *, *::before, *::after { box-sizing: border-box; }
@@ -25,7 +121,6 @@ body { margin: 0; }
 
   --f-brush: "Sedgwick Ave Display", "Permanent Marker", "Segoe Print", "Comic Sans MS", cursive;
   --f-sans: "Archivo", "Arial Narrow", Arial, system-ui, sans-serif;
-  --f-pen: "Reenie Beanie", "Segoe Print", "Bradley Hand", cursive;
   --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
 
   /* Motion: una sola curva y tres duraciones para todo el sitio */
@@ -78,10 +173,7 @@ main {
   max-width: 1180px;
   margin-inline: auto;
   padding: clamp(20px, 3.6vw, 48px);
-  background:
-    linear-gradient(rgba(20,20,20,.045) 1px, transparent 1px) 0 0 / 32px 32px,
-    linear-gradient(90deg, rgba(20,20,20,.045) 1px, transparent 1px) 0 0 / 32px 32px,
-    var(--paper);
+  background: var(--paper);
   box-shadow: 0 1px 0 rgba(0,0,0,.08), 0 30px 60px -40px rgba(0,0,0,.45);
 }
 .plate::after { /* marcas de corte */
@@ -99,15 +191,9 @@ main {
     linear-gradient(var(--ink), var(--ink)) 100% calc(100% - 13px) / 10px 1px no-repeat,
     linear-gradient(var(--ink), var(--ink)) calc(100% - 13px) 100% / 1px 10px no-repeat;
 }
-.plate.lo { background:
-    linear-gradient(rgba(20,20,20,.05) 1px, transparent 1px) 0 0 / 32px 32px,
-    linear-gradient(90deg, rgba(20,20,20,.05) 1px, transparent 1px) 0 0 / 32px 32px,
-    var(--paper-lo); }
+.plate.lo { background: var(--paper-lo); }
 .plate.dark {
-  background:
-    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 32px 32px,
-    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 32px 32px,
-    var(--slab);
+  background: var(--slab);
   color: var(--on-slab);
 }
 
@@ -154,7 +240,6 @@ main {
 .bar svg { width: 16px; height: 16px; flex: none; }
 
 .brush { font-family: var(--f-brush); font-weight: 400; filter: url(#dry); margin: 0; line-height: .9; }
-.pen { font-family: var(--f-pen); color: var(--pen); line-height: .95; }
 .mono { font-family: var(--f-mono); }
 
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
@@ -168,6 +253,7 @@ main {
   position: relative;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   height: 100svh;
   min-height: 600px;
   padding: 18px clamp(22px, 4vw, 56px) 60px; /* abajo deja lugar a la botonera fija, que si no tapa GitHub */
@@ -263,7 +349,10 @@ main {
   bottom: 0;
   z-index: 30;
   padding: 2px 6px;
-  font-size: 26px;
+  font: 600 11px/1.3 var(--f-mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--graphite);
   background: none;
   border: 0;
   cursor: pointer;
@@ -273,7 +362,7 @@ main {
   transition: color var(--d-fast) var(--ease);
 }
 .pile-reset:hover { color: var(--ink); }
-.cover-note { position: absolute; left: 0; bottom: 30px; z-index: 3; margin: 0; font-size: clamp(24px, 2.2vw, 28px); rotate: -3deg; } /* ≥24px: texto grande, el azul sobre la mesa pasa el contraste */
+.cover-note { position: absolute; left: 0; bottom: 30px; z-index: 3; margin: 0; font: 600 11px/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite); }
 .hint-touch { display: none; }
 html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se mueven: no se promete */
 @media (hover: none) {
@@ -289,10 +378,11 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
   display: grid;
   justify-items: center;
   text-decoration: none;
-  color: var(--pen);
+  color: var(--ink);
 }
-.cover-down .pen { font-size: 38px; line-height: 1; }
-.cover-down .pen-arrow { width: 30px; height: 44px; }
+.cover-down-t { font: 600 11px/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite); }
+.cover-down .pen-arrow { width: 22px; height: 34px; }
+.cover-down .pen-arrow path { stroke: var(--ink); stroke-width: 1.8; }
 .cover-down:focus-visible { outline: 2px solid var(--pen); outline-offset: 4px; }
 
 /* Trazos de birome: la firma del sitio. Todos se dibujan con stroke-dashoffset */
@@ -316,8 +406,8 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 .name .nl:last-child { animation-delay: 220ms; }
 .cover .stroke { animation: ink-in 500ms var(--ease) 650ms backwards; }
 .cover-tag, .cover-note { animation: fade-rise var(--d-slow) var(--ease) 900ms backwards; }
-.snap { animation: drop 650ms cubic-bezier(.3, 1.3, .5, 1) calc(700ms + var(--i) * 110ms) backwards; }
-.cover-down .pen { animation: fade-rise var(--d-slow) var(--ease) 1700ms backwards; }
+.snap { animation: drop 650ms var(--ease) calc(700ms + var(--i) * 110ms) backwards; }
+.cover-down-t { animation: fade-rise var(--d-slow) var(--ease) 1700ms backwards; }
 .cover-down .pen-arrow path { animation: draw 500ms var(--ease) 1900ms backwards; }
 
 /* En escritorio la portada es una escena: queda fija mientras la mesa se vacía */
@@ -331,6 +421,51 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
   .cover-down { left: auto; right: 0; translate: none; bottom: 52px; }
   .scrap.term-strip { display: none; } /* en celular, menos recortes: se lee mejor el nombre */
 }
+
+
+/* Celular (≤900 px): la portada es un afiche en columna, en lugar de la mesa con recortes */
+.cover-poster { display: none; }
+@media (max-width: 900px) {
+  .cover-stage { background: var(--slab); color: var(--on-slab); min-height: 560px; }
+  .cover .bar, .cover .bar.bottom { border-color: var(--on-slab); }
+  .cover-desk { display: none; }
+  .cover-poster {
+    grid-row: 2;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto auto;
+    min-height: 0;
+    padding-block: 14px 4px;
+  }
+  .poster-name { grid-row: 1; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0; margin: 0; }
+  .poster-name .pl {
+    position: relative;
+    z-index: 1;
+    display: block;
+    font-weight: 900;
+    font-stretch: 125%;
+    text-transform: uppercase;
+    line-height: .78;
+    letter-spacing: -.02em;
+    white-space: nowrap;
+    color: #fff;
+    mix-blend-mode: difference; /* donde pisa la foto, la invierte */
+  }
+  /* cada palabra ocupa el ancho entero */
+  .poster-name .pl:first-child { font-size: calc((100vw - 2 * clamp(22px, 4vw, 56px)) / 3.98); margin-bottom: -.3em; }
+  .poster-name .pl:last-child { font-size: calc((100vw - 2 * clamp(22px, 4vw, 56px)) / 5.80); margin-top: -.28em; text-align: right; }
+  .poster-photo { display: block; margin: 0 8%; min-height: 0; overflow: hidden; }
+  .poster-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; filter: grayscale(1) contrast(1.2); }
+  .poster-tag { grid-row: 2; margin: 14px 0 0; font: 600 11px/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--on-slab-dim); }
+  .poster-work { grid-row: 3; display: flex; flex-wrap: wrap; gap: 0 14px; margin-top: 6px; }
+  .poster-work a { display: inline-flex; align-items: baseline; gap: 5px; min-height: 32px; align-items: center; color: var(--on-slab); text-decoration: none; font-weight: 800; font-stretch: 112%; font-size: 14px; text-transform: uppercase; }
+  .poster-work b { font-weight: 100; font-stretch: 62%; font-size: 22px; color: var(--on-slab-dim); }
+  .poster-work a:focus-visible { outline: 2px solid var(--pen-light); outline-offset: 2px; }
+  /* Entrada: barridos, una vez */
+  .poster-name .pl { animation: ink-in 800ms var(--ease) backwards; }
+  .poster-name .pl:last-child { animation-delay: 200ms; }
+  .poster-photo { animation: photo-in 900ms var(--ease) 120ms backwards; }
+}
+@keyframes photo-in { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
 
 /* ───────── Sobre mí ───────── */
 .about { display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(30px, 5vw, 64px); align-items: start; }
@@ -433,15 +568,11 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 .taped figcaption {
   /* En el flujo, no absoluto: si el texto ocupa dos líneas, el papel crece en vez de taparle la foto */
   margin: 10px 4px 0;
-  font-family: var(--f-pen);
-  color: var(--pen);
-  font-size: 25px;
-  line-height: 1;
+  font: 600 11px/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite);
 }
 .taped.on-white img { mix-blend-mode: multiply; }
 .about-side .portrait { width: min(100%, 380px); }
 .about-side .second { width: min(60%, 230px); justify-self: end; margin-top: -64px; }
-.about-side .second figcaption { font-size: 21px; }
 .contact-photo { width: min(100%, 360px); justify-self: center; }
 
 /* ───────── Índice ───────── */
@@ -618,7 +749,6 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 }
 .btn:hover { background: var(--pen); }
 .side-stack { display: grid; gap: 22px; }
-.side-stack .pen { font-size: 27px; margin: 0; rotate: -2deg; }
 
 /* ITSpace */
 .langs { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
@@ -709,12 +839,6 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 .btn, .quick a, .lang-btn, .cta, .pile-reset { transition: background-color var(--d-fast) var(--ease), color var(--d-fast) var(--ease), scale var(--d-fast) var(--ease); }
 .btn:active, .quick a:active, .lang-btn:active, .pile-reset:active, .cta:active { scale: .96; }
 
-/* Láminas: se revelan al entrar en pantalla (solo si js marcó html.reveal) */
-.plate { transition: opacity var(--d-slow) var(--ease), translate var(--d-slow) var(--ease); }
-/* Con GSAP armado (html.gs) las láminas de proyecto entran con GSAP, no con esta transición */
-html.reveal .plate:not(.cover):not(.in) { opacity: 0; translate: 0 28px; }
-html.gs .plate.proj { transition: none; }
-html.reveal.gs .plate.proj:not(.in) { opacity: 1; translate: none; }
 
 /* Palabras en brush: se "pintan" de izquierda a derecha */
 html.reveal [data-wipe] { clip-path: inset(-25% -6% -25% -6%); transition: clip-path 1s var(--ease) 120ms; }
@@ -737,7 +861,7 @@ html.reveal [data-draw]:not(.in) path { stroke-dashoffset: 1; transition: none; 
 /* Contacto: subrayado de birome bajo "Hablemos" */
 .word-mark { display: inline-grid; justify-items: stretch; }
 .pen-under { width: 100%; height: 22px; margin-top: 2px; rotate: -4deg; }
-.word-mark + .pen { font-size: clamp(26px, 2.6vw, 34px); margin: 14px 0 0 6%; rotate: -3deg; max-width: 20ch; }
+.contact-line { margin: 18px 0 0; max-width: 32ch; font-size: clamp(17px, 1.8vw, 21px); line-height: 1.35; color: var(--graphite); }
 
 
 /* Fotos pegadas: se inclinan levemente hacia el cursor (js, solo mouse) */
@@ -825,7 +949,7 @@ html.reveal [data-draw]:not(.in) path { stroke-dashoffset: 1; transition: none; 
 .track { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 46px 30px; align-items: start; }
 .shot { padding: 8px 8px 12px; }
 .shot img { filter: grayscale(.85) contrast(1.05); }
-.shot figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 22px; }
+.shot figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .shot figcaption .path { flex: none; font-size: 10px; }
 .shot.phone { width: min(100%, 210px); justify-self: center; }
 .langs-sheet { display: grid; gap: 10px; }
@@ -923,7 +1047,7 @@ html.gs .lp-frame { overflow: hidden; } /* el marco lo desplaza el scroll, no el
   html.swipe .deck > .phone { flex-basis: min(58%, 240px); }
   html.swipe .deck:focus-visible { outline: 2px solid var(--pen); outline-offset: -4px; }
   html.swipe .gallery { padding-block: 0; }
-  html.swipe .deck-hint { display: block; grid-column: -2 / -1; margin: -4px 0 0; font-size: 24px; text-align: right; }
+  html.swipe .deck-hint { display: block; grid-column: -2 / -1; margin: 0; text-align: right; font: 600 11px/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite); }
 }
 
 /* ───────── Responsive ───────── */
