@@ -665,9 +665,17 @@
         gsap.to(img, { y: function () { return -Math.max(0, img.offsetHeight - frame.clientHeight + 20); }, ease: 'none', scrollTrigger: st });
       }
 
+      // Afiche (celular): al bajar, las dos palabras se abren hacia los costados y la foto se acerca
+      function posterFly() {
+        gsap.timeline({ scrollTrigger: { trigger: '.cover', start: 'top top', end: 'bottom top', scrub: 0.4 } })
+          .to('.poster-name .pl:first-child', { xPercent: -38, ease: 'none' }, 0)
+          .to('.poster-name .pl:last-child', { xPercent: 38, ease: 'none' }, 0)
+          .to('.poster-photo img', { scale: 1.22, yPercent: 6, ease: 'none' }, 0);
+      }
+
       // ═════ Celular / touch: todo pasa mientras se baja, sin pins ═════
-      function hand(cleanups) {
-        heroFly(false);
+      function hand(cleanups, poster) {
+        if (poster) posterFly(); else heroFly(false);
         // Láminas: entran deslizándose desde un costado, como papel que se empuja sobre la mesa
         $('.proj').forEach(function (art, i) {
           var side = i % 2 ? 1 : -1;
@@ -712,14 +720,14 @@
         cinniPrint(cleanups, passST(q('.lp-frame', scenes.cinni), 'top 85%', 'bottom 15%', 0.4));
       }
 
-      gsap.matchMedia().add({ desk: DESK, ok: '(prefers-reduced-motion: no-preference)' }, function (ctx) {
+      gsap.matchMedia().add({ desk: DESK, ok: '(prefers-reduced-motion: no-preference)', poster: '(max-width: 900px)' }, function (ctx) {
         var c = ctx.conditions, cleanups = [];
         if (!c.ok) return; // reduced-motion: nada
         mode = c.desk ? 'desk' : 'hand';
         deskOn = !!c.desk;
         root.classList.add('gs');
         root.classList.toggle('motion', deskOn);
-        if (deskOn) desk(cleanups); else hand(cleanups);
+        if (deskOn) desk(cleanups); else hand(cleanups, !!c.poster);
         splitLedes();
         return function () {
           killLedes();
