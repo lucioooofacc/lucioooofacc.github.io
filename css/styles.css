@@ -752,7 +752,7 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 
 /* ITSpace */
 .langs { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-.langs span { font-family: var(--f-mono); font-size: 10px; padding: 1px 5px; border: 1px solid var(--rule); background: var(--paper-hi); }
+.langs span { font-family: var(--f-mono); font-size: 10px; padding: 1px 5px; border: 1px solid var(--rule); background: var(--paper-hi); color: var(--ink); }
 .logo-sheet { --r: 1.5deg; }
 .logo-sheet .logo-pad { background: #fff; padding: clamp(18px, 3vw, 30px) clamp(14px, 2.4vw, 26px); }
 
@@ -760,7 +760,7 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 .quote {
   margin: 4px 0 30px;
   font-size: clamp(40px, 7vw, 92px);
-  color: var(--on-slab);
+  color: var(--ink);
   rotate: -2deg;
   text-wrap: balance;
 }
@@ -779,9 +779,9 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 .playhead { position: absolute; top: -26px; bottom: -60px; left: 0; width: 2px; translate: calc(83.33cqw - 1px) 0; background: var(--pen-light); pointer-events: none; }
 .playhead::before { content: ""; position: absolute; top: 0; left: -5px; border: 6px solid transparent; border-top: 8px solid var(--pen-light); }
 .tl-note { color: var(--pen-light); font-size: 25px; margin: 12px 0 0; text-align: right; }
-.kit { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px 24px; margin: 30px 0 0; padding: 18px 0 0; border-top: 1px solid rgba(230,230,225,.25); }
+.kit { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px 24px; margin: 30px 0 0; padding: 18px 0 0; border-top: 1px solid var(--rule); }
 .kit div { display: grid; gap: 2px; }
-.kit dt { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--on-slab-dim); }
+.kit dt { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--graphite); }
 .kit dd { margin: 0; font-weight: 800; font-stretch: 115%; font-size: 19px; line-height: 1.2; }
 
 /* Escaneo IP */
@@ -806,7 +806,6 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 /* Contacto */
 .contact { display: grid; grid-template-columns: .75fr 1.25fr; gap: clamp(28px, 5vw, 72px); align-items: center; padding-block: clamp(24px, 4vw, 50px); }
 .contact-main { display: grid; gap: 26px; }
-.contact-word { font-size: clamp(48px, 14vw, 180px); rotate: -5deg; }
 .channels { list-style: none; margin: 0; padding: 0; display: grid; }
 .channels li { display: grid; grid-template-columns: 96px 1fr auto; align-items: center; gap: 6px 16px; padding-block: 16px; border-bottom: 1px solid var(--ink); }
 .channels li:first-child { border-top: 1px solid var(--ink); }
@@ -960,7 +959,7 @@ html.reveal [data-draw]:not(.in) path { stroke-dashoffset: 1; transition: none; 
 
 /* Coded Bias: monitor + línea de tiempo */
 [data-scene="coded"] .stick { gap: 26px; }
-.monitor { display: grid; gap: 6px; justify-items: start; padding: 16px 18px; background: #0C0C0C; border: 1px solid #3A3A3A; font-family: var(--f-mono); }
+.monitor { color: var(--on-slab); display: grid; gap: 6px; justify-items: start; padding: 16px 18px; background: #0C0C0C; border: 1px solid #3A3A3A; font-family: var(--f-mono); }
 .mon-tc { font-size: 11px; letter-spacing: .08em; color: var(--on-slab-dim); }
 .mon-tc b { color: var(--pen-light); font-weight: 600; }
 .mon-clip { font-family: var(--f-sans); font-weight: 900; font-stretch: 125%; font-size: clamp(24px, 3.6vw, 48px); line-height: 1; letter-spacing: -.01em; }
@@ -1048,6 +1047,65 @@ html.gs .lp-frame { overflow: hidden; } /* el marco lo desplaza el scroll, no el
   html.swipe .deck:focus-visible { outline: 2px solid var(--pen); outline-offset: -4px; }
   html.swipe .gallery { padding-block: 0; }
   html.swipe .deck-hint { display: block; grid-column: -2 / -1; margin: 0; text-align: right; font: 600 11px/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite); }
+}
+
+
+/* ───────── Afiche: el estilo de la portada de celular, alternado con el papel ─────────
+   Fondo negro de borde a borde, título en Archivo extra ancha que ocupa el ancho entero
+   (main.js lo ajusta con data-fit; sin JS queda un tamaño fijo), rótulos mono en gris. */
+.plate.poster { box-shadow: none; }
+.plate.poster::after { display: none; } /* sin marcas de corte: no es una hoja */
+main > .plate.poster { width: auto; max-width: none; margin-inline: calc(-1 * clamp(22px, 4vw, 56px)); padding-inline: clamp(22px, 4vw, 56px); }
+@media (max-width: 1099.98px) {
+  .sheaf > .plate.poster { width: auto; margin-inline: calc(-1 * clamp(22px, 4vw, 56px)); padding-inline: clamp(22px, 4vw, 56px); }
+}
+.poster-title, .poster .ph h2 {
+  margin: 0;
+  font-family: var(--f-sans);
+  font-weight: 900;
+  font-stretch: 125%;
+  font-size: clamp(44px, 11vw, 200px);
+  line-height: .8;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  color: #fff;
+  filter: none;
+}
+.poster .ph { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14px 16px; }
+.poster .ph .n { grid-row: 1; font-size: 34px; color: var(--on-slab-dim); }
+.poster .ph .cta { grid-row: 1; grid-column: 2; }
+.poster .ph h2 { grid-row: 2; grid-column: 1 / -1; flex: none; }
+.dark .pen-ring path, .dark .pen-under path { stroke: var(--pen-light); }
+.dark .deck-hint, html.swipe .dark .deck-hint { color: var(--on-slab-dim); }
+.dark .term { box-shadow: inset 0 0 0 1px #333; }
+.dark .btn { background: var(--on-slab); color: var(--slab); }
+.dark .btn:hover { background: var(--pen-light); }
+.dark .bar, .dark .channels li { border-color: var(--on-slab); }
+.dark .copy-state { color: var(--pen-light); }
+.dark .spec a { color: #fff; }
+.dark .spec a:hover { color: var(--pen-light); }
+
+/* Índice */
+.poster .index { grid-template-columns: minmax(0, 1fr); gap: clamp(18px, 3vw, 34px); }
+.poster .idx li { border-color: rgba(230, 230, 225, .2); }
+.poster .idx .k { color: var(--on-slab-dim); }
+.poster .idx .v { font-size: clamp(16px, 2.2vw, 28px); color: #fff; }
+.poster .idx .n { color: #fff; }
+.poster .idx a:hover, .poster .idx a:focus-visible { --h: var(--pen-light); --hf: var(--slab); outline-color: var(--pen-light); }
+@media (min-width: 900px) { .poster .idx { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 56px); } .poster .idx li:last-child { border-bottom: 1px solid rgba(230, 230, 225, .2); } }
+
+/* Contacto: HABLEMOS sobre la foto, que lo invierte donde la pisa (como la portada de celular) */
+.poster .contact { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); grid-template-areas: "word word" "photo main"; row-gap: 0; align-items: start; }
+.poster .contact-word { grid-area: word; position: relative; z-index: 1; margin-bottom: -.3em; mix-blend-mode: difference; }
+.poster .contact-photo { grid-area: photo; width: 100%; margin: 0; justify-self: stretch; }
+.poster .contact-photo img { width: 100%; filter: grayscale(1) contrast(1.2); }
+.poster .contact-main { grid-area: main; padding-top: clamp(40px, 6vw, 90px); }
+.poster .contact-line { color: var(--on-slab-dim); }
+@media (max-width: 900px) {
+  .poster .contact { grid-template-columns: minmax(0, 1fr); grid-template-areas: "word" "photo" "main"; }
+  .poster .contact-main { padding-top: 28px; }
 }
 
 /* ───────── Responsive ───────── */
