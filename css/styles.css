@@ -743,12 +743,6 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 .btn, .quick a, .lang-btn, .cta, .pile-reset { transition: background-color var(--d-fast) var(--ease), color var(--d-fast) var(--ease), scale var(--d-fast) var(--ease); }
 .btn:active, .quick a:active, .lang-btn:active, .pile-reset:active, .cta:active { scale: .96; }
 
-/* Láminas: se revelan al entrar en pantalla (solo si js marcó html.reveal) */
-.plate { transition: opacity var(--d-slow) var(--ease), translate var(--d-slow) var(--ease); }
-/* Con GSAP armado (html.gs) las láminas de proyecto entran con GSAP, no con esta transición */
-html.reveal .plate:not(.cover):not(.in) { opacity: 0; translate: 0 28px; }
-html.gs .plate.proj { transition: none; }
-html.reveal.gs .plate.proj:not(.in) { opacity: 1; translate: none; }
 
 /* Palabras en brush: se "pintan" de izquierda a derecha */
 html.reveal [data-wipe] { clip-path: inset(-25% -6% -25% -6%); transition: clip-path 1s var(--ease) 120ms; }
