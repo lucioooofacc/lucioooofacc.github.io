@@ -175,8 +175,8 @@
       var dt = Math.min(32, now - last); last = now;
       var f = Math.pow(0.9, dt / 16.7);
       s.x += s.vx * dt; s.y += s.vy * dt;
-      if (s.x < b.minX || s.x > b.maxX) { s.x = clamp(s.x, b.minX, b.maxX); s.vx *= -0.35; }
-      if (s.y < b.minY || s.y > b.maxY) { s.y = clamp(s.y, b.minY, b.maxY); s.vy *= -0.35; }
+      if (s.x < b.minX || s.x > b.maxX) { s.x = clamp(s.x, b.minX, b.maxX); s.vx = 0; }
+      if (s.y < b.minY || s.y > b.maxY) { s.y = clamp(s.y, b.minY, b.maxY); s.vy = 0; }
       s.vx *= f; s.vy *= f; s.rot *= f;
       render(s);
       if (Math.abs(s.vx) + Math.abs(s.vy) > 0.02 || Math.abs(s.rot) > 0.1) s.raf = requestAnimationFrame(frame);

@@ -310,7 +310,7 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 .name .nl:last-child { animation-delay: 220ms; }
 .cover .stroke { animation: ink-in 500ms var(--ease) 650ms backwards; }
 .cover-tag, .cover-note { animation: fade-rise var(--d-slow) var(--ease) 900ms backwards; }
-.snap { animation: drop 650ms cubic-bezier(.3, 1.3, .5, 1) calc(700ms + var(--i) * 110ms) backwards; }
+.snap { animation: drop 650ms var(--ease) calc(700ms + var(--i) * 110ms) backwards; }
 .cover-down-t { animation: fade-rise var(--d-slow) var(--ease) 1700ms backwards; }
 .cover-down .pen-arrow path { animation: draw 500ms var(--ease) 1900ms backwards; }
 
