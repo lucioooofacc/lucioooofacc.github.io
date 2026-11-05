@@ -15,6 +15,26 @@
     return s;
   }
 
+  // Títulos de afiche: la palabra ocupa el ancho entero. Se mide el texto a 100 px y se escala;
+  // así sirve en los dos idiomas (ÍNDICE / INDEX, HABLEMOS / LET'S TALK).
+  function fitText() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-fit]'), function (el) {
+      if (!el.offsetParent) return; // oculto en este tamaño
+      var cs = getComputedStyle(el);
+      var avail = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      // ancho del texto con width: max-content (offsetWidth no cambia aunque la lámina esté girada o corrida)
+      el.style.fontSize = '100px';
+      el.style.width = 'max-content';
+      var tw = el.offsetWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      el.style.width = '';
+      el.style.fontSize = tw > 0 && avail > 0 ? (100 * avail / tw * 0.995).toFixed(2) + 'px' : '';
+    });
+  }
+  fitText();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitText);
+  var fitT;
+  addEventListener('resize', function () { clearTimeout(fitT); fitT = setTimeout(fitText, 100); });
+
   function apply() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function (el) {
       var v = dict[el.getAttribute('data-i18n')];
@@ -28,6 +48,7 @@
     });
     document.documentElement.lang = lang;
     langBtn.lang = lang === 'es' ? 'en' : 'es';
+    fitText();
     updateCount();
     copyState.textContent = '';
   }
