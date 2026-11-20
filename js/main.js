@@ -50,6 +50,7 @@
     langBtn.lang = lang === 'es' ? 'en' : 'es';
     fitText();
     updateCount();
+    if (pano) pano.render();
     copyState.textContent = '';
   }
 
@@ -136,6 +137,126 @@
     log.setAttribute('aria-live', 'off');
     step();
   }
+
+  // SELENE: panorama ilustrativo del horizonte en el polo sur.
+  // Modelo de juguete (no son datos reales): el Sol da una vuelta completa
+  // al horizonte en un mes sinódico y la Tierra oscila por la libración.
+  var pano = (function () {
+    var svg = document.querySelector('.pano-sky');
+    if (!svg) return null;
+    var W = 720, Y0 = 140, K = 15, DAYS = 29.5, R = Math.PI / 180;
+    var range = document.getElementById('pano-time');
+    var sunEl = document.getElementById('pano-sun');
+    var earthEl = document.getElementById('pano-earth');
+    var playBtn = document.getElementById('pano-play');
+    var NS = 'http://www.w3.org/2000/svg';
+
+    function horizon(az) {
+      return 1.5 + 1.1 * Math.sin(az * R * 2 + 0.6) + 0.7 * Math.sin(az * R * 5 + 1.9) + 0.35 * Math.sin(az * R * 11);
+    }
+    function sun(d) {
+      var az = ((d / 29.53) * 360 + 200) % 360 - 180;
+      return { az: az, el: 2.3 + 0.9 * Math.sin(az * R - 0.8) };
+    }
+    function earth(d) {
+      var p = 2 * Math.PI * d / 27.32;
+      return { az: 7 * Math.sin(p), el: 0.9 + 6.2 * Math.sin(p + 1.2) };
+    }
+    function seen(b) { return b.el > horizon(b.az); }
+    function x(az) { return (az + 180) / 360 * W; }
+    function y(el) { return Y0 - el * K; }
+
+    // Estrellas fijas (semilla determinista para que no cambien al recargar)
+    var seed = 7, stars = document.getElementById('pano-stars');
+    function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+    for (var i = 0; i < 70; i++) {
+      var c = document.createElementNS(NS, 'circle');
+      c.setAttribute('cx', (rnd() * W).toFixed(1));
+      c.setAttribute('cy', (rnd() * 120).toFixed(1));
+      c.setAttribute('r', (rnd() * 0.9 + 0.3).toFixed(2));
+      c.setAttribute('opacity', (rnd() * 0.6 + 0.2).toFixed(2));
+      stars.appendChild(c);
+    }
+
+    // Relieve
+    var d = 'M0 230';
+    for (var a = -180; a <= 180; a += 2) d += ' L' + x(a).toFixed(1) + ' ' + y(horizon(a)).toFixed(1);
+    document.getElementById('pano-terrain').setAttribute('d', d + ' L' + W + ' 230 Z');
+
+    // Ventanas de luz y enlace a lo largo del ciclo
+    var win = document.getElementById('pano-win');
+    var steps = +range.max, lit = 0, link = 0;
+    function addRuns(test, row, cls) {
+      var start = null;
+      for (var s = 0; s <= steps; s++) {
+        var on = s < steps && test(s / steps * DAYS);
+        if (on && start === null) start = s;
+        if (!on && start !== null) {
+          var r = document.createElementNS(NS, 'rect');
+          r.setAttribute('x', start); r.setAttribute('width', s - start);
+          r.setAttribute('y', row); r.setAttribute('height', 6);
+          r.setAttribute('class', cls);
+          win.appendChild(r);
+          start = null;
+        }
+      }
+    }
+    for (var s = 0; s < steps; s++) {
+      if (seen(sun(s / steps * DAYS))) lit++;
+      if (seen(earth(s / steps * DAYS))) link++;
+    }
+    addRuns(function (t) { return seen(sun(t)); }, 0, 'w-sun');
+    addRuns(function (t) { return seen(earth(t)); }, 8, 'w-earth');
+    var now = document.createElementNS(NS, 'rect');
+    now.setAttribute('width', 1.2); now.setAttribute('height', 14); now.setAttribute('class', 'w-now');
+    win.appendChild(now);
+
+    function fmt(n, dec) {
+      return n.toLocaleString(lang === 'es' ? 'es-UY' : 'en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+    }
+    function reading(el, b, fem) {
+      var v = seen(b);
+      el.className = v ? '' : 'off';
+      el.innerHTML = (b.el >= 0 ? '+' : '−') + fmt(Math.abs(b.el), 1) + '° <b>' +
+        (v ? (t('ui.visible') || 'visible') : (fem ? t('ui.hiddenF') || 'oculta' : t('ui.hidden') || 'oculto')) + '</b>';
+    }
+
+    function render() {
+      var day = range.value / steps * DAYS;
+      var S = sun(day), E = earth(day);
+      sunEl.setAttribute('transform', 'translate(' + x(S.az).toFixed(1) + ' ' + y(S.el).toFixed(1) + ')');
+      earthEl.setAttribute('transform', 'translate(' + x(E.az).toFixed(1) + ' ' + y(E.el).toFixed(1) + ')');
+      now.setAttribute('x', Math.min(range.value, steps - 1.2));
+      document.getElementById('pano-day').textContent = t('ui.day', { d: fmt(day, 1) }) || 'Día ' + fmt(day, 1) + ' de 29,5';
+      reading(document.getElementById('pano-sun-v'), S, false);
+      reading(document.getElementById('pano-earth-v'), E, true);
+      document.getElementById('pano-light').textContent = Math.round(lit / steps * 100) + ' %';
+      document.getElementById('pano-link').textContent = Math.round(link / steps * 100) + ' %';
+      playBtn.textContent = timer ? (t('ui.pause') || 'Pausa') : (t('selene.25') || 'Reproducir');
+    }
+
+    var timer = null;
+    function stop() { clearInterval(timer); timer = null; playBtn.setAttribute('aria-pressed', 'false'); render(); }
+    playBtn.addEventListener('click', function () {
+      if (timer) return stop();
+      playBtn.setAttribute('aria-pressed', 'true');
+      timer = setInterval(function () {
+        if (document.hidden) return stop();
+        range.value = (+range.value + 1) % (steps + 1);
+        render();
+      }, 60);
+      render();
+    });
+    range.addEventListener('input', function () { if (timer) stop(); else render(); });
+    render();
+    // Escritorio: el scroll de la escena recorre el ciclo (p de 0 a 1)
+    function scrub(p) {
+      if (timer) { clearInterval(timer); timer = null; playBtn.setAttribute('aria-pressed', 'false'); }
+      range.value = Math.round(Math.max(0, Math.min(1, p)) * steps);
+      render();
+    }
+    return { render: render, scrub: scrub };
+  })();
 
   // ─── Scroll: revelados, riel, escenas (js/main.js · sección "scroll") ───
   var scroll = setupScroll();
@@ -364,7 +485,7 @@
     function $(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
     function q(sel, ctx) { return (ctx || document).querySelector(sel); }
     var scenes = {
-      parkex: q('[data-scene="parkex"]'), itspace: q('[data-scene="itspace"]'),
+      selene: q('[data-scene="selene"]'), parkex: q('[data-scene="parkex"]'), itspace: q('[data-scene="itspace"]'),
       coded: q('[data-scene="coded"]'), escaneo: q('[data-scene="escaneo"]'), cinni: q('[data-scene="cinni"]')
     };
     var deskOn = false; // true mientras las escenas de escritorio están armadas
@@ -624,6 +745,14 @@
         // Cambio de composición: el riel entra desde la izquierda cuando empiezan los proyectos
         gsap.fromTo('.rail', { x: -24 }, { x: 0, ease: 'none', scrollTrigger: { trigger: '.run', start: 'top 75%', end: 'top 25%', scrub: 0.5 } });
         railProgress('.rail-line', 'y');
+
+        // SELENE: el scroll recorre el ciclo lunar en el panorama y el mazo se apila al costado
+        var tlS = gsap.timeline({
+          scrollTrigger: sceneST(scenes.selene, 0.3),
+          onUpdate: function () { if (pano) pano.scrub(this.progress()); }
+        });
+        stackSheets(tlS, $('.sheets > .sheet', scenes.selene), 0.25, 0.3);
+        tlS.to({}, { duration: 0.2 }, 0.8);
 
         // ParkEx: las impresiones se apilan junto al plano; el avance de la escena dispara eventos
         var n = 8, last = -1;
