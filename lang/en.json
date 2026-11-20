@@ -227,5 +227,6 @@
   "selene.how1": "You pick a landing site, or your own coordinates, and a date range of up to 30 days.",
   "selene.how2": "The engine reads JPL Horizons ephemerides and computes, hour by hour, how high the Sun and the Earth are at that spot.",
   "selene.how3": "It compares them with the site's real horizon, taken from LOLA terrain, to know when there is light and when there is a direct link.",
-  "selene.how4": "It sums up the mission in viability cards, a site ranking and a printable report."
+  "selene.how4": "It sums up the mission in viability cards, a site ranking and a printable report.",
+  "selene.38": "3D Moon: LROC mosaic from NASA SVS (CGI Moon Kit)"
 }

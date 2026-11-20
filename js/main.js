@@ -141,6 +141,7 @@
   // SELENE: panorama ilustrativo del horizonte en el polo sur.
   // Modelo de juguete (no son datos reales): el Sol da una vuelta completa
   // al horizonte en un mes sinódico y la Tierra oscila por la libración.
+  var moonHook = null; // la Luna 3D escucha la posición del Sol del panorama
   var pano = (function () {
     var svg = document.querySelector('.pano-sky');
     if (!svg) return null;
@@ -224,6 +225,8 @@
     function render() {
       var day = range.value / steps * DAYS;
       var S = sun(day), E = earth(day);
+      cur = S;
+      if (moonHook) moonHook(S);
       sunEl.setAttribute('transform', 'translate(' + x(S.az).toFixed(1) + ' ' + y(S.el).toFixed(1) + ')');
       earthEl.setAttribute('transform', 'translate(' + x(E.az).toFixed(1) + ' ' + y(E.el).toFixed(1) + ')');
       now.setAttribute('x', Math.min(range.value, steps - 1.2));
@@ -235,7 +238,7 @@
       playBtn.textContent = timer ? (t('ui.pause') || 'Pausa') : (t('selene.25') || 'Reproducir');
     }
 
-    var timer = null;
+    var timer = null, cur = null;
     function stop() { clearInterval(timer); timer = null; playBtn.setAttribute('aria-pressed', 'false'); render(); }
     playBtn.addEventListener('click', function () {
       if (timer) return stop();
@@ -255,7 +258,143 @@
       range.value = Math.round(Math.max(0, Math.min(1, p)) * steps);
       render();
     }
-    return { render: render, scrub: scrub };
+    return { render: render, scrub: scrub, sun: function () { return cur; } };
+  })();
+
+  // SELENE: Luna 3D de fondo, en WebGL puro (sin librerías).
+  // Una esfera con el mosaico LROC (NASA SVS) dibujada por un shader en un canvas sticky.
+  // · El scroll por la lámina la gira e inclina hasta mirar el polo sur, donde está Shackleton (punto dorado).
+  // · La luz sale del Sol del panorama: al recorrer el ciclo, la zona iluminada da la vuelta al polo.
+  // · Solo dibuja cuando algo cambia y la lámina está cerca de la pantalla.
+  (function () {
+    var canvas = document.getElementById('moon-gl');
+    var art = document.getElementById('selene');
+    if (!canvas || !art || !('IntersectionObserver' in window)) return;
+    var gl = canvas.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: true });
+    if (!gl) { canvas.parentNode.remove(); return; }
+    var R = Math.PI / 180;
+    var reduceM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var VS = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
+    var FS = [
+      'precision highp float;',
+      'uniform vec2 u_c;uniform float u_r;uniform mat3 u_m;uniform vec3 u_l;uniform vec3 u_site;uniform sampler2D u_tex;uniform float u_gain;',
+      'void main(){',
+      '  vec2 p=(gl_FragCoord.xy-u_c)/u_r;float d=length(p);',
+      '  if(d>1.){float g=exp(-(d-1.)*10.)*.12;gl_FragColor=vec4(vec3(.75,.7,.6)*g,g);return;}',
+      '  vec3 nv=vec3(p,sqrt(1.-d*d));vec3 n=u_m*nv;',
+      '  float lat=asin(clamp(n.y,-1.,1.));float lon=atan(-n.z,n.x);',
+      '  vec3 alb=texture2D(u_tex,vec2(.5+lon/6.2831853,.5-lat/3.1415927)).rgb;',
+      '  float ndl=dot(n,u_l);',
+      '  float ls=max(ndl,0.)*2./(max(ndl,0.)+nv.z+.05);',          // Lommel-Seeliger: el brillo plano de la Luna
+      '  float lit=mix(max(ndl,0.),min(ls,1.6),.6)*smoothstep(-.03,.06,ndl);',
+      '  vec3 col=alb*(lit*1.25+.035)*u_gain;',
+      '  float a=acos(clamp(dot(n,u_site),-1.,1.));',
+      '  float dot1=smoothstep(.034,.024,a);float ring=smoothstep(.07,.06,a)-smoothstep(.055,.045,a);',
+      '  col=mix(col,vec3(.75,.655,.5),max(dot1,ring*.85));',
+      '  float edge=1.-smoothstep(1.-1.5/u_r,1.,d);',
+      '  gl_FragColor=vec4(col*edge,edge);',
+      '}'
+    ].join('\n');
+    function sh(type, src) {
+      var o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o);
+      if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o));
+      return o;
+    }
+    var prog;
+    try {
+      prog = gl.createProgram();
+      gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+      gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+    } catch (e) { console.warn('Luna 3D desactivada:', e); canvas.parentNode.remove(); return; }
+    gl.useProgram(prog);
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    var aLoc = gl.getAttribLocation(prog, 'a');
+    gl.enableVertexAttribArray(aLoc); gl.vertexAttribPointer(aLoc, 2, gl.FLOAT, false, 0, 0);
+    var U = {};
+    ['u_c', 'u_r', 'u_m', 'u_l', 'u_site', 'u_tex', 'u_gain'].forEach(function (k) { U[k] = gl.getUniformLocation(prog, k); });
+
+    // Shackleton (≈ 89,5° S): el punto que mira el panorama
+    var sLat = -89.5 * R, sLon = 130 * R;
+    gl.uniform3f(U.u_site, Math.cos(sLat) * Math.cos(sLon), Math.sin(sLat), -Math.cos(sLat) * Math.sin(sLon));
+
+    var ready = false, near = false, dirty = true, raf = 0, sunAz = 0, sunEl = 2;
+    var tex = gl.createTexture();
+    function loadTex() {
+      if (loadTex.done) return; loadTex.done = true;
+      var img = new Image();
+      img.decoding = 'async';
+      img.onload = function () {
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        ready = true; canvas.classList.add('on'); request();
+      };
+      img.src = 'img/selene-luna.webp';
+    }
+
+    function size() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      var w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
+      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    }
+    function progress() {
+      var r = art.getBoundingClientRect();
+      return Math.max(0, Math.min(1, -r.top / Math.max(1, r.height - innerHeight)));
+    }
+    function ease(x) { return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; }
+
+    function draw() {
+      raf = 0;
+      if (!ready || !dirty) return;
+      dirty = false;
+      size();
+      var W = canvas.width, H = canvas.height, wide = canvas.clientWidth >= 900;
+      var p = reduceM ? 0.55 : progress();
+      var k = ease(Math.min(1, p / 0.5));
+      // Vista: arranca mostrando la cara visible y termina mirando el polo sur
+      var tilt = (-10 - 62 * k) * R;           // inclinación sobre el eje X de la pantalla
+      var spin = (-90 + 25 + 140 * p) * R;     // giro sobre el eje polar
+      var cx = wide ? W * 0.73 : W * 0.8, cy = H * (wide ? 0.5 : 0.32);
+      var r = wide ? Math.min(H * (0.36 + 0.06 * k), W * 0.34) : W * 0.42;
+      // R = Rx(tilt)·Ry(spin) va de la Luna a la vista; el shader necesita la inversa (transpuesta)
+      var ct = Math.cos(tilt), st = Math.sin(tilt), cs = Math.cos(spin), ss = Math.sin(spin);
+      var m = [ // filas de R
+        [cs, 0, ss],
+        [st * ss, ct, -st * cs],
+        [-ct * ss, st, ct * cs]
+      ];
+      // transpuesta de R empaquetada por columnas = las filas de R en orden
+      gl.uniformMatrix3fv(U.u_m, false, new Float32Array([m[0][0], m[0][1], m[0][2], m[1][0], m[1][1], m[1][2], m[2][0], m[2][1], m[2][2]]));
+      // Sol del panorama: azimut 0 = hacia la Tierra (+x de la Luna); arriba del horizonte polar = −y
+      var a = sunAz * R, e = sunEl * R;
+      gl.uniform3f(U.u_l, Math.cos(a) * Math.cos(e), -Math.sin(e), -Math.sin(a) * Math.cos(e));
+      gl.uniform2f(U.u_c, cx, H - cy);
+      gl.uniform1f(U.u_r, r);
+      // Más tenue mientras está detrás de los textos del principio y del final, para que se lean
+      var clamp01 = function (x) { return Math.max(0, Math.min(1, x)); };
+      gl.uniform1f(U.u_gain, reduceM ? 0.6 : 0.4 + 0.6 * clamp01((p - 0.03) / 0.12) * clamp01((0.95 - p) / 0.1));
+      gl.viewport(0, 0, W, H);
+      gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    function request() { dirty = true; if (near && !raf) raf = requestAnimationFrame(draw); }
+
+    moonHook = function (S) { sunAz = S.az; sunEl = S.el; request(); };
+    if (pano && pano.sun()) moonHook(pano.sun());
+
+    new IntersectionObserver(function (entries) {
+      near = entries[0].isIntersecting;
+      if (near) { loadTex(); request(); }
+    }, { rootMargin: '600px 0px' }).observe(art);
+    if (!reduceM) addEventListener('scroll', function () { if (near) request(); }, { passive: true });
+    addEventListener('resize', request);
   })();
 
   // ─── Scroll: revelados, riel, escenas (js/main.js · sección "scroll") ───
@@ -650,16 +789,29 @@
       api.beforeTranslate = killLedes;
       api.afterTranslate = function () { splitLedes(); ScrollTrigger.refresh(); };
 
-      // Hojas que se deslizan desde el costado y se apilan sobre la anterior (escritorio)
-      function stackSheets(tl, sheets, at, span) {
+      // SELENE: cada hoja llega como algo que va a la Luna.
+      // "Cómo funciona" despega desde abajo, el logo entra en órbita (gira alrededor de un punto
+      // lejano, como un satélite) y el certificado aluniza: baja y frena hasta posarse.
+      function orbitSheets(tl, sheets) {
+        var how = sheets[0], logo = sheets[1], cert = sheets[2];
+        tl.fromTo(how, { yPercent: 45, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.16, ease: 'power2.out' }, 0.02);
+        gsap.set(logo, { transformOrigin: '50% 165%', zIndex: 3 }); // el logo queda encima, como una calcomanía
+        tl.fromTo(logo, { rotation: 78, xPercent: 30, yPercent: 34, autoAlpha: 0 },
+          { rotation: 5, xPercent: 30, yPercent: 34, autoAlpha: 1, duration: 0.28, ease: 'power1.out' }, 0.26);
+        tl.fromTo(cert, { yPercent: -150, scale: 1.18, rotation: -5, autoAlpha: 0 },
+          { yPercent: 26, xPercent: -8, scale: 0.86, rotation: -1.5, autoAlpha: 1, duration: 0.26, ease: 'power3.out' }, 0.58);
+      }
+
+      // ParkEx: cada hoja es un auto. Entra por el carril de circulación (de izquierda a derecha,
+      // como dice el plano), dobla y estaciona en diagonal; las que ya estacionaron no se mueven.
+      function parkSheets(tl, sheets, at, span) {
+        var slots = [null, { x: 7, y: 12, r: -4 }, { x: 14, y: 24, r: 3 }];
         sheets.forEach(function (sh, k) {
           if (k === 0) return;
-          var t = at + (k - 1) * span;
-          tl.fromTo(sh, { xPercent: 112, yPercent: 6, rotation: 7 },
-            { xPercent: 0, yPercent: 0, rotation: 0, duration: span * 0.85, ease: 'power2.out' }, t);
-          for (var m = 0; m < k; m++) {
-            tl.to(sheets[m], { scale: 1 - 0.035 * (k - m), y: -14 * (k - m), duration: span * 0.85, ease: 'power1.out' }, t);
-          }
+          var t = at + (k - 1) * span, slot = slots[k] || slots[2];
+          tl.fromTo(sh, { xPercent: -150, yPercent: 70, rotation: 0, autoAlpha: 0 },
+            { xPercent: slot.x - 18, yPercent: 70, autoAlpha: 1, duration: span * 0.45, ease: 'none' }, t)
+            .to(sh, { xPercent: slot.x, yPercent: slot.y, rotation: slot.r, duration: span * 0.4, ease: 'power2.out' }, t + span * 0.45);
         });
       }
 
@@ -746,15 +898,15 @@
         gsap.fromTo('.rail', { x: -24 }, { x: 0, ease: 'none', scrollTrigger: { trigger: '.run', start: 'top 75%', end: 'top 25%', scrub: 0.5 } });
         railProgress('.rail-line', 'y');
 
-        // SELENE: el scroll recorre el ciclo lunar en el panorama y el mazo se apila al costado
+        // SELENE: el scroll recorre el ciclo lunar en el panorama y las hojas llegan como a la Luna
         var tlS = gsap.timeline({
           scrollTrigger: sceneST(scenes.selene, 0.3),
           onUpdate: function () { if (pano) pano.scrub(this.progress()); }
         });
-        stackSheets(tlS, $('.sheets > .sheet', scenes.selene), 0.25, 0.3);
-        tlS.to({}, { duration: 0.2 }, 0.8);
+        orbitSheets(tlS, $('.sheets > .sheet', scenes.selene));
+        tlS.to({}, { duration: 0.12 }, 0.88);
 
-        // ParkEx: las impresiones se apilan junto al plano; el avance de la escena dispara eventos
+        // ParkEx: las hojas entran por el carril y estacionan; el avance de la escena dispara eventos
         var n = 8, last = -1;
         var tlP = gsap.timeline({
           scrollTrigger: sceneST(scenes.parkex),
@@ -763,7 +915,7 @@
             if (k !== last) { if (last !== -1) autoStep(); last = k; }
           }
         });
-        stackSheets(tlP, $('.sheets > .sheet', scenes.parkex), 0.14, 0.34);
+        parkSheets(tlP, $('.sheets > .sheet', scenes.parkex), 0.14, 0.34);
         tlP.to({}, { duration: 0.12 });
 
         // ITSpace: la cinta recorre 1 px horizontal por cada px vertical
@@ -793,16 +945,24 @@
           tlC.fromTo(words, { opacity: 0.12 }, { opacity: 1, duration: 0.05, stagger: 0.45 / words.length, ease: 'none' }, 0.04);
         }
 
-        // Escaneo IP: la terminal imprime y después entran las hojas con el código
+        // Escaneo IP: la terminal imprime las IP mientras se escanea la captura
         var lines = $('.term .l', scenes.escaneo);
         var tlE = gsap.timeline({ scrollTrigger: sceneST(scenes.escaneo, 0.2) });
         lines.forEach(function (l, k) {
           if (k === 0) return; // el prompt ya está escrito
           tlE.fromTo(l, { opacity: 0 }, { opacity: 1, duration: 0.01, ease: 'none' }, (k / lines.length) * 0.5);
         });
-        // y después entra la captura del modo web
-        tlE.fromTo(q('.sheets > .sheet', scenes.escaneo), { xPercent: 112, rotation: 7 }, { xPercent: 0, rotation: 0, duration: 0.2, ease: 'power2.out' }, 0.58);
-        tlE.to({}, { duration: 0.06 });
+        // y a la par, una línea de escaneo revela la captura del modo web de arriba hacia abajo
+        var shot = q('.sheets > .sheet', scenes.escaneo), shotImg = q('img', shot);
+        var scan = document.createElement('i');
+        scan.className = 'scanline';
+        shot.appendChild(scan);
+        cleanups.push(function () { scan.remove(); });
+        tlE.fromTo(shotImg, { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.45, ease: 'none' }, 0.05)
+          .fromTo(scan, { y: function () { return shotImg.offsetTop; }, autoAlpha: 1 },
+            { y: function () { return shotImg.offsetTop + shotImg.offsetHeight; }, duration: 0.45, ease: 'none' }, 0.05)
+          .to(scan, { autoAlpha: 0, duration: 0.05 }, 0.5);
+        tlE.to({}, { duration: 0.2 }, 0.6);
 
         cinniPrint(cleanups, sceneST(scenes.cinni, 0.4));
       }
@@ -841,10 +1001,16 @@
             { y: 0, rotation: 0, scale: 1, ease: 'power2.out', scrollTrigger: passST(f, 'top 95%', 'top 60%', 0.5) });
         });
 
-        // Mazos: las cartas se reparten desde la derecha al entrar en pantalla
+        // Mazos: cada uno se reparte con un gesto de su proyecto (por defecto, desde la derecha).
+        // SELENE baja desde arriba como un alunizaje; ParkEx entra por el carril, desde la izquierda.
+        var deal = { selene: { x: 0, y: -80, r: -4 }, parkex: { x: -70, y: 0, r: -5 } };
         decks.forEach(function (d) {
-          gsap.fromTo(d.children, { x: function (i) { return 60 + i * 40; }, rotation: function (i) { return 5 + i * 2; } },
-            { x: 0, rotation: 0, ease: 'power2.out', stagger: 0.06, scrollTrigger: passST(d, 'top 92%', 'top 45%', 0.5) });
+          var sc = d.closest('[data-scene]'), g = (sc && deal[sc.dataset.scene]) || { x: 60, y: 0, r: 5 };
+          gsap.fromTo(d.children, {
+            x: function (i) { return g.x ? g.x + Math.sign(g.x) * i * 40 : 0; },
+            y: function (i) { return g.y ? g.y - i * 30 : 0; },
+            rotation: function (i) { return g.r + Math.sign(g.r) * i * 2; }
+          }, { x: 0, y: 0, rotation: 0, ease: 'power2.out', stagger: 0.06, scrollTrigger: passST(d, 'top 92%', 'top 45%', 0.5) });
         });
 
 

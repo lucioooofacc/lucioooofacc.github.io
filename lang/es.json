@@ -227,5 +227,6 @@
   "selene.how1": "Elegís un sitio de alunizaje, o coordenadas propias, y un rango de fechas de hasta 30 días.",
   "selene.how2": "El motor lee las efemérides de JPL Horizons y calcula, hora a hora, la altura del Sol y de la Tierra en ese punto.",
   "selene.how3": "Las compara con el horizonte real del sitio, sacado del relieve LOLA, para saber cuándo hay luz y cuándo hay enlace directo.",
-  "selene.how4": "Resume la misión en tarjetas de viabilidad, un ranking de sitios y un informe imprimible."
+  "selene.how4": "Resume la misión en tarjetas de viabilidad, un ranking de sitios y un informe imprimible.",
+  "selene.38": "Luna 3D: mosaico LROC del NASA SVS (CGI Moon Kit)"
 }
