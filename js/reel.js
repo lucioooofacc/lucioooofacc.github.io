@@ -2,7 +2,7 @@
 // Seis láminas curvas recorren una espiral horizontal detrás de la palabra ÍNDICE.
 // · Escritorio (html.reel-pin): la lámina queda fija y el scroll de la página mueve el riel.
 // · Celular / touch: se arrastra de costado; la página sigue bajando normal.
-// · Clic o Enter en la lámina del frente: baja a ese proyecto. En una de costado: la trae al frente.
+// · Clic o Enter en la lámina del frente: abre la página del proyecto. En una de costado: la trae al frente.
 // · reduced-motion: sin ondulación ni curva extra; las flechas y el arrastre cambian al instante.
 // main.js lo carga con import() cuando ÍNDICE se acerca a la pantalla.
 import {
@@ -517,11 +517,9 @@ export function mount(opts) {
     if (Math.abs(rel) < 0.5) open(i);
     else goTo(Math.round(target + rel), reduceMotion());
   }
+  // Cada proyecto tiene su página: proyectos/<id>.html
   function open(i) {
-    const el = document.getElementById(PROJECTS[i].id);
-    if (!el) return;
-    el.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth' });
-    history.replaceState(null, '', '#' + PROJECTS[i].id);
+    location.href = 'proyectos/' + PROJECTS[i].id + '.html';
   }
 
   view.addEventListener('keydown', (e) => {

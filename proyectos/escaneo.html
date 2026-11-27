@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta data-i18n-content="p.escaneo.desc" name="description" content="Escaneo IP: escáner de red en Java que hace ping en paralelo y cruza el resultado con la tabla ARP.">
+<title>Escaneo IP · Lucio Facchin</title>
+<link rel="icon" href="data:,">
+<link rel="canonical" href="https://luciofacchin.me/proyectos/escaneo.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Lucio Facchin">
+<meta property="og:title" content="Escaneo IP · Lucio Facchin">
+<meta property="og:description" content="Escaneo IP: escáner de red en Java que hace ping en paralelo y cruza el resultado con la tabla ARP.">
+<meta property="og:url" content="https://luciofacchin.me/proyectos/escaneo.html">
+<meta property="og:image" content="https://luciofacchin.me/img/og.jpg">
+<meta property="og:locale" content="es_UY">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="../fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- Igual que en la portada: escenas de scroll solo en escritorio, con mouse y sin reduced-motion -->
+<script>
+  try { if (matchMedia('(min-width: 1100px) and (min-height: 680px) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) document.documentElement.classList.add('motion'); } catch (e) {}
+</script>
+</head>
+<body class="page-proj">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <filter id="dry" x="-5%" y="-10%" width="110%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="3" result="grain"/>
+    <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -3.2 0 0 0 2.45" result="mask"/>
+    <feComposite in="SourceGraphic" in2="mask" operator="in" result="holes"/>
+    <feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="9" result="warp"/>
+    <feDisplacementMap in="holes" in2="warp" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="rough" x="-2%" y="-30%" width="104%" height="160%">
+    <feTurbulence type="fractalNoise" baseFrequency=".05 .3" numOctaves="3" seed="4" result="t"/>
+    <feDisplacementMap in="SourceGraphic" in2="t" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<nav data-i18n-aria-label="nav.aria" class="quick" aria-label="Accesos rápidos">
+  <a data-i18n="nav.1" href="../#indice">Índice</a>
+  <a data-i18n="nav.2" href="../#contacto">Contacto</a>
+  <button class="lang-btn" id="lang-btn" type="button" lang="en" data-i18n="ui.lang" data-i18n-aria-label="ui.langLabel" aria-label="EN, switch to English">EN</button>
+</nav>
+
+<main>
+
+  <p class="crumbs"><a href="../#indice"><span aria-hidden="true">←</span> <span data-i18n="p.back">Volver al índice</span></a><span>5 / 6</span></p>
+
+  <!-- ═════════ 5 · ESCANEO IP ═════════ -->
+  <article class="plate proj poster dark" id="escaneo" aria-labelledby="escaneo-title">
+    <header class="ph">
+      <span class="n" aria-hidden="true">5</span>
+      <h1 id="escaneo-title" data-fit>Escaneo IP</h1>
+      <a class="cta" href="https://github.com/lucioooofacc/EscaneoIP" target="_blank" rel="noopener"><span data-i18n="ui.repo">Ver el repo</span><span class="arr" aria-hidden="true">↗</span></a>
+    </header>
+    <div class="spec">
+      <dl>
+        <dt data-i18n="escaneo.1">Contexto</dt><dd data-i18n="escaneo.2">Redes de Datos · ITSP</dd>
+        <dt data-i18n="escaneo.3">Equipo</dt><dd data-i18n="escaneo.4">3 estudiantes</dd>
+        <dt data-i18n="escaneo.5">Entrega</dt><dd>14/07/2026</dd>
+        <dt data-i18n="escaneo.6">Stack</dt><dd data-i18n="escaneo.7">Java · ExecutorService · ping y arp nativos · com.sun.net.httpserver · bash</dd>
+        <dt data-i18n="escaneo.15">Repositorio</dt><dd><a href="https://github.com/lucioooofacc/EscaneoIP" target="_blank" rel="noopener">github.com/lucioooofacc/EscaneoIP</a></dd>
+      </dl>
+      <dl>
+        <dt data-i18n="escaneo.8">Descripción</dt>
+        <dd data-i18n="escaneo.9">Un escáner que recibe una red en notación CIDR, hace ping a cada dirección en paralelo (hasta 100 hilos, 1 s de timeout) y cruza el resultado con la tabla ARP para mostrar IP, MAC y estado. Tiene un modo web con <code>POST /api/escanear</code> y detecta si corre dentro de Flatpak para ejecutar los comandos en el sistema anfitrión.</dd>
+      </dl>
+    </div>
+
+    <!-- Momento: la terminal imprime su salida a medida que se baja; al lado, el código que la produce -->
+    <div class="scene" data-scene="escaneo">
+      <div class="stick">
+<pre data-i18n-aria-label="escaneo.10" class="term" aria-label="Salida del escáner en una terminal Linux"><span class="l" style="--i:0"><span class="p">$</span> ./ejecutar.sh</span>
+<span class="l" style="--i:1"><span class="c">Compilado en out/</span></span>
+<span class="l" style="--i:2">Ingrese la red a escanear en notacion CIDR: 192.168.1.0/24</span>
+<span class="l" style="--i:3">Escaneando 254 direcciones en 192.168.1.0/24...</span>
+<span class="l" style="--i:4"> </span>
+<span class="l" style="--i:5">IP              MAC                  Estado</span>
+<span class="l" style="--i:6"><span class="c">-----------------------------------------------</span></span>
+<span class="l" style="--i:7">192.168.1.1     a0:09:2e:••:••:••    <span class="ok">Activo</span></span>
+<span class="l" style="--i:8">192.168.1.2     5c:e9:31:••:••:••    <span class="ok">Activo</span></span>
+<span class="l" style="--i:9">192.168.1.4     Desconocida          <span class="ok">Activo</span></span>
+<span class="l" style="--i:10">192.168.1.5     e8:94:f6:••:••:••    <span class="ok">Activo</span></span>
+<span class="l" style="--i:11">192.168.1.10    Desconocida          <span class="ok">Activo</span></span>
+<span class="l" style="--i:12"><span class="c">-----------------------------------------------</span></span>
+<span class="l" style="--i:13">Equipos activos: 11 de 254</span>
+<span class="l" style="--i:14">Tiempo de escaneo: 4 s</span></pre>
+        <div class="sheets">
+          <figure class="sheet shot-web taped" style="--r:-1.6deg">
+            <img data-i18n-alt="escaneo.a1" src="../img/proyectos/escaneo-web.webp" width="960" height="300" alt="Captura del modo web de EscaneoIP: fondo azul oscuro, el título EscaneoIP, un campo «Red (notacion CIDR)» con el ejemplo 192.168.1.0/24 y el botón Escanear" loading="lazy" decoding="async">
+            <figcaption><span class="path" data-i18n="escaneo.web">modo web, en el navegador</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="spec process">
+      <dl>
+        <dt data-i18n="escaneo.11">Probado en</dt><dd data-i18n="escaneo.12">IDE de Java, terminal Linux y el servidor de la institución</dd>
+      </dl>
+      <dl>
+        <dt data-i18n="escaneo.13">Problema</dt><dd data-i18n="escaneo.14">En Linux, la lectura de la tabla ARP fallaba; se resolvió con un script.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <!-- ═════════ EN DETALLE ═════════ -->
+  <section class="plate detail" aria-labelledby="detail-title">
+    <h2 class="detail-t brush" id="detail-title" data-i18n="p.detail" data-wipe>En detalle</h2>
+    <div class="dgrid">
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.escaneo.1.t">Paso a paso</h3>
+          <ul class="dl-list">
+            <li data-i18n="d.escaneo.1.1">Recibe una red en notación CIDR y valida cada octeto y el prefijo (de /0 a /32).</li>
+            <li data-i18n="d.escaneo.1.2">Calcula las direcciones del rango; hasta /30 deja afuera la de red y la de broadcast.</li>
+            <li data-i18n="d.escaneo.1.3">Hace ping a todas en paralelo, con un pool de hasta 100 hilos y 1 s de timeout por dirección.</li>
+            <li data-i18n="d.escaneo.1.4">Lee la tabla ARP con <code>arp -a</code> y, si no responde, con <code>ip neigh</code>. Entiende la salida de Linux, macOS y Windows.</li>
+            <li data-i18n="d.escaneo.1.5">Cruza las dos cosas y muestra IP, MAC y estado, con el total de equipos activos y el tiempo que tardó.</li>
+          </ul>
+        </div>
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.escaneo.2.t">Modo web</h3>
+          <p data-i18n="d.escaneo.2.1">Además de la terminal tiene un modo web: un servidor HTTP de la propia JDK sirve la página y una API <code>POST /api/escanear</code> que recibe la red en JSON. Si el rango pasa de 1024 direcciones, pide confirmación antes de escanear.</p>
+        </div>
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.escaneo.3.t">Dentro de Flatpak</h3>
+          <p data-i18n="d.escaneo.3.1">Si detecta que corre dentro de Flatpak (por ejemplo, desde un IDE instalado así), ejecuta <code>ping</code> y <code>arp</code> en el sistema anfitrión con <code>flatpak-spawn --host</code>; si no, los resultados saldrían vacíos.</p>
+        </div>
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.escaneo.4.t">Clases</h3>
+          <dl class="facts">
+            <div><dt data-i18n="d.escaneo.4.1t">Main</dt><dd data-i18n="d.escaneo.4.1">Lee la red, coordina el escaneo y arma la tabla</dd></div>
+            <div><dt data-i18n="d.escaneo.4.2t">CidrRange</dt><dd data-i18n="d.escaneo.4.2">Valida la notación y genera las direcciones</dd></div>
+            <div><dt data-i18n="d.escaneo.4.3t">PingScanner</dt><dd data-i18n="d.escaneo.4.3">El ping en paralelo con ExecutorService</dd></div>
+            <div><dt data-i18n="d.escaneo.4.4t">ArpTable</dt><dd data-i18n="d.escaneo.4.4">Lee y normaliza la tabla ARP</dd></div>
+            <div><dt data-i18n="d.escaneo.4.5t">WebServer</dt><dd data-i18n="d.escaneo.4.5">El modo web y su API</dd></div>
+            <div><dt data-i18n="d.escaneo.4.6t">Sandbox</dt><dd data-i18n="d.escaneo.4.6">Detecta Flatpak y envuelve los comandos</dd></div>
+          </dl>
+        </div>
+    </div>
+  </section>
+
+  <!-- ═════════ SIGUIENTE ═════════ -->
+  <nav class="plate poster dark next" data-i18n-aria-label="p.more" aria-label="Más proyectos">
+    <p class="next-k"><span data-i18n="p.next">Siguiente proyecto</span> · 6</p>
+    <a class="next-link" href="cinniminies.html"><span class="poster-title" data-fit>Cinniminies</span></a>
+    <div class="next-foot">
+      <a href="coded-bias.html"><span aria-hidden="true">←</span> <span data-i18n="p.prev">Anterior</span>: Coded Bias</a>
+      <a href="../#indice" data-i18n="p.back">Volver al índice</a>
+      <a href="../#contacto" data-i18n="nav.2">Contacto</a>
+    </div>
+  </nav>
+
+</main>
+
+<script src="../js/main.js" defer></script>
+
+</body>
+</html>

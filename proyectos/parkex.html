@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta data-i18n-content="p.parkex.desc" name="description" content="ParkEx: monitoreo en tiempo real de estacionamientos y verificación automática de plazas para personas con discapacidad.">
+<title>ParkEx · Lucio Facchin</title>
+<link rel="icon" href="data:,">
+<link rel="canonical" href="https://luciofacchin.me/proyectos/parkex.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Lucio Facchin">
+<meta property="og:title" content="ParkEx · Lucio Facchin">
+<meta property="og:description" content="ParkEx: monitoreo en tiempo real de estacionamientos y verificación automática de plazas para personas con discapacidad.">
+<meta property="og:url" content="https://luciofacchin.me/proyectos/parkex.html">
+<meta property="og:image" content="https://luciofacchin.me/img/og.jpg">
+<meta property="og:locale" content="es_UY">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="../fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- Igual que en la portada: escenas de scroll solo en escritorio, con mouse y sin reduced-motion -->
+<script>
+  try { if (matchMedia('(min-width: 1100px) and (min-height: 680px) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) document.documentElement.classList.add('motion'); } catch (e) {}
+</script>
+</head>
+<body class="page-proj">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <filter id="dry" x="-5%" y="-10%" width="110%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="3" result="grain"/>
+    <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -3.2 0 0 0 2.45" result="mask"/>
+    <feComposite in="SourceGraphic" in2="mask" operator="in" result="holes"/>
+    <feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="9" result="warp"/>
+    <feDisplacementMap in="holes" in2="warp" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="rough" x="-2%" y="-30%" width="104%" height="160%">
+    <feTurbulence type="fractalNoise" baseFrequency=".05 .3" numOctaves="3" seed="4" result="t"/>
+    <feDisplacementMap in="SourceGraphic" in2="t" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<nav data-i18n-aria-label="nav.aria" class="quick" aria-label="Accesos rápidos">
+  <a data-i18n="nav.1" href="../#indice">Índice</a>
+  <a data-i18n="nav.2" href="../#contacto">Contacto</a>
+  <button class="lang-btn" id="lang-btn" type="button" lang="en" data-i18n="ui.lang" data-i18n-aria-label="ui.langLabel" aria-label="EN, switch to English">EN</button>
+</nav>
+
+<main>
+
+  <p class="crumbs"><a href="../#indice"><span aria-hidden="true">←</span> <span data-i18n="p.back">Volver al índice</span></a><span>2 / 6</span></p>
+
+  <!-- ═════════ 2 · PARKEX ═════════ -->
+  <article class="plate proj" id="parkex" aria-labelledby="parkex-title">
+    <header class="ph">
+      <span class="n" aria-hidden="true">2</span>
+      <h1 id="parkex-title">ParkEx</h1>
+      <a class="cta" href="https://github.com/facuduarte-dev/ConnectaLab" target="_blank" rel="noopener"><span data-i18n="ui.repo">Ver el repo</span><span class="arr" aria-hidden="true">↗</span></a>
+    </header>
+    <div class="spec">
+      <dl>
+        <dt data-i18n="parkex.1">Contexto</dt><dd data-i18n="parkex.2">Concurso ConectaLab – Litoral Norte (UTU)</dd>
+        <dt data-i18n="parkex.3">Equipo</dt><dd data-i18n="parkex.4">5 estudiantes del ITSP, con un docente tutor</dd>
+        <dt data-i18n="parkex.5">Rol</dt><dd data-i18n="parkex.6">Cofundador · desarrollo de la plataforma</dd>
+        <dt data-i18n="parkex.7">Repositorio</dt><dd><a href="https://github.com/facuduarte-dev/ConnectaLab" target="_blank" rel="noopener">github.com/facuduarte-dev/ConnectaLab</a></dd>
+        <dt data-i18n="parkex.8">Stack</dt><dd data-i18n="parkex.9">Arduino Uno + HC-SR04 · Node.js + Express · PostgreSQL en Supabase · Realtime · Java + Tesseract OCR · HTML, CSS y JS sin framework</dd>
+      </dl>
+      <dl>
+        <dt data-i18n="parkex.10">Descripción</dt>
+        <dd data-i18n="parkex.11">En los estacionamientos privados la gente recorre niveles enteros buscando lugar, y las plazas para personas con discapacidad se ocupan sin permiso. ParkEx muestra sobre el plano de cada nivel qué plazas están libres u ocupadas, y en las reservadas lee la matrícula por OCR y comprueba si termina en DI, el distintivo uruguayo de discapacidad.</dd>
+      </dl>
+    </div>
+
+    <!-- Momento: el plano en vivo a la izquierda; a la derecha, impresiones del código real que se apilan -->
+    <div class="scene" data-scene="parkex">
+      <div class="stick">
+        <div class="lot" role="group" aria-labelledby="lot-title">
+          <div class="lot-head">
+            <strong data-i18n="parkex.12" id="lot-title">Nivel 1 · plano en vivo</strong>
+            <span id="lot-count">7 libres de 12</span>
+          </div>
+          <div class="row">
+            <div class="bay" data-n="01" data-state="libre"><span class="num">01</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="02" data-state="ocupado"><span class="num">02</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="03" data-state="ocupado"><span class="num">03</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="04" data-state="libre"><span class="num">04</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="05" data-state="ocupado"><span class="num">05</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="06" data-state="libre" data-res="1" data-auth="no_aplica"><span class="num">06</span><i class="car"></i><span class="tag"></span></div>
+          </div>
+          <div class="lane"><span data-i18n="parkex.13">CIRCULACIÓN →</span></div>
+          <div class="row b">
+            <div class="bay" data-n="07" data-state="libre"><span class="num">07</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="08" data-state="ocupado"><span class="num">08</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="09" data-state="libre"><span class="num">09</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="10" data-state="libre"><span class="num">10</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay" data-n="11" data-state="libre"><span class="num">11</span><i class="car"></i><span class="tag"></span></div>
+            <div class="bay just" data-n="12" data-state="ocupado" data-res="1" data-auth="autorizado"><span class="num">12</span><i class="car"></i><span class="tag">AUT</span></div>
+          </div>
+          <p class="lot-log" id="lot-log" aria-live="off">POST /api/eventos · plaza 12 → ocupado<br>POST /api/lecturas · plaza 12 → autorizado</p>
+          <div class="lot-foot">
+            <div class="legend"><span data-i18n="parkex.14"><i></i>libre</span><span data-i18n="parkex.15"><i class="l-occ"></i>ocupado</span><span data-i18n="parkex.16"><i class="l-res"></i>reservada (D)</span><span data-i18n="parkex.17"><i class="l-new"></i>último cambio</span></div>
+            <button data-i18n="parkex.18" class="btn" id="lot-step" type="button">Simular evento</button>
+          </div>
+        </div>
+
+        <div class="sheets deck" role="group" data-i18n-aria-label="parkex.deck" aria-label="Cómo funciona ParkEx, el prototipo y el diagrama">
+          <figure class="sheet print how" style="--r:-1.2deg">
+            <figcaption data-i18n="parkex.howT">Cómo funciona</figcaption>
+            <ol>
+              <li data-i18n="parkex.how1">Un sensor ultrasónico en cada plaza detecta si hay un auto.</li>
+              <li data-i18n="parkex.how2">Un puente en la computadora del parking manda cada cambio a la API.</li>
+              <li data-i18n="parkex.how3">La API lo guarda en Supabase y el plano se actualiza solo en el navegador.</li>
+              <li data-i18n="parkex.how4">En las plazas reservadas, una cámara lee la matrícula y busca el distintivo DI. Si no está, avisa a una persona.</li>
+            </ol>
+          </figure>
+          <figure class="sheet taped" style="--r:-1.8deg">
+            <img data-i18n-alt="parkex.s4alt" src="../img/proyectos/parkex-tinkercad.webp" width="1000" height="506" alt="Circuito armado en Tinkercad: un Arduino Uno conectado a un sensor ultrasónico HC-SR04 y a dos LED, uno rojo y uno verde" loading="lazy" decoding="async">
+            <figcaption data-i18n="parkex.s4">primer prototipo del sensor, en Tinkercad</figcaption>
+          </figure>
+          <figure class="sheet taped on-white" style="--r:1.6deg">
+            <img data-i18n-alt="parkex.19" src="../img/parkex-arquitectura.png" alt="Diagrama de arquitectura de ParkEx: sensor y Arduino en la plaza, puente serie y lector de chapas en la computadora del parking, API REST, PostgreSQL y Realtime en Supabase, y el navegador" width="1890" height="1330" loading="lazy" decoding="async">
+            <figcaption data-i18n="parkex.20">Diagrama de la lógica del sistema</figcaption>
+          </figure>
+        </div>
+        <p class="deck-hint" aria-hidden="true"><span class="deck-n">1</span> / 3 · <span data-i18n="ui.swipe">deslizá</span> →</p>
+      </div>
+    </div>
+
+
+    <div class="spec process">
+      <dl>
+        <dt data-i18n="parkex.21">Timeline</dt><dd data-i18n="parkex.22">04/08/2026 → 29/08/2026 · circuito validado de punta a punta el 25/08/2026 sobre una plaza real</dd>
+        <dt data-i18n="parkex.23">Proceso</dt><dd data-i18n="parkex.24">Ocho fases incrementales, cinco sin depender del hardware.</dd>
+      </dl>
+      <dl>
+        <dt data-i18n="parkex.25">Resultado</dt><dd data-i18n="parkex.26">Premio a la mejor exposición oral y a la excelencia académica en la III Semana Académica de Ingeniería en Logística (UTEC). Proyecto ganador de la 1.ª edición del concurso ConectaLab – Litoral Norte (UTU), eje 2 (Programación y pensamiento computacional), categoría EMS.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <!-- ═════════ EN DETALLE ═════════ -->
+  <section class="plate detail" aria-labelledby="detail-title">
+    <h2 class="detail-t brush" id="detail-title" data-i18n="p.detail" data-wipe>En detalle</h2>
+    <div class="dgrid">
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.parkex.1.t">El problema</h3>
+          <p data-i18n="d.parkex.1.1">En un estacionamiento privado (un edificio, un shopping, un sanatorio) la gente recorre niveles enteros buscando lugar. A la vez, las plazas reservadas para personas con discapacidad suelen quedar ocupadas por vehículos sin permiso, y el operador no tiene forma práctica de enterarse.</p>
+          <p data-i18n="d.parkex.1.2">ParkEx ataca las dos cosas con hardware de bajo costo: un sensor ultrasónico por plaza, una cámara solo en las reservadas y un sitio web con el plano en vivo y un panel de alertas.</p>
+        </div>
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.parkex.2.t">Decisiones de diseño</h3>
+          <ul class="dl-list">
+            <li data-i18n="d.parkex.2.1"><strong>Sin padrones externos.</strong> El permiso se reconoce por el distintivo DI impreso en la propia matrícula uruguaya.</li>
+            <li data-i18n="d.parkex.2.2"><strong>Varias fotos por evento</strong> y consenso entre lecturas para descartar errores del OCR.</li>
+            <li data-i18n="d.parkex.2.3"><strong>El sistema no sanciona.</strong> Una lectura dudosa queda como «no verificable» y nunca genera alerta; las alertas van a revisión humana.</li>
+            <li data-i18n="d.parkex.2.4"><strong>Privacidad por diseño.</strong> La matrícula nunca se guarda en texto: sale de la computadora del parking solo como HMAC-SHA256, y las imágenes se procesan en memoria y se descartan.</li>
+            <li data-i18n="d.parkex.2.5"><strong>Sensores sin credenciales.</strong> El Arduino de cada plaza no tiene WiFi ni token; toda la conectividad vive en una sola computadora que hace de puente.</li>
+          </ul>
+        </div>
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.parkex.3.t">Recorrido de un evento</h3>
+          <ul class="dl-list">
+            <li data-i18n="d.parkex.3.1">El Arduino mide la distancia con el HC-SR04, decide si la plaza está ocupada y lo escribe por el puerto serie.</li>
+            <li data-i18n="d.parkex.3.2">El puente serie (Node.js) traduce cada línea en una petición a la API.</li>
+            <li data-i18n="d.parkex.3.3">La API (Express) registra el evento en Supabase, y Supabase Realtime avisa a los navegadores conectados.</li>
+            <li data-i18n="d.parkex.3.4">Si la plaza es reservada, el lector (Java, OpenCV y Tesseract) toma varias fotos, lee la chapa, busca el distintivo y reporta solo el hash y el resultado.</li>
+            <li data-i18n="d.parkex.3.5">Si el vehículo no lleva distintivo, aparece una alerta en el panel sin recargar la página.</li>
+          </ul>
+        </div>
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.parkex.4.t">Stack completo</h3>
+          <dl class="facts">
+            <div><dt data-i18n="d.parkex.4.1t">Sitio y panel</dt><dd data-i18n="d.parkex.4.1">HTML, CSS y JavaScript sin framework, plano en SVG</dd></div>
+            <div><dt data-i18n="d.parkex.4.2t">API</dt><dd data-i18n="d.parkex.4.2">Node.js + Express</dd></div>
+            <div><dt data-i18n="d.parkex.4.3t">Datos</dt><dd data-i18n="d.parkex.4.3">Supabase: PostgreSQL, Auth y Realtime</dd></div>
+            <div><dt data-i18n="d.parkex.4.4t">Lector de matrículas</dt><dd data-i18n="d.parkex.4.4">Java 17, OpenCV y Tesseract OCR</dd></div>
+            <div><dt data-i18n="d.parkex.4.5t">Puente serie</dt><dd data-i18n="d.parkex.4.5">Node.js + serialport</dd></div>
+            <div><dt data-i18n="d.parkex.4.6t">Sensor</dt><dd data-i18n="d.parkex.4.6">Arduino Uno + HC-SR04</dd></div>
+          </dl>
+        </div>
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.parkex.5.t">Reconocimiento</h3>
+          <p data-i18n="d.parkex.5.1">Presentado en la III Semana Académica de Ingeniería en Logística de la UTEC (Instituto Tecnológico Regional Norte, Rivera, 6 al 8 de octubre de 2026), donde ganó los premios a <strong>Mejor exposición</strong> y a <strong>Excelencia académica</strong>.</p>
+          <p data-i18n="d.parkex.5.2">El resumen está publicado en el libro de resúmenes del evento: <a href="https://doi.org/10.5281/zenodo.23377101" target="_blank" rel="noopener">doi.org/10.5281/zenodo.23377101</a>.</p>
+        </div>
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.parkex.6.t">Equipo</h3>
+          <dl class="facts">
+            <div><dt data-i18n="d.parkex.6.1t">Autores</dt><dd data-i18n="d.parkex.6.1">Joaquín Castro, Catalina Ligüera, Luciano Bazzano, Facundo Duarte y Lucio Facchin</dd></div>
+            <div><dt data-i18n="d.parkex.6.2t">Tutores</dt><dd data-i18n="d.parkex.6.2">Facundo Rubil y Federico Fagúndez</dd></div>
+            <div><dt data-i18n="d.parkex.6.3t">Estado</dt><dd data-i18n="d.parkex.6.3">Prototipo funcional, probado de punta a punta sobre una plaza real.</dd></div>
+          </dl>
+        </div>
+    </div>
+  </section>
+
+  <!-- ═════════ SIGUIENTE ═════════ -->
+  <nav class="plate poster dark next" data-i18n-aria-label="p.more" aria-label="Más proyectos">
+    <p class="next-k"><span data-i18n="p.next">Siguiente proyecto</span> · 3</p>
+    <a class="next-link" href="itspace.html"><span class="poster-title" data-fit>ITSpace</span></a>
+    <div class="next-foot">
+      <a href="selene.html"><span aria-hidden="true">←</span> <span data-i18n="p.prev">Anterior</span>: SELENE</a>
+      <a href="../#indice" data-i18n="p.back">Volver al índice</a>
+      <a href="../#contacto" data-i18n="nav.2">Contacto</a>
+    </div>
+  </nav>
+
+</main>
+
+<script src="../js/main.js" defer></script>
+
+</body>
+</html>

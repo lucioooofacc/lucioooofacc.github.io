@@ -54,7 +54,7 @@
     updateCount();
     if (pano) pano.render();
     if (reel) reel.relabel();
-    copyState.textContent = '';
+    if (copyState) copyState.textContent = '';
   }
 
   function setLang(next, animate) {
@@ -84,7 +84,8 @@
       try { localStorage.setItem('lang', next); } catch (e) {}
     }
     if (cache[next]) return done(cache[next]);
-    fetch('lang/' + next + '.json', { cache: 'no-store' })
+    // relativo a js/main.js: sirve igual desde la portada y desde proyectos/
+    fetch(new URL('../lang/' + next + '.json', scriptUrl || location.href).href, { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw r; return r.json(); })
       .then(done)
       .catch(function () { console.warn('No se pudo cargar lang/' + next + '.json'); });
@@ -98,6 +99,7 @@
   var last = null;
 
   function updateCount() {
+    if (!count) return; // solo en la página de ParkEx
     var free = bays.filter(function (b) { return b.dataset.state !== 'ocupado'; }).length;
     count.textContent = t('ui.free', { free: free, total: bays.length }) || free + ' libres de ' + bays.length;
   }
@@ -130,7 +132,7 @@
 
   updateCount();
   // Solo se anuncia por lector de pantalla cuando el evento lo dispara la persona
-  document.getElementById('lot-step').addEventListener('click', function () {
+  if (count) document.getElementById('lot-step').addEventListener('click', function () {
     log.setAttribute('aria-live', 'polite');
     step();
   });
@@ -339,7 +341,7 @@
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         ready = true; canvas.classList.add('on'); request();
       };
-      img.src = 'img/selene-luna.webp';
+      img.src = new URL('../img/selene-luna.webp', scriptUrl || location.href).href; // relativo a js/main.js
     }
 
     function size() {
@@ -455,16 +457,18 @@
     });
   }
 
-  // ─── Portada: fotos sueltas sobre la mesa ───
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+  // ─── Portada: fotos sueltas sobre la mesa (solo en la portada) ───
   var stage = document.getElementById('cover-stage');
   var pile = document.getElementById('pile');
+  if (pile) (function () {
   var resetBtn = document.getElementById('pile-reset');
   var snaps = Array.prototype.map.call(pile.querySelectorAll('.snap'), function (el) {
     return { el: el, x: 0, y: 0, vx: 0, vy: 0, rot: 0, raf: 0 };
   });
   var order = snaps.slice(); // el último está arriba
 
-  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
   function render(s) {
     s.el.style.translate = s.x.toFixed(1) + 'px ' + s.y.toFixed(1) + 'px';
     s.el.style.setProperty('--tilt', s.rot.toFixed(2) + 'deg');
@@ -600,11 +604,13 @@
     resizeT = setTimeout(function () { snaps.forEach(function (s) { keepInside(s); render(s); }); }, 150);
   });
 
+  })();
+
   // ─── Respuestas al cursor (solo mouse, sin reduced-motion) ───
   if (finePointer && !reduce) {
     // "PORTFOLIO" de fondo se corre como una fotocopia mal registrada
-    var ghost = stage.querySelector('.ghost'), gRaf = 0, gx = 0, gy = 0;
-    stage.addEventListener('pointermove', function (e) {
+    var ghost = stage && stage.querySelector('.ghost'), gRaf = 0, gx = 0, gy = 0;
+    if (ghost) stage.addEventListener('pointermove', function (e) {
       var r = stage.getBoundingClientRect();
       gx = ((e.clientX - r.left) / r.width - 0.5) * -14;
       gy = ((e.clientY - r.top) / r.height - 0.5) * -8;
@@ -614,7 +620,7 @@
         ghost.style.setProperty('--gy', gy.toFixed(1) + 'px');
       });
     });
-    stage.addEventListener('pointerleave', function () {
+    if (ghost) stage.addEventListener('pointerleave', function () {
       ghost.style.setProperty('--gx', '0px');
       ghost.style.setProperty('--gy', '0px');
     });
@@ -686,23 +692,6 @@
       $('[data-wipe], [data-draw]').forEach(function (el) { io.observe(el); });
     }
 
-    // ─── Riel: la birome encierra el proyecto que cruza la mitad de la pantalla (estado, no movimiento) ───
-    var railNow = q('.rail-now');
-    if (hasIO) {
-      var railLinks = $('.rail a'), arts = $('.proj');
-      var rio = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          var i = arts.indexOf(e.target);
-          railLinks.forEach(function (a, j) {
-            if (j === i) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
-          });
-          if (railNow) railNow.textContent = q('.nm', railLinks[i]).textContent;
-        });
-      }, { rootMargin: '-50% 0px -50% 0px' });
-      arts.forEach(function (a) { rio.observe(a); });
-    }
-
     // ─── Mazos (celular): se pasan con el dedo; el contador en birome sigue la carta visible ───
     var decks = $('.deck');
     function syncSwipe() {
@@ -731,7 +720,7 @@
     });
 
     // ─── ParkEx fuera de escritorio: mientras el plano está a la vista, el scroll dispara eventos ───
-    if (!reduce && hasIO) (function () {
+    if (!reduce && hasIO && scenes.parkex) (function () {
       var lot = q('.lot', scenes.parkex), last = -1, listening = false, raf = 0;
       function tick() {
         raf = 0;
@@ -858,16 +847,6 @@
         });
       }
 
-      // Progreso del riel: una ventana que avanza y un trazo que se queda quieto (dos traslaciones opuestas)
-      function railProgress(sel, axis) {
-        var wipe = q(sel + ' .rail-wipe'), p = axis === 'x' ? 'xPercent' : 'yPercent';
-        var from = {}, to = {}, from2 = {}, to2 = {};
-        from[p] = -100; to[p] = 0; from2[p] = 100; to2[p] = 0; to.ease = to2.ease = 'none';
-        gsap.timeline({ scrollTrigger: { trigger: '.sheaf', start: axis === 'x' ? 'top top' : 'top 55%', end: 'bottom bottom', scrub: 0.3 } })
-          .fromTo(wipe, from, to, 0)
-          .fromTo(q('.rail-ink', wipe), from2, to2, 0);
-      }
-
       // Monitor de Coded Bias: muestra el clip que pisa el playhead
       function codedMonitor(scene) {
         var clips = $('.clips:not(.audio) .clip', scene), monI = q('#mon-i'), monClip = q('#mon-clip'), cur = -1;
@@ -921,35 +900,20 @@
 
       // ═════ Escritorio: escenas sticky ═════
       function desk(cleanups) {
-        heroFly(true);
-        var arts = $('.proj');
-        arts.forEach(function (art, i) {
-          var side = i % 2 ? 1 : -1;
-          // La lámina se desliza sobre la mesa desde un costado y se asienta
-          gsap.fromTo(art, { x: side > 0 ? 110 : -50, rotation: side * 2.2 }, {
-            x: 0, rotation: 0, ease: 'power2.out',
-            scrollTrigger: { trigger: art, start: 'top bottom', end: 'top 30%', scrub: 0.6 }
-          });
-          // y cuando llega la siguiente, la anterior se achica apenas y se corre: queda abajo de la pila
-          var next = arts[i + 1];
-          if (next) gsap.to(art, {
-            scale: 0.965, xPercent: side * -1.2, transformOrigin: '50% 100%', ease: 'none',
-            scrollTrigger: { trigger: next, start: 'top bottom', end: 'top 30%', scrub: 0.6 }
-          });
-        });
-        // Cambio de composición: el riel entra desde la izquierda cuando empiezan los proyectos
-        gsap.fromTo('.rail', { x: -24 }, { x: 0, ease: 'none', scrollTrigger: { trigger: '.run', start: 'top 75%', end: 'top 25%', scrub: 0.5 } });
-        railProgress('.rail-line', 'y');
+        if (q('#pile')) heroFly(true);
 
         // SELENE: el scroll recorre el ciclo lunar en el panorama y las hojas llegan como a la Luna
+        if (scenes.selene) {
         var tlS = gsap.timeline({
           scrollTrigger: sceneST(scenes.selene, 0.3),
           onUpdate: function () { if (pano) pano.scrub(this.progress()); }
         });
         orbitSheets(tlS, $('.sheets > .sheet', scenes.selene));
         tlS.to({}, { duration: 0.12 }, 0.88);
+        }
 
         // ParkEx: las hojas entran por el carril y estacionan; el avance de la escena dispara eventos
+        if (scenes.parkex) {
         var n = 8, last = -1;
         var tlP = gsap.timeline({
           scrollTrigger: sceneST(scenes.parkex),
@@ -960,8 +924,10 @@
         });
         parkSheets(tlP, $('.sheets > .sheet', scenes.parkex), 0.14, 0.34);
         tlP.to({}, { duration: 0.12 });
+        }
 
         // ITSpace: la cinta recorre 1 px horizontal por cada px vertical
+        if (scenes.itspace) {
         var gal = q('.gallery', scenes.itspace), track = q('.track', gal);
         function dist() {
           var pad = parseFloat(getComputedStyle(gal).paddingLeft) || 0;
@@ -975,8 +941,10 @@
           scenes.itspace.style.removeProperty('--h');
         });
         gsap.to(track, { x: function () { return -dist(); }, ease: 'none', scrollTrigger: sceneST(scenes.itspace, 0.3) });
+        }
 
         // Coded Bias: el playhead recorre la pista, el monitor sigue el clip y la cita se enciende
+        if (scenes.coded) {
         var mon = codedMonitor(scenes.coded), ph = q('.playhead', scenes.coded);
         var tlC = gsap.timeline({ scrollTrigger: sceneST(scenes.coded, 0.3), onUpdate: function () { mon.set(this.progress()); } });
         tlC.fromTo(ph, { x: 0 }, { x: function () { return ph.parentNode.clientWidth - 2; }, ease: 'none', duration: 1 }, 0);
@@ -987,8 +955,10 @@
           var words = SplitText.create(quote, { type: 'words', tag: 'span', aria: 'none' }).words;
           tlC.fromTo(words, { opacity: 0.12 }, { opacity: 1, duration: 0.05, stagger: 0.45 / words.length, ease: 'none' }, 0.04);
         }
+        }
 
         // Escaneo IP: la terminal imprime las IP mientras se escanea la captura
+        if (scenes.escaneo) {
         var lines = $('.term .l', scenes.escaneo);
         var tlE = gsap.timeline({ scrollTrigger: sceneST(scenes.escaneo, 0.2) });
         lines.forEach(function (l, k) {
@@ -1006,8 +976,9 @@
             { y: function () { return shotImg.offsetTop + shotImg.offsetHeight; }, duration: 0.45, ease: 'none' }, 0.05)
           .to(scan, { autoAlpha: 0, duration: 0.05 }, 0.5);
         tlE.to({}, { duration: 0.2 }, 0.6);
+        }
 
-        cinniPrint(cleanups, sceneST(scenes.cinni, 0.4));
+        if (scenes.cinni) cinniPrint(cleanups, sceneST(scenes.cinni, 0.4));
       }
 
       // Cinniminies: la página impresa sube dentro del marco, se "lee" mientras se baja
@@ -1028,14 +999,7 @@
 
       // ═════ Celular / touch: todo pasa mientras se baja, sin pins ═════
       function hand(cleanups, poster) {
-        if (poster) posterFly(); else heroFly(false);
-        // Láminas: entran deslizándose desde un costado, como papel que se empuja sobre la mesa
-        $('.proj').forEach(function (art, i) {
-          var side = i % 2 ? 1 : -1;
-          gsap.fromTo(art, { x: side * 34, rotation: side * 1.8 },
-            { x: 0, rotation: 0, ease: 'power2.out', scrollTrigger: passST(art, 'top bottom', 'top 55%', 0.4) });
-        });
-        railProgress('.rail-bar', 'x');
+        if (q('#pile')) { if (poster) posterFly(); else heroFly(false); }
 
         // Fotos pegadas: caen sobre la mesa (las de los mazos se reparten aparte)
         $('.taped').forEach(function (f) {
@@ -1058,10 +1022,13 @@
 
 
         // Terminal: imprime línea por línea mientras pasa
+        if (scenes.escaneo) {
         var term = q('.term', scenes.escaneo), tls = $('.l', term).slice(1);
         gsap.fromTo(tls, { opacity: 0 }, { opacity: 1, ease: 'none', stagger: 0.06, duration: 0.02, scrollTrigger: passST(term, 'top 85%', 'bottom 70%', 0.2) });
+        }
 
         // Coded Bias: el monitor y los clips siguen el scroll; la cita se enciende palabra por palabra
+        if (scenes.coded) {
         var mon = codedMonitor(scenes.coded), ph = q('.playhead', scenes.coded);
         var tlC = gsap.timeline({ scrollTrigger: passST(scenes.coded, 'top 70%', 'bottom 75%', 0.3), onUpdate: function () { mon.set(this.progress()); } });
         tlC.fromTo(ph, { x: 0 }, { x: function () { return ph.parentNode.clientWidth - 2; }, ease: 'none', duration: 1 }, 0);
@@ -1072,9 +1039,10 @@
           var words = SplitText.create(quote, { type: 'words', tag: 'span', aria: 'none' }).words;
           gsap.fromTo(words, { opacity: 0.12 }, { opacity: 1, ease: 'none', stagger: 0.1, duration: 0.2, scrollTrigger: passST(quote, 'top 85%', 'bottom 45%', 0.3) });
         }
+        }
 
         // Cinniminies: la impresión se lee dentro del marco mientras el marco cruza la pantalla
-        cinniPrint(cleanups, passST(q('.lp-frame', scenes.cinni), 'top 85%', 'bottom 15%', 0.4));
+        if (scenes.cinni) cinniPrint(cleanups, passST(q('.lp-frame', scenes.cinni), 'top 85%', 'bottom 15%', 0.4));
       }
 
       gsap.matchMedia().add({ desk: DESK, ok: '(prefers-reduced-motion: no-preference)', poster: '(max-width: 900px)' }, function (ctx) {
@@ -1119,7 +1087,7 @@
 
   var copyBtn = document.getElementById('copy-mail');
   var copyState = document.getElementById('copy-state');
-  copyBtn.addEventListener('click', function () {
+  if (copyBtn) copyBtn.addEventListener('click', function () {
     var mail = 'luciofacchin.dev@gmail.com';
     function fallback() { copyState.textContent = t('ui.copyFail', { mail: mail }); }
     try {

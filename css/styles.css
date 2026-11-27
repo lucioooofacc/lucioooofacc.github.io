@@ -610,7 +610,7 @@ html:not(.js) .cover-note { visibility: hidden; } /* sin JS las fotos no se muev
 /* ───────── Proyecto ───────── */
 .ph { display: flex; align-items: flex-end; gap: 14px 18px; }
 .ph .n { font-size: clamp(56px, 7vw, 88px); text-align: left; }
-.ph h2 {
+.ph :is(h1, h2) {
   margin: 0 0 4px;
   font-weight: 900;
   font-stretch: 125%;
@@ -870,30 +870,6 @@ html.reveal [data-draw]:not(.in) path { stroke-dashoffset: 1; transition: none; 
   html { scroll-behavior: smooth; }
 }
 
-/* ───────── Proyectos: corrida de láminas con riel lateral ───────── */
-.run { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); }
-.sheaf { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(60px, 8vw, 112px); min-width: 0; }
-.rail { display: none; }
-
-/* Riel: índice compacto que acompaña mientras pasan los proyectos (sticky, también sin JS) */
-@media (min-width: 1100px) {
-  .run { grid-template-columns: 150px minmax(0, 1fr); column-gap: clamp(24px, 3vw, 44px); width: 100%; max-width: 1380px; margin-inline: auto; }
-  .rail { position: sticky; top: 32px; align-self: start; display: flex; flex-direction: column; height: calc(100vh - 64px); max-height: 760px; }
-}
-.rail-t { margin: 0 0 14px; font-family: var(--f-brush); filter: url(#dry); font-size: 34px; line-height: 1; rotate: -4deg; }
-.rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-.rail a { display: grid; grid-template-columns: 34px 1fr; align-items: center; gap: 8px; padding: 6px 4px; text-decoration: none; font-weight: 800; font-stretch: 112%; font-size: 13px; text-transform: uppercase; letter-spacing: .02em; color: var(--graphite); transition: color var(--d-fast) var(--ease); }
-.rail a:hover, .rail a[aria-current] { color: var(--ink); }
-.rail a:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; }
-.rn { position: relative; font-weight: 100; font-stretch: 62%; font-size: 34px; line-height: 1; text-align: center; font-variant-numeric: tabular-nums; }
-.rn .pen-ring { position: absolute; left: 50%; top: 52%; translate: -50% -50%; width: 40px; height: 44px; rotate: -8deg; }
-.rn .pen-ring path { stroke-dashoffset: 1; transition: stroke-dashoffset var(--d-mid) var(--ease); }
-.rail a[aria-current] .pen-ring path, .rail a:hover .pen-ring path, .rail a:focus-visible .pen-ring path { stroke-dashoffset: 0; }
-.rail-line { flex: 1; min-height: 60px; width: 12px; margin: 18px 0 0 15px; overflow: hidden; }
-.rail-wipe, .rail-ink, .rail-ink svg { display: block; width: 100%; height: 100%; }
-.rail-wipe { overflow: hidden; } /* la ventana que baja recorta el trazo, que queda quieto */
-.rail-line path { fill: none; stroke: var(--pen); stroke-width: 2.2; stroke-linecap: round; vector-effect: non-scaling-stroke; }
-
 /* Encabezado de cada lámina */
 .proj .ph { padding-bottom: 2px; }
 .proj > .spec { margin-top: 22px; }
@@ -988,7 +964,7 @@ html.reveal [data-draw]:not(.in) path { stroke-dashoffset: 1; transition: none; 
 .plate.space > :not(.moon-bg) { position: relative; z-index: 1; }
 .moon-credit { margin: 18px 0 0; font: 600 10px/1.4 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: #6F6B62; }
 @media (max-width: 899.98px) { .moon-gl.on { opacity: .45; } }
-.space .ph h2 { color: var(--cream); }
+.space .ph :is(h1, h2) { color: var(--cream); }
 .space .ph .n { display: inline-flex; align-items: center; gap: 10px; color: var(--gold); }
 .space .ph .n::after { /* luna creciente */
   content: "";
@@ -1097,30 +1073,8 @@ html.gs .lp-frame { overflow: hidden; } /* el marco lo desplaza el scroll, no el
 /* ───────── Celular y touch ─────────
    html.swipe: hay JS, no hay reduced-motion y no es la versión de escritorio.
    Sin JS o con reduced-motion todo sigue en columna. */
-.rail-now, .rail-bar, .deck-hint { display: none; }
+.deck-hint { display: none; }
 @media (max-width: 1099.98px) {
-  /* Riel compacto pegado arriba mientras pasan los proyectos: números, nombre actual y progreso */
-  .rail {
-    position: sticky; top: 0; z-index: 20;
-    display: flex; align-items: center; gap: 4px 10px;
-    margin: 0 calc(-1 * clamp(22px, 4vw, 56px)) 22px;
-    padding: 6px clamp(22px, 4vw, 56px) 10px;
-    background: var(--desk);
-    box-shadow: 0 12px 18px -16px rgba(0,0,0,.5);
-  }
-  .rail-t { margin: 0 4px 0 0; font-size: 24px; rotate: -4deg; flex: none; }
-  .rail ol { display: flex; gap: 0; }
-  .rail a { display: grid; place-items: center; grid-template-columns: 1fr; min-width: 38px; min-height: 44px; padding: 0; }
-  .rail .rn { font-size: 30px; }
-  .rail .rn .pen-ring { width: 36px; height: 40px; }
-  .rail .nm { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .rail-line { display: none; }
-  @media (max-width: 460px) { .rail-t { display: none; } .rail a { min-width: 36px; } }
-  html.js .rail-now { display: block; flex: 1; min-width: 0; margin: 0; text-align: right; font-weight: 900; font-stretch: 125%; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  html.gs .rail-bar { display: block; position: absolute; left: clamp(22px, 4vw, 56px); right: clamp(22px, 4vw, 56px); bottom: 2px; height: 8px; overflow: hidden; }
-  .rail-bar path { fill: none; stroke: var(--pen); stroke-width: 2.2; stroke-linecap: round; vector-effect: non-scaling-stroke; }
-  .proj { scroll-margin-top: 66px; } /* el riel no tapa el encabezado al llegar por #ancla */
-
   /* Mazos: impresiones y capturas que se pasan con el dedo, una al lado de la otra */
   html.swipe .deck {
     display: flex; gap: 16px; align-items: flex-start;
@@ -1145,10 +1099,7 @@ html.gs .lp-frame { overflow: hidden; } /* el marco lo desplaza el scroll, no el
 .plate.poster { box-shadow: none; }
 .plate.poster::after { display: none; } /* sin marcas de corte: no es una hoja */
 main > .plate.poster { width: auto; max-width: none; margin-inline: calc(-1 * clamp(22px, 4vw, 56px)); padding-inline: clamp(22px, 4vw, 56px); }
-@media (max-width: 1099.98px) {
-  .sheaf > .plate.poster { width: auto; margin-inline: calc(-1 * clamp(22px, 4vw, 56px)); padding-inline: clamp(22px, 4vw, 56px); }
-}
-.poster-title, .poster .ph h2 {
+.poster-title, .poster .ph :is(h1, h2) {
   margin: 0;
   font-family: var(--f-sans);
   font-weight: 900;
@@ -1165,7 +1116,7 @@ main > .plate.poster { width: auto; max-width: none; margin-inline: calc(-1 * cl
 .poster .ph { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14px 16px; }
 .poster .ph .n { grid-row: 1; font-size: 34px; color: var(--on-slab-dim); }
 .poster .ph .cta { grid-row: 1; grid-column: 2; }
-.poster .ph h2 { grid-row: 2; grid-column: 1 / -1; flex: none; }
+.poster .ph :is(h1, h2) { grid-row: 2; grid-column: 1 / -1; flex: none; }
 .dark .pen-ring path, .dark .pen-under path { stroke: var(--pen-light); }
 .dark .deck-hint, html.swipe .dark .deck-hint { color: var(--on-slab-dim); }
 .dark .term { box-shadow: inset 0 0 0 1px #333; }
@@ -1228,6 +1179,51 @@ html.reel-pin .reel-stage { position: sticky; top: 0; height: 100vh; }
   .poster .contact-main { padding-top: 28px; }
 }
 
+/* ───────── Página de cada proyecto (proyectos/*.html) ───────── */
+.crumbs {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  width: 100%; max-width: 1180px; margin: 0 auto -36px;
+  font: 600 11px/1.3 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--graphite);
+}
+.crumbs a { text-decoration: none; padding-block: 8px; }
+.crumbs a:hover { color: var(--ink); }
+.page-proj .proj .ph h1 { margin-top: 0; }
+
+/* En detalle: bloques con el marco de selección, como «Sobre mí» */
+.detail-t { margin: 0 0 30px; font-size: clamp(40px, 6vw, 72px); line-height: 1; rotate: -2deg; }
+.dgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 28px; align-items: start; }
+.dgrid .block { min-width: 0; }
+.dgrid .bh { font-size: 15px; }
+.dl-list { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; max-width: 62ch; }
+.dl-list li::marker { color: var(--graphite); }
+.facts { margin: 0; display: grid; gap: 0; }
+.facts div { display: grid; grid-template-columns: minmax(110px, 34%) minmax(0, 1fr); gap: 4px 14px; padding: 8px 0; border-bottom: 1px solid var(--rule); }
+.facts div:first-child { padding-top: 0; }
+.facts div:last-child { border-bottom: 0; padding-bottom: 0; }
+.facts dt { font: 600 11px/1.6 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite); }
+.facts dd { margin: 0; overflow-wrap: anywhere; }
+.detail code { font-family: var(--f-mono); font-size: .88em; background: rgba(20,20,20,.07); padding: 1px 4px; }
+.detail a { text-underline-offset: 2px; }
+.detail a:hover { color: var(--pen); }
+
+/* Siguiente proyecto: afiche con el nombre a todo el ancho */
+.next { display: grid; gap: 16px; }
+.next-k { margin: 0; font: 600 11px/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--on-slab-dim); }
+.next-link { display: block; text-decoration: none; }
+.next-link .poster-title { display: block; transition: color var(--d-fast) var(--ease); }
+.next-link:hover .poster-title, .next-link:focus-visible .poster-title { color: var(--pen-light); }
+.next-link:focus-visible { outline: 2px solid var(--pen-light); outline-offset: 6px; }
+.next-foot { display: flex; flex-wrap: wrap; gap: 8px 26px; padding-top: 14px; border-top: 1px solid rgba(230,230,225,.2); font: 600 11px/1.3 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; }
+.next-foot a { text-decoration: none; color: var(--on-slab); padding-block: 8px; }
+.next-foot a:hover { color: var(--pen-light); }
+.next-foot a:focus-visible { outline: 2px solid var(--pen-light); outline-offset: 2px; }
+@media (max-width: 900px) {
+  .dgrid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 460px) {
+  .facts div { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* ───────── Responsive ───────── */
 /* Tablet: una columna por sección */
 @media (max-width: 900px) {
@@ -1258,7 +1254,7 @@ html.reel-pin .reel-stage { position: sticky; top: 0; height: 100vh; }
   .table3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .table3 > :first-child { grid-column: 1 / -1; max-width: 400px; }
   .proj .ph { flex-wrap: wrap; }
-  .proj .ph h2 { flex: 1 1 auto; overflow-wrap: normal; }
+  .proj .ph :is(h1, h2) { flex: 1 1 auto; overflow-wrap: normal; }
   .proj .ph .cta { order: 3; }
   .quick { right: 10px; bottom: 10px; }
 }

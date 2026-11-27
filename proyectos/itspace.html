@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta data-i18n-content="p.itspace.desc" name="description" content="ITSpace: plataforma web para aprender programación dentro del ITSP, en PHP y MySQL.">
+<title>ITSpace · Lucio Facchin</title>
+<link rel="icon" href="data:,">
+<link rel="canonical" href="https://luciofacchin.me/proyectos/itspace.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Lucio Facchin">
+<meta property="og:title" content="ITSpace · Lucio Facchin">
+<meta property="og:description" content="ITSpace: plataforma web para aprender programación dentro del ITSP, en PHP y MySQL.">
+<meta property="og:url" content="https://luciofacchin.me/proyectos/itspace.html">
+<meta property="og:image" content="https://luciofacchin.me/img/og.jpg">
+<meta property="og:locale" content="es_UY">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="../fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../css/styles.css">
+<!-- Igual que en la portada: escenas de scroll solo en escritorio, con mouse y sin reduced-motion -->
+<script>
+  try { if (matchMedia('(min-width: 1100px) and (min-height: 680px) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) document.documentElement.classList.add('motion'); } catch (e) {}
+</script>
+</head>
+<body class="page-proj">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <filter id="dry" x="-5%" y="-10%" width="110%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="3" result="grain"/>
+    <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -3.2 0 0 0 2.45" result="mask"/>
+    <feComposite in="SourceGraphic" in2="mask" operator="in" result="holes"/>
+    <feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="9" result="warp"/>
+    <feDisplacementMap in="holes" in2="warp" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="rough" x="-2%" y="-30%" width="104%" height="160%">
+    <feTurbulence type="fractalNoise" baseFrequency=".05 .3" numOctaves="3" seed="4" result="t"/>
+    <feDisplacementMap in="SourceGraphic" in2="t" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<nav data-i18n-aria-label="nav.aria" class="quick" aria-label="Accesos rápidos">
+  <a data-i18n="nav.1" href="../#indice">Índice</a>
+  <a data-i18n="nav.2" href="../#contacto">Contacto</a>
+  <button class="lang-btn" id="lang-btn" type="button" lang="en" data-i18n="ui.lang" data-i18n-aria-label="ui.langLabel" aria-label="EN, switch to English">EN</button>
+</nav>
+
+<main>
+
+  <p class="crumbs"><a href="../#indice"><span aria-hidden="true">←</span> <span data-i18n="p.back">Volver al índice</span></a><span>3 / 6</span></p>
+
+  <!-- ═════════ 3 · ITSPACE ═════════ -->
+  <article class="plate proj poster dark" id="itspace" aria-labelledby="itspace-title">
+    <header class="ph">
+      <span class="n" aria-hidden="true">3</span>
+      <h1 id="itspace-title" data-fit>ITSpace</h1>
+      <a class="cta" href="https://itspvm.duckdns.org/proyectos/luciooofacc/ITSpace/html/index.php" target="_blank" rel="noopener"><span data-i18n="ui.site">Ver el sitio</span><span class="arr" aria-hidden="true">↗</span></a>
+    </header>
+    <div class="spec">
+      <dl>
+        <dt data-i18n="itspace.1">Contexto</dt><dd data-i18n="itspace.2">Web Design · ITSP</dd>
+        <dt data-i18n="itspace.3">Rol</dt><dd data-i18n="itspace.4">Maquetación y desarrollo del sitio</dd>
+        <dt data-i18n="itspace.5">Stack</dt><dd data-i18n="itspace.6">HTML · CSS · JavaScript · PHP · MySQL · XAMPP · Figma</dd>
+        <dt data-i18n="itspace.16">Sitio web</dt><dd><a href="https://itspvm.duckdns.org/proyectos/luciooofacc/ITSpace/html/index.php" target="_blank" rel="noopener">ITSpace</a></dd>
+      </dl>
+      <dl>
+        <dt data-i18n="itspace.7">Descripción</dt>
+        <dd data-i18n="itspace.8">Una plataforma pensada dentro del instituto: cada lenguaje con teoría, práctica y ejercicios; un foro para pedir y dar ayuda con el código; cursos validados por el ITSP; y cuentas para guardar por dónde vas.</dd>
+      </dl>
+    </div>
+
+    <!-- Momento: galería horizontal de capturas reales (en escritorio avanza con el scroll vertical) -->
+    <div class="scene" data-scene="itspace">
+      <div class="stick">
+        <div class="gallery">
+          <div class="track deck" role="group" data-i18n-aria-label="itspace.gal" aria-label="Capturas de ITSpace">
+            <figure class="shot taped" style="--r:-1.5deg">
+              <img data-i18n-alt="itspace.a1" src="../img/proyectos/itspace-inicio.webp" width="1200" height="750" alt="Captura de la página de inicio de ITSpace: barra azul petróleo con el logo y el buscador, menú lateral con Lenguajes, Foro, Cursos e IDE, un cohete ilustrado sobre la Luna con el título «Bienvenido a ITSpace» y, debajo, una foto del edificio del instituto" loading="lazy" decoding="async">
+              <figcaption><span class="path" data-i18n="itspace.p1">Inicio</span></figcaption>
+            </figure>
+            <figure class="shot taped" style="--r:1.2deg">
+              <img data-i18n-alt="itspace.a2" src="../img/proyectos/itspace-lenguajes.webp" width="1200" height="750" alt="Captura de la sección Lenguajes: seis tarjetas azules con los logos de Python, HTML y CSS, JavaScript, Java, C++ y SQL" loading="lazy" decoding="async">
+              <figcaption><span class="path" data-i18n="itspace.p2">Lenguajes</span></figcaption>
+            </figure>
+            <figure class="shot taped" style="--r:-.8deg">
+              <img data-i18n-alt="itspace.a3" src="../img/proyectos/itspace-javascript.webp" width="1200" height="750" alt="Captura de la página de JavaScript: el título en un recuadro, la explicación de qué es el lenguaje, un bloque «Hola Mundo» con console.log y un índice de temas a la derecha" loading="lazy" decoding="async">
+              <figcaption><span class="path" data-i18n="itspace.p3">JavaScript</span></figcaption>
+            </figure>
+            <figure class="shot taped" style="--r:1.6deg">
+              <img data-i18n-alt="itspace.a4" src="../img/proyectos/itspace-login.webp" width="1200" height="750" alt="Captura del formulario de inicio de sesión sobre un fondo de estrellas, con un cohete que entra por la izquierda" loading="lazy" decoding="async">
+              <figcaption><span class="path" data-i18n="itspace.p4">Iniciar sesión</span></figcaption>
+            </figure>
+            <figure class="shot taped phone" style="--r:-2deg">
+              <img data-i18n-alt="itspace.a5" src="../img/proyectos/itspace-inicio-mobile.webp" width="390" height="844" alt="Captura de la página de inicio en un celular: el buscador arriba, el cohete con los botones «Ver lenguajes» y «Ver cursos» y la foto del instituto" loading="lazy" decoding="async">
+              <figcaption><span class="path" data-i18n="itspace.p5">Inicio, en el celular</span></figcaption>
+            </figure>
+            <figure class="shot taped phone" style="--r:1.4deg">
+              <img data-i18n-alt="itspace.a6" src="../img/proyectos/itspace-javascript-mobile.webp" width="390" height="844" alt="Captura de la página de JavaScript en un celular, con el índice de temas apilado arriba del contenido" loading="lazy" decoding="async">
+              <figcaption><span class="path" data-i18n="itspace.p6">JavaScript, en el celular</span></figcaption>
+            </figure>
+          </div>
+        </div>
+        <p class="deck-hint" aria-hidden="true"><span class="deck-n">1</span> / 6 · <span data-i18n="ui.swipe">deslizá</span> →</p>
+      </div>
+    </div>
+
+    <div class="two duo">
+      <div class="langs-sheet">
+        <div class="langs"><span>C++</span><span data-i18n="itspace.9">HTML y CSS</span><span>Java</span><span>JS</span><span>Python</span><span>SQL</span></div>
+      </div>
+      <figure class="taped logo-sheet">
+        <div class="logo-pad"><img data-i18n-alt="itspace.10" src="../img/itspace-logo.png" alt="Logo de ITSpace: la palabra ITSPACE con un cohete que atraviesa la letra C" width="3492" height="847" loading="lazy" decoding="async"></div>
+        <figcaption data-i18n="itspace.11">Diseño de logo en GIMP</figcaption>
+      </figure>
+    </div>
+
+    <div class="spec process">
+      <dl>
+        <dt data-i18n="itspace.12">Timeline</dt><dd data-i18n="itspace.13">Desde julio de 2026 · en desarrollo</dd>
+      </dl>
+      <dl>
+        <dt data-i18n="itspace.14">Proceso</dt><dd data-i18n="itspace.15">Maqueta en Figma, paleta definida en Color Hunt, identidad propia con logo animado y documentación del proyecto. Se sirve en local con XAMPP.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <!-- ═════════ EN DETALLE ═════════ -->
+  <section class="plate detail" aria-labelledby="detail-title">
+    <h2 class="detail-t brush" id="detail-title" data-i18n="p.detail" data-wipe>En detalle</h2>
+    <div class="dgrid">
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.itspace.1.t">Qué tiene hoy</h3>
+          <ul class="dl-list">
+            <li data-i18n="d.itspace.1.1"><strong>Seis lenguajes</strong> con página propia: C++, HTML y CSS, Java, JavaScript, Python y SQL, cada una con su explicación, ejemplos de código y un índice de temas.</li>
+            <li data-i18n="d.itspace.1.2"><strong>Cuentas</strong> con registro, inicio de sesión y un perfil con foto.</li>
+            <li data-i18n="d.itspace.1.3"><strong>Preguntas frecuentes</strong> y un <strong>formulario de sugerencias</strong> que se envía sin recargar la página.</li>
+            <li data-i18n="d.itspace.1.4"><strong>Español e inglés</strong>: las traducciones viven en un JSON y el idioma elegido se recuerda entre páginas.</li>
+          </ul>
+        </div>
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.itspace.2.t">En construcción</h3>
+          <p data-i18n="d.itspace.2.1">El foro, los cursos y el IDE ya tienen su lugar en el menú, pero por ahora muestran un aviso de que se están desarrollando.</p>
+        </div>
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.itspace.3.t">Seguridad</h3>
+          <ul class="dl-list">
+            <li data-i18n="d.itspace.3.1">Contraseñas guardadas con bcrypt, nunca en texto.</li>
+            <li data-i18n="d.itspace.3.2">Consultas preparadas contra la inyección de SQL.</li>
+            <li data-i18n="d.itspace.3.3">Fotos de perfil de hasta 2 MB, validadas antes de guardarse.</li>
+            <li data-i18n="d.itspace.3.4">Los datos de conexión a la base quedan fuera del repositorio, con un archivo de ejemplo.</li>
+          </ul>
+        </div>
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.itspace.4.t">Cómo está organizado</h3>
+          <dl class="facts">
+            <div><dt data-i18n="d.itspace.4.1t">html/</dt><dd data-i18n="d.itspace.4.1">Las páginas en PHP, una por lenguaje</dd></div>
+            <div><dt data-i18n="d.itspace.4.2t">php/</dt><dd data-i18n="d.itspace.4.2">Encabezado, menú y pie compartidos, inicio de sesión, registro y subida de la foto</dd></div>
+            <div><dt data-i18n="d.itspace.4.3t">css/</dt><dd data-i18n="d.itspace.4.3">Una hoja por sección (inicio, lenguajes, cuentas, perfil)</dd></div>
+            <div><dt data-i18n="d.itspace.4.4t">js/</dt><dd data-i18n="d.itspace.4.4">Traducciones, menú, sugerencias y formularios</dd></div>
+            <div><dt data-i18n="d.itspace.4.5t">database.sql</dt><dd data-i18n="d.itspace.4.5">Tabla de usuarios en MySQL</dd></div>
+          </dl>
+        </div>
+        <div class="block sel">
+          <h3 class="bh" data-i18n="d.itspace.5.t">El repositorio</h3>
+          <p data-i18n="d.itspace.5.1">Más de 160 commits desde julio de 2026, la gran mayoría míos. El código está en <a href="https://github.com/lucioooofacc/ITSpace" target="_blank" rel="noopener">github.com/lucioooofacc/ITSpace</a>.</p>
+        </div>
+    </div>
+  </section>
+
+  <!-- ═════════ SIGUIENTE ═════════ -->
+  <nav class="plate poster dark next" data-i18n-aria-label="p.more" aria-label="Más proyectos">
+    <p class="next-k"><span data-i18n="p.next">Siguiente proyecto</span> · 4</p>
+    <a class="next-link" href="coded-bias.html"><span class="poster-title" data-fit>Coded Bias</span></a>
+    <div class="next-foot">
+      <a href="parkex.html"><span aria-hidden="true">←</span> <span data-i18n="p.prev">Anterior</span>: ParkEx</a>
+      <a href="../#indice" data-i18n="p.back">Volver al índice</a>
+      <a href="../#contacto" data-i18n="nav.2">Contacto</a>
+    </div>
+  </nav>
+
+</main>
+
+<script src="../js/main.js" defer></script>
+
+</body>
+</html>
