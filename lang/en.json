@@ -228,5 +228,10 @@
   "selene.how2": "The engine reads JPL Horizons ephemerides and computes, hour by hour, how high the Sun and the Earth are at that spot.",
   "selene.how3": "It compares them with the site's real horizon, taken from LOLA terrain, to know when there is light and when there is a direct link.",
   "selene.how4": "It sums up the mission in viability cards, a site ranking and a printable report.",
-  "selene.38": "3D Moon: LROC mosaic from NASA SVS (CGI Moon Kit)"
+  "selene.38": "3D Moon: LROC mosaic from NASA SVS (CGI Moon Kit)",
+  "reel.aria": "Project reel",
+  "reel.hint": "scroll or drag to explore",
+  "reel.hintDrag": "drag to explore",
+  "reel.help": "Arrow keys change the project, Enter goes to its sheet.",
+  "reel.now": "{i} of {n}: {name}, {ctx}"
 }
