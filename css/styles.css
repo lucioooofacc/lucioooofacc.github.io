@@ -1185,6 +1185,37 @@ main > .plate.poster { width: auto; max-width: none; margin-inline: calc(-1 * cl
 .poster .idx a:hover, .poster .idx a:focus-visible { --h: var(--pen-light); --hf: var(--slab); outline-color: var(--pen-light); }
 @media (min-width: 900px) { .poster .idx { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 56px); } .poster .idx li:last-child { border-bottom: 1px solid rgba(230, 230, 225, .2); } }
 
+/* Riel 3D (html.reel, ver js/reel.js): ÍNDICE grande al centro y las láminas curvas pasando por delante.
+   La escena va de borde a borde; la lista queda para cuando no hay WebGL. */
+.reel-view, .reel-hint { display: none; }
+html.reel #indice { padding-block: 0; }
+html.reel #indice .idx { display: none; }
+html.reel .reel { margin-inline: calc(-1 * clamp(22px, 4vw, 56px)); }
+html.reel .reel-stage { position: relative; height: clamp(440px, 74svh, 720px); overflow: hidden; }
+html.reel .reel-stage .poster-title {
+  position: absolute; left: clamp(22px, 4vw, 56px); right: clamp(22px, 4vw, 56px); top: 50%;
+  translate: 0 -50%; text-align: center; pointer-events: none; user-select: none;
+}
+html.reel .reel-view {
+  display: block; position: absolute; inset: 0; z-index: 1;
+  cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+}
+html.reel .reel-view.grabbing { cursor: grabbing; }
+html.reel .reel-view:focus-visible { outline: 2px solid var(--pen-light); outline-offset: -10px; }
+.reel-gl { display: block; width: 100%; height: 100%; opacity: 0; transition: opacity var(--d-slow) var(--ease); }
+.reel-gl.on { opacity: 1; }
+html.reel .reel-hint {
+  display: block; position: absolute; left: 0; right: 0; bottom: 22px; z-index: 2; margin: 0;
+  text-align: center; pointer-events: none;
+  font: 600 11px/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--on-slab-dim);
+}
+.reel-hint-pin { display: none; }
+html.reel-pin .reel-hint-pin { display: inline; }
+html.reel-pin .reel-hint-drag { display: none; }
+/* Escritorio: la escena es más alta que la pantalla y la lámina queda pegada mientras el scroll recorre los seis */
+html.reel-pin .reel { height: 400vh; }
+html.reel-pin .reel-stage { position: sticky; top: 0; height: 100vh; }
+
 /* Contacto: HABLEMOS sobre la foto, que lo invierte donde la pisa (como la portada de celular) */
 .poster .contact { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); grid-template-areas: "word word" "photo main"; row-gap: 0; align-items: start; }
 .poster .contact-word { grid-area: word; position: relative; z-index: 1; margin-bottom: -.3em; mix-blend-mode: difference; }

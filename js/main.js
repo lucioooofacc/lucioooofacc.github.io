@@ -8,6 +8,8 @@
   var reduce = mq('(prefers-reduced-motion: reduce)');
   var finePointer = mq('(hover: hover) and (pointer: fine)');
   document.documentElement.classList.add('js');
+  var scriptUrl = document.currentScript && document.currentScript.src; // para cargar js/reel.js al lado
+  var reel = null; // riel 3D de ÍNDICE, cuando está armado
 
   function t(key, vars) {
     var s = dict[key] || '';
@@ -51,6 +53,7 @@
     fitText();
     updateCount();
     if (pano) pano.render();
+    if (reel) reel.relabel();
     copyState.textContent = '';
   }
 
@@ -399,6 +402,46 @@
 
   // ─── Scroll: revelados, riel, escenas (js/main.js · sección "scroll") ───
   var scroll = setupScroll();
+
+  // ÍNDICE: riel 3D de proyectos (js/reel.js + three.js en js/vendor). Se pide cuando ÍNDICE se acerca.
+  // El lugar ya lo armó el <script> del <head> (html.reel / html.reel-pin); si algo falla, vuelve la lista.
+  (function () {
+    var root = document.documentElement;
+    var view = document.getElementById('reel-view');
+    if (!root.classList.contains('reel') || !view || !scriptUrl) return;
+    var PIN = '(min-width: 1100px) and (min-height: 680px) and (pointer: fine) and (prefers-reduced-motion: no-preference)';
+    var pinMq = matchMedia(PIN), reduceMq = matchMedia('(prefers-reduced-motion: reduce)');
+    function fallback() {
+      reel = null;
+      root.classList.remove('reel', 'reel-pin');
+      fitText();
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
+    }
+    if (pinMq.addEventListener) pinMq.addEventListener('change', function () {
+      if (!root.classList.contains('reel')) return;
+      root.classList.toggle('reel-pin', pinMq.matches);
+      fitText();
+      if (reel) reel.layoutChanged();
+    });
+    var started = false;
+    var nearIo = new IntersectionObserver(function (entries) {
+      if (started || !entries[0].isIntersecting) return;
+      started = true;
+      nearIo.disconnect();
+      import(new URL('reel.js', scriptUrl).href).then(function (m) {
+        reel = m.mount({
+          stage: view.parentNode, view: view, live: document.getElementById('reel-live'),
+          t: t, reduce: reduceMq, onEmpty: fallback,
+          isPinned: function () { return root.classList.contains('reel-pin'); }
+        });
+        if (!reel) fallback();
+      }).catch(function (e) {
+        console.warn('No se pudo cargar el riel 3D: queda la lista del índice.', e);
+        fallback();
+      });
+    }, { rootMargin: '150% 0px' });
+    nearIo.observe(view);
+  })();
 
   // Tras cambiar de idioma el texto cambia de largo: los trazos visibles se rehacen
   function redraw() {
