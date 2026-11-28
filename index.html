@@ -32,7 +32,7 @@
 <script>
   try { if (matchMedia('(min-width: 1100px) and (min-height: 680px) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) document.documentElement.classList.add('motion'); } catch (e) {}
   // Los enlaces viejos a las láminas (luciofacchin.me/#parkex) ahora van a la página de cada proyecto
-  try { var oh = location.hash.slice(1); if (/^(selene|parkex|itspace|coded-bias|escaneo|cinniminies)$/.test(oh)) location.replace('proyectos/' + oh + '.html'); } catch (e) {}
+  try { var oh = location.hash.slice(1); if (/^(selene|parkex|itspace|escaneo|cinniminies)$/.test(oh)) location.replace('proyectos/' + oh + '.html'); } catch (e) {}
   // ÍNDICE: si hay WebGL, se arma el lugar del riel 3D antes de pintar (sin WebGL queda la lista).
   // reel-pin: escritorio con mouse y sin reduced-motion, la lámina queda fija mientras el scroll recorre el riel.
   try {
@@ -112,29 +112,23 @@
           <figure class="snap scrap term-strip" aria-hidden="true" style="--i:6; --d:.65; --r:-2deg; --x:33%; --y:76%; --w:19%; --mx:-4%; --my:90%; --mw:58%">
             <code>Equipos activos: 11 de 254<br>Tiempo de escaneo: 4 s</code>
           </figure>
-          <figure class="snap scrap slab-card" aria-hidden="true" style="--i:7; --d:1.1; --r:4deg; --x:76%; --y:42%; --w:15%; --mx:60%; --my:31%; --mw:38%">
-            <span class="brush">“Prejudice doesn’t disappear. It migrates.”</span>
-          </figure>
           <button class="pile-reset" id="pile-reset" type="button" data-i18n="hero.reset" hidden>ordenar la mesa</button>
         </div>
 
         <p class="cover-note">
-          <span class="hint-fine" data-i18n="hero.note">arrastrá las fotos por la mesa</span>
           <span class="hint-touch" data-i18n="hero.noteTouch">tocá las fotos para mezclarlas</span>
         </p>
         <a class="cover-down" href="#sobre-mi">
-          <span class="cover-down-t" data-i18n="hero.scroll">bajá</span>
-          <svg class="pen-arrow" viewBox="0 0 44 64" aria-hidden="true"><path pathLength="1" d="M22 4 C 18 22, 26 38, 22 56 M10 44 L 22 58 L 34 44"/></svg>
         </a>
       </div>
 
 
       <!-- Celular: el afiche. Una sola columna que se adapta a cualquier alto de pantalla -->
       <div class="cover-poster">
-        <h1 class="poster-name"><span class="pl">Lucio</span> <span class="poster-photo" aria-hidden="true"><img src="img/poster-muro.webp" width="640" height="853" alt="" decoding="async" fetchpriority="high"></span> <span class="pl">Facchin</span></h1>
+        <h1 class="poster-name"><span class="pl">Lucio</span> <span class="poster-photo" aria-hidden="true"><img src="img/DSCN2391.JPEG" width="640" height="853" alt="" decoding="async" fetchpriority="high"></span> <span class="pl">Facchin</span></h1>
         <p class="poster-tag" data-i18n="hero.tag">Portfolio · desarrollo y diseño web</p>
         <nav class="poster-work" data-i18n-aria-label="rail.aria" aria-label="Proyectos">
-          <a href="proyectos/selene.html"><b>1</b>SELENE</a><a href="proyectos/parkex.html"><b>2</b>ParkEx</a><a href="proyectos/itspace.html"><b>3</b>ITSpace</a><a href="proyectos/coded-bias.html"><b>4</b>Coded Bias</a><a href="proyectos/escaneo.html"><b>5</b>Escaneo IP</a><a href="proyectos/cinniminies.html"><b>6</b>Cinniminies</a>
+          <a href="proyectos/selene.html"><b>1</b>SELENE</a><a href="proyectos/parkex.html"><b>2</b>ParkEx</a><a href="proyectos/itspace.html"><b>3</b>ITSpace</a><a href="proyectos/escaneo.html"><b>4</b>Escaneo IP</a><a href="proyectos/cinniminies.html"><b>5</b>Cinniminies</a>
         </nav>
       </div>
 
@@ -207,7 +201,7 @@
   </section>
 
   <!-- ═════════ ÍNDICE ═════════
-       Con WebGL (html.reel): los seis proyectos en un riel 3D curvo que pasa delante de la palabra ÍNDICE (js/reel.js).
+       Con WebGL (html.reel): los cinco proyectos en un riel 3D curvo que pasa delante de la palabra ÍNDICE (js/reel.js).
        Sin WebGL o sin JS: la lista numerada de siempre. -->
   <section class="plate poster dark" id="indice" aria-labelledby="index-title">
     <div class="index">
@@ -215,7 +209,6 @@
         <div class="reel-stage">
           <h2 data-i18n-aria-label="indice.1" class="poster-title" data-fit data-wipe id="index-title" aria-label="Índice"><span data-i18n="indice.2">ÍNDICE</span></h2>
           <div class="reel-view" id="reel-view" tabindex="0" role="group" data-i18n-aria-label="reel.aria" aria-label="Riel de proyectos" aria-describedby="reel-help"></div>
-          <p class="reel-hint" aria-hidden="true"><span class="reel-hint-pin" data-i18n="reel.hint">bajá o arrastrá para recorrer</span><span class="reel-hint-drag" data-i18n="reel.hintDrag">arrastrá para recorrer</span></p>
           <p class="sr-only" id="reel-help" data-i18n="reel.help">Flechas para cambiar de proyecto, Enter para abrir su página.</p>
           <p class="sr-only" id="reel-live" aria-live="off"></p>
         </div>
@@ -224,9 +217,8 @@
         <li><a class="sel" href="proyectos/selene.html"><span class="n">1<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span><span><span data-i18n="indice.18" class="k">Contexto:</span> <span data-i18n="indice.19" class="v">NASA Space Apps Challenge 2026</span><span data-i18n="indice.20" class="p"><span class="k">Proyecto:</span> SELENE</span></span></a></li>
         <li><a class="sel" href="proyectos/parkex.html"><span class="n">2<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span><span><span data-i18n="indice.3" class="k">Contexto:</span> <span data-i18n="indice.4" class="v">Concurso ConectaLab · UTU</span><span data-i18n="indice.5" class="p"><span class="k">Proyecto:</span> ParkEx</span></span></a></li>
         <li><a class="sel" href="proyectos/itspace.html"><span class="n">3<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span><span><span data-i18n="indice.6" class="k">Contexto:</span> <span data-i18n="indice.7" class="v">Web Design · ITSP</span><span data-i18n="indice.8" class="p"><span class="k">Proyecto:</span> ITSpace</span></span></a></li>
-        <li><a class="sel" href="proyectos/coded-bias.html"><span class="n">4<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span><span><span data-i18n="indice.9" class="k">Contexto:</span> <span data-i18n="indice.10" class="v">Inglés</span><span data-i18n="indice.11" class="p"><span class="k">Proyecto:</span> Coded Bias</span></span></a></li>
-        <li><a class="sel" href="proyectos/escaneo.html"><span class="n">5<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span><span><span data-i18n="indice.12" class="k">Contexto:</span> <span data-i18n="indice.13" class="v">Redes de Datos</span><span data-i18n="indice.14" class="p"><span class="k">Proyecto:</span> Escaneo IP</span></span></a></li>
-        <li><a class="sel" href="proyectos/cinniminies.html"><span class="n">6<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span><span><span data-i18n="indice.15" class="k">Contexto:</span> <span data-i18n="indice.16" class="v">Emprendimiento propio</span><span data-i18n="indice.17" class="p"><span class="k">Proyecto:</span> Cinniminies</span></span></a></li>
+        <li><a class="sel" href="proyectos/escaneo.html"><span class="n">4<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span><span><span data-i18n="indice.12" class="k">Contexto:</span> <span data-i18n="indice.13" class="v">Redes de Datos</span><span data-i18n="indice.14" class="p"><span class="k">Proyecto:</span> Escaneo IP</span></span></a></li>
+        <li><a class="sel" href="proyectos/cinniminies.html"><span class="n">5<svg class="pen-ring" viewBox="0 0 80 48" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M52 6 C 30 2, 6 10, 6 25 C 6 40, 34 45, 56 41 C 74 37, 78 22, 68 13 C 60 6, 44 5, 34 8"/></svg></span><span><span data-i18n="indice.15" class="k">Contexto:</span> <span data-i18n="indice.16" class="v">Desarrollo full stack</span><span data-i18n="indice.17" class="p"><span class="k">Proyecto:</span> Cinniminies</span></span></a></li>
       </ol>
     </div>
   </section>

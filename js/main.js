@@ -51,7 +51,7 @@
     document.documentElement.lang = lang;
     langBtn.lang = lang === 'es' ? 'en' : 'es';
     fitText();
-    updateCount();
+    if (lot) lot.relabel();
     if (pano) pano.render();
     if (reel) reel.relabel();
     if (copyState) copyState.textContent = '';
@@ -75,7 +75,6 @@
       if (!animate && next === document.documentElement.lang) {
         // Carga inicial en el idioma con el que ya viene el HTML: no hay nada que reemplazar
         // (evita reescribir 180 nodos y volver a medir toda la página al cargar).
-        updateCount();
       } else if (animate && !reduce && document.startViewTransition) {
         document.startViewTransition(swap);
       } else {
@@ -91,56 +90,205 @@
       .catch(function () { console.warn('No se pudo cargar lang/' + next + '.json'); });
   }
 
-  var bays = Array.prototype.slice.call(document.querySelectorAll('.bay'));
-  var log = document.getElementById('lot-log');
-  var count = document.getElementById('lot-count');
-  var tags = { autorizado: 'AUT', no_autorizado: 'NO', no_verificable: 'N/V' };
-  var results = ['autorizado', 'autorizado', 'no_autorizado', 'no_verificable'];
-  var last = null;
+  // ParkEx: réplica del plano de parkex.netlify.app. Los niveles, las plazas, sus tipos y sus
+  // coordenadas son los que devuelve la API real (GET /api/niveles y /api/plazas); lo único
+  // simulado son los eventos de los sensores y las lecturas de matrícula.
+  var lot = (function () {
+    var plano = document.getElementById('lot-plano');
+    if (!plano) return null; // solo en la página de ParkEx
+    var NS = 'http://www.w3.org/2000/svg';
+    var log = document.getElementById('lot-log');
+    var chips = document.getElementById('lot-count');
+    var title = document.getElementById('lot-title');
+    var levelsEl = document.getElementById('lot-levels');
+    var detail = document.getElementById('lot-detail');
+    var ESTADO = { libre: 'Libre', ocupado: 'Ocupado', reservado: 'Reservado', sin_datos: 'Sin datos' };
+    var TIPO = { normal: 'Normal', discapacidad: 'Discapacidad', carga: 'Carga', moto: 'Moto' };
+    var MARCA = { discapacidad: '♿', carga: 'Carga', moto: 'Moto' };
+    var AUT = { no_aplica: 'No aplica', autorizado: 'Autorizado (DI)', no_autorizado: 'Sin distintivo · alerta', no_verificable: 'No verificable' };
+    var T = { d: 'discapacidad', c: 'carga', m: 'moto', n: 'normal' };
+    // Filas de 10 plazas de 40×80 cada 48 unidades desde x = 50. [letra, y, tipos, ocupadas al cargar]
+    var levels = [
+      { name: 'Planta baja', w: 580, h: 400, rows: [['A', 40, 'ddnnnnnnnn', '0010110010'], ['B', 240, 'nnnnnnnnnc', '1100101001']] },
+      { name: 'Subsuelo 1', w: 580, h: 520, rows: [['A', 40, 'ddnnnnnnnn', '1001100100'], ['B', 240, 'dnnnnnnnnc', '0110010110'], ['C', 325, 'nnnnnnnnmm', '1010011001']] }
+    ].map(function (lv) {
+      lv.plazas = [];
+      lv.rows.forEach(function (r) {
+        for (var i = 0; i < 10; i++) {
+          var tipo = T[r[2][i]], occ = r[3][i] === '1';
+          lv.plazas.push({ codigo: r[0] + ('0' + (i + 1)).slice(-2), x: 50 + 48 * i, y: r[1], tipo: tipo,
+            estado: occ ? 'ocupado' : 'libre', aut: occ && tipo === 'discapacidad' ? 'autorizado' : 'no_aplica', at: null });
+        }
+      });
+      return lv;
+    });
+    levels[1].plazas[9].estado = 'reservado'; // Subsuelo 1 · A10, reservada en el sitio real
+    var cur = 0, sel = null, last = null;
 
-  function updateCount() {
-    if (!count) return; // solo en la página de ParkEx
-    var free = bays.filter(function (b) { return b.dataset.state !== 'ocupado'; }).length;
-    count.textContent = t('ui.free', { free: free, total: bays.length }) || free + ' libres de ' + bays.length;
-  }
-
-  function step() {
-    var b;
-    do { b = bays[Math.floor(Math.random() * bays.length)]; } while (b === last && bays.length > 1);
-    last = b;
-    var occupied = b.dataset.state !== 'ocupado';
-    b.dataset.state = occupied ? 'ocupado' : 'libre';
-    var lines = ['POST /api/eventos · plaza ' + b.dataset.n + ' → ' + b.dataset.state];
-    var tag = b.querySelector('.tag');
-    if (b.dataset.res) {
-      if (occupied) {
-        var r = results[Math.floor(Math.random() * results.length)];
-        b.dataset.auth = r;
-        tag.textContent = tags[r];
-        lines.push('POST /api/lecturas · plaza ' + b.dataset.n + ' → ' + r);
-      } else {
-        b.dataset.auth = 'no_aplica';
-        tag.textContent = '';
-      }
+    function el(tag, attrs, text) {
+      var n = document.createElementNS(NS, tag);
+      for (var k in attrs) n.setAttribute(k, attrs[k]);
+      if (text != null) n.textContent = text;
+      return n;
     }
-    bays.forEach(function (x) { x.classList.remove('just'); });
-    void b.offsetWidth;
-    b.classList.add('just');
-    log.innerHTML = lines.join('<br>');
-    updateCount();
-  }
+    function libres(lv) { return lv.plazas.filter(function (p) { return p.estado === 'libre'; }).length; }
+    function mini(lv) {
+      var svg = el('svg', { viewBox: '0 0 ' + lv.w + ' ' + lv.h, 'aria-hidden': 'true' });
+      svg.appendChild(el('rect', { class: 'piso', width: lv.w, height: lv.h }));
+      lv.plazas.forEach(function (p) {
+        p.mini = el('rect', { class: 'e-' + p.estado + ' t-' + p.tipo, x: p.x, y: p.y, width: 40, height: 80, rx: 2 });
+        svg.appendChild(p.mini);
+      });
+      return svg;
+    }
+    levels.forEach(function (lv, i) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'px-lvl';
+      b.innerHTML = '<strong>' + lv.name + '</strong>';
+      b.appendChild(mini(lv));
+      lv.count = document.createElement('span');
+      b.appendChild(lv.count);
+      b.addEventListener('click', function () { show(i); });
+      lv.btn = b;
+      levelsEl.appendChild(b);
+    });
 
-  updateCount();
+    function paint(p) {
+      p.g.setAttribute('class', 'plaza e-' + p.estado + ' t-' + p.tipo + (p === sel ? ' sel' : ''));
+      p.g.setAttribute('aria-label', 'Plaza ' + p.codigo + ', ' + TIPO[p.tipo] + ', ' + ESTADO[p.estado]);
+      p.mini.setAttribute('class', 'e-' + p.estado + ' t-' + p.tipo);
+    }
+    function show(i) {
+      cur = i; sel = null;
+      var lv = levels[i];
+      title.textContent = lv.name;
+      levels.forEach(function (l, k) { l.btn.setAttribute('aria-pressed', k === i ? 'true' : 'false'); });
+      var svg = el('svg', { viewBox: '0 0 ' + lv.w + ' ' + lv.h, role: 'group', 'aria-label': 'Plano de ' + lv.name });
+      svg.appendChild(el('rect', { class: 'piso', width: lv.w, height: lv.h }));
+      lv.plazas.forEach(function (p) {
+        var g = el('g', { tabindex: '0', role: 'button' });
+        g.appendChild(el('rect', { x: p.x, y: p.y, width: 40, height: 80, rx: 3 }));
+        g.appendChild(el('text', { class: 'codigo', x: p.x + 20, y: p.y + 16, 'text-anchor': 'middle' }, p.codigo));
+        if (MARCA[p.tipo]) g.appendChild(el('text', { class: 'marca m-' + p.tipo, x: p.x + 20, y: p.y + 68, 'text-anchor': 'middle' }, MARCA[p.tipo]));
+        g.addEventListener('click', function () { pick(p); });
+        g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(p); } });
+        p.g = g;
+        svg.appendChild(g);
+        paint(p);
+      });
+      plano.replaceChildren(svg);
+      detail.innerHTML = '<p class="px-empty">Seleccione una plaza del plano para ver su detalle.</p>';
+      update();
+    }
+    function pick(p) {
+      var prev = sel; sel = p;
+      if (prev) paint(prev);
+      paint(p);
+      var at = p.at ? p.at.toLocaleTimeString(lang === 'en' ? 'en-GB' : 'es-UY', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '27/10/2026, 18:46';
+      detail.innerHTML = '<h4>Plaza ' + p.codigo + '</h4><dl>' +
+        '<dt>Tipo</dt><dd>' + TIPO[p.tipo] + '</dd><dt>Estado</dt><dd>' + ESTADO[p.estado] + '</dd>' +
+        '<dt>Autorización</dt><dd>' + AUT[p.aut] + '</dd><dt>Actualizado</dt><dd>' + at + '</dd></dl>';
+    }
+    function update() {
+      var c = { libre: 0, ocupado: 0, reservado: 0, sin_datos: 0 };
+      levels[cur].plazas.forEach(function (p) { c[p.estado]++; });
+      chips.innerHTML = Object.keys(c).map(function (k) { return '<span class="e-' + k + '"><b>' + c[k] + '</b> ' + ESTADO[k] + '</span>'; }).join('');
+      levels.forEach(function (l) { l.count.textContent = libres(l) + ' libres'; });
+    }
+    function flash(p) {
+      p.g.classList.remove('flash');
+      void p.g.getBoundingClientRect(); // reinicia la animación
+      p.g.classList.add('flash');
+    }
+    var lecturas = ['autorizado', 'autorizado', 'no_autorizado', 'no_verificable'];
+    function step() {
+      var pool = levels[cur].plazas.filter(function (p) { return p.estado !== 'reservado' && p !== last; });
+      var p = pool[Math.floor(Math.random() * pool.length)];
+      last = p;
+      p.estado = p.estado === 'ocupado' ? 'libre' : 'ocupado';
+      p.at = new Date();
+      var lines = ['POST /api/eventos · ' + levels[cur].name + ' · ' + p.codigo + ' → ' + p.estado];
+      if (p.tipo === 'discapacidad') {
+        p.aut = p.estado === 'ocupado' ? lecturas[Math.floor(Math.random() * lecturas.length)] : 'no_aplica';
+        if (p.estado === 'ocupado') lines.push('POST /api/lecturas · ' + p.codigo + ' → ' + p.aut + (p.aut === 'no_autorizado' ? ' · alerta al panel' : ''));
+      }
+      paint(p); flash(p); pick(p); update();
+      log.innerHTML = lines.join('<br>');
+    }
+    show(0);
+    return { step: step, relabel: function () { if (sel) pick(sel); } };
+  })();
+
+  // Cinniminies: dos vistas del proyecto (sitio para clientes / panel de gestión). El indicador del switcher
+  // se desliza por CSS; el contenido sale con un fundido corto y el nuevo entra escalonado desde abajo.
+  (function () {
+    var sw = document.querySelector('.vswitch');
+    if (!sw) return;
+    var tabs = Array.prototype.slice.call(sw.querySelectorAll('[role="tab"]'));
+    var cur = 'sitio', busy = false;
+    function parts(v) {
+      return Array.prototype.slice.call(document.querySelectorAll('.vista[data-vista="' + v + '"], .block[data-vista="' + v + '"]'));
+    }
+    function enter(els) {
+      els.forEach(function (el, i) {
+        el.animate([{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }],
+          { duration: 420, delay: i * 50, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'backwards' });
+      });
+    }
+    function show(v, opts) {
+      opts = opts || {};
+      if (v === cur || busy) return;
+      var out = parts(cur), inn = parts(v);
+      cur = v;
+      sw.dataset.vista = v;
+      tabs.forEach(function (t) {
+        var on = t.dataset.vista === v;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        if (on && opts.focus) t.focus();
+      });
+      if (!opts.instant) {
+        try { history.replaceState(null, '', v === 'panel' ? '#panel' : location.pathname + location.search); } catch (e) {}
+      }
+      var animate = !opts.instant && !reduce && typeof sw.animate === 'function';
+      function swap() {
+        out.forEach(function (el) { el.hidden = true; });
+        inn.forEach(function (el) { el.hidden = false; });
+        if (window.ScrollTrigger) ScrollTrigger.refresh();
+        if (animate) enter(inn);
+        busy = false;
+      }
+      if (!animate) return swap();
+      busy = true;
+      var anims = out.map(function (el) {
+        return el.animate([{ opacity: 1 }, { opacity: 0, transform: 'translateY(-10px)' }], { duration: 180, easing: 'ease-in', fill: 'forwards' });
+      });
+      anims[0].finished.then(function () { swap(); anims.forEach(function (a) { a.cancel(); }); });
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { show(t.dataset.vista); });
+      // Flechas entre pestañas, como en cualquier tablist
+      t.addEventListener('keydown', function (e) {
+        var k = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!k) return;
+        e.preventDefault();
+        show(tabs[(i + k + tabs.length) % tabs.length].dataset.vista, { focus: true });
+      });
+    });
+    if (location.hash === '#panel') show('panel', { instant: true });
+  })();
+
   // Solo se anuncia por lector de pantalla cuando el evento lo dispara la persona
-  if (count) document.getElementById('lot-step').addEventListener('click', function () {
-    log.setAttribute('aria-live', 'polite');
-    step();
+  if (lot) document.getElementById('lot-step').addEventListener('click', function () {
+    document.getElementById('lot-log').setAttribute('aria-live', 'polite');
+    lot.step();
   });
   // Evento disparado por el scroll (no por un timer): no se anuncia, para no
   // llenar el lector de pantalla mientras la persona solo está bajando.
   function autoStep() {
-    log.setAttribute('aria-live', 'off');
-    step();
+    if (!lot) return;
+    document.getElementById('lot-log').setAttribute('aria-live', 'off');
+    lot.step();
   }
 
   // SELENE: panorama ilustrativo del horizonte en el polo sur.
@@ -674,7 +822,7 @@
     function q(sel, ctx) { return (ctx || document).querySelector(sel); }
     var scenes = {
       selene: q('[data-scene="selene"]'), parkex: q('[data-scene="parkex"]'), itspace: q('[data-scene="itspace"]'),
-      coded: q('[data-scene="coded"]'), escaneo: q('[data-scene="escaneo"]'), cinni: q('[data-scene="cinni"]')
+      escaneo: q('[data-scene="escaneo"]'), cinni: q('[data-scene="cinni"]')
     };
     var deskOn = false; // true mientras las escenas de escritorio están armadas
 
@@ -847,26 +995,6 @@
         });
       }
 
-      // Monitor de Coded Bias: muestra el clip que pisa el playhead
-      function codedMonitor(scene) {
-        var clips = $('.clips:not(.audio) .clip', scene), monI = q('#mon-i'), monClip = q('#mon-clip'), cur = -1;
-        var initial = [monI.textContent, monClip.textContent];
-        return {
-          set: function (p) {
-            var i = Math.min(clips.length - 1, Math.floor(p * clips.length));
-            if (i === cur) return;
-            cur = i;
-            clips.forEach(function (c, j) { c.classList.toggle('on', j === i); });
-            monI.textContent = ('0' + (i + 1)).slice(-2);
-            monClip.textContent = clips[i].textContent;
-          },
-          reset: function () {
-            clips.forEach(function (c) { c.classList.remove('on'); });
-            monI.textContent = initial[0]; monClip.textContent = initial[1];
-          }
-        };
-      }
-
       // Portada: la mesa se vacía. Cada recorte sale hacia su lado según su profundidad (--d)
       // y el nombre queda limpio. En escritorio la portada está fija; en celular pasa sin pin.
       function heroFly(fixed) {
@@ -943,20 +1071,6 @@
         gsap.to(track, { x: function () { return -dist(); }, ease: 'none', scrollTrigger: sceneST(scenes.itspace, 0.3) });
         }
 
-        // Coded Bias: el playhead recorre la pista, el monitor sigue el clip y la cita se enciende
-        if (scenes.coded) {
-        var mon = codedMonitor(scenes.coded), ph = q('.playhead', scenes.coded);
-        var tlC = gsap.timeline({ scrollTrigger: sceneST(scenes.coded, 0.3), onUpdate: function () { mon.set(this.progress()); } });
-        tlC.fromTo(ph, { x: 0 }, { x: function () { return ph.parentNode.clientWidth - 2; }, ease: 'none', duration: 1 }, 0);
-        mon.set(0);
-        cleanups.push(mon.reset);
-        var quote = q('[data-quote]', scenes.coded);
-        if (canSplit && quote) {
-          var words = SplitText.create(quote, { type: 'words', tag: 'span', aria: 'none' }).words;
-          tlC.fromTo(words, { opacity: 0.12 }, { opacity: 1, duration: 0.05, stagger: 0.45 / words.length, ease: 'none' }, 0.04);
-        }
-        }
-
         // Escaneo IP: la terminal imprime las IP mientras se escanea la captura
         if (scenes.escaneo) {
         var lines = $('.term .l', scenes.escaneo);
@@ -1025,20 +1139,6 @@
         if (scenes.escaneo) {
         var term = q('.term', scenes.escaneo), tls = $('.l', term).slice(1);
         gsap.fromTo(tls, { opacity: 0 }, { opacity: 1, ease: 'none', stagger: 0.06, duration: 0.02, scrollTrigger: passST(term, 'top 85%', 'bottom 70%', 0.2) });
-        }
-
-        // Coded Bias: el monitor y los clips siguen el scroll; la cita se enciende palabra por palabra
-        if (scenes.coded) {
-        var mon = codedMonitor(scenes.coded), ph = q('.playhead', scenes.coded);
-        var tlC = gsap.timeline({ scrollTrigger: passST(scenes.coded, 'top 70%', 'bottom 75%', 0.3), onUpdate: function () { mon.set(this.progress()); } });
-        tlC.fromTo(ph, { x: 0 }, { x: function () { return ph.parentNode.clientWidth - 2; }, ease: 'none', duration: 1 }, 0);
-        mon.set(0);
-        cleanups.push(mon.reset);
-        var quote = q('[data-quote]', scenes.coded);
-        if (canSplit && quote) {
-          var words = SplitText.create(quote, { type: 'words', tag: 'span', aria: 'none' }).words;
-          gsap.fromTo(words, { opacity: 0.12 }, { opacity: 1, ease: 'none', stagger: 0.1, duration: 0.2, scrollTrigger: passST(quote, 'top 85%', 'bottom 45%', 0.3) });
-        }
         }
 
         // Cinniminies: la impresión se lee dentro del marco mientras el marco cruza la pantalla

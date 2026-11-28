@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta data-i18n-content="p.cinniminies.desc" name="description" content="Cinniminies: sitio de pedidos de un emprendimiento de cinnamon rolls en Paysandú.">
+<meta data-i18n-content="p.cinniminies.desc" name="description" content="Cinniminies: sitio de pedidos y panel de gestión, diseñados y desarrollados por Lucio Facchin.">
 <title>Cinniminies · Lucio Facchin</title>
 <link rel="icon" href="data:,">
 <link rel="canonical" href="https://luciofacchin.me/proyectos/cinniminies.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Lucio Facchin">
 <meta property="og:title" content="Cinniminies · Lucio Facchin">
-<meta property="og:description" content="Cinniminies: sitio de pedidos de un emprendimiento de cinnamon rolls en Paysandú.">
+<meta property="og:description" content="Cinniminies: sitio de pedidos y panel de gestión, diseñados y desarrollados por Lucio Facchin.">
 <meta property="og:url" content="https://luciofacchin.me/proyectos/cinniminies.html">
 <meta property="og:image" content="https://luciofacchin.me/img/og.jpg">
 <meta property="og:locale" content="es_UY">
@@ -45,64 +45,89 @@
 
 <main>
 
-  <p class="crumbs"><a href="../#indice"><span aria-hidden="true">←</span> <span data-i18n="p.back">Volver al índice</span></a><span>6 / 6</span></p>
+  <p class="crumbs"><a href="../#indice"><span aria-hidden="true">←</span> <span data-i18n="p.back">Volver al índice</span></a><span>5 / 5</span></p>
 
-  <!-- ═════════ 6 · CINNIMINIES ═════════ -->
+  <!-- ═════════ 5 · CINNIMINIES ═════════ -->
   <article class="plate proj" id="cinniminies" aria-labelledby="cinni-title">
     <header class="ph">
-      <span class="n" aria-hidden="true">6</span>
+      <span class="n" aria-hidden="true">5</span>
       <h1 id="cinni-title">Cinniminies</h1>
       <a class="cta" href="https://cinniminies.emprendeuy.com" target="_blank" rel="noopener"><span data-i18n="ui.site">Ver el sitio</span><span class="arr" aria-hidden="true">↗</span></a>
     </header>
     <div class="spec">
       <dl>
-        <dt data-i18n="cinniminies.1">Contexto</dt><dd data-i18n="cinniminies.2">Emprendimiento propio, junto a mi novia · Paysandú</dd>
-        <dt data-i18n="cinniminies.3">Rol</dt><dd data-i18n="cinniminies.4">Cofundador · diseño y desarrollo del sitio</dd>
+        <dt data-i18n="cinniminies.1">Contexto</dt><dd data-i18n="cinniminies.2">Sitio de pedidos y panel de gestión para una panadería de Paysandú</dd>
+        <dt data-i18n="cinniminies.3">Rol</dt><dd data-i18n="cinniminies.4">Diseño y desarrollo full stack: web pública, API, base de datos y panel</dd>
         <dt data-i18n="cinniminies.5">Desde</dt><dd data-i18n="cinniminies.6">Mayo de 2026</dd>
-        <dt data-i18n="cinniminies.7">Stack web</dt><dd data-i18n="cinniminies.8">HTML · CSS · JavaScript sin framework · Vercel Functions · Supabase · notificaciones push</dd>
+        <dt data-i18n="cinniminies.7">Stack web</dt><dd data-i18n="cinniminies.8">HTML · CSS · JavaScript · Vercel Functions · Supabase</dd>
       </dl>
       <dl>
         <dt data-i18n="cinniminies.9">Descripción</dt>
-        <dd data-i18n="cinniminies.10">Cinnamon rolls de masa madre, horneados por encargue, con glaseados artesanales e ingredientes seleccionados. El sitio cuenta el proceso, muestra el menú y tiene un formulario de pedido con validación en vivo para coordinar cada caja.</dd>
+        <dd data-i18n="cinniminies.10">Sitio de pedidos y app de gestión sobre un mismo backend. La web pública arma la caja y manda el pedido a una Vercel Function que lo valida y lo guarda en Supabase (PostgreSQL); el panel <code>/admin</code> es una PWA donde se cargan ventas, producción, compras y stock. Precios, costos y descuentos se calculan en funciones de Postgres y el acceso se controla con RLS.</dd>
       </dl>
     </div>
 
-    <!-- Momento: la página entera impresa, que se desliza dentro del marco mientras se baja -->
-    <div class="scene" data-scene="cinni">
-      <div class="stick">
-        <figure class="longprint">
-          <div class="lp-frame" tabindex="0" role="region" data-i18n-aria-label="cinniminies.lpAria" aria-label="Captura de la página completa de cinniminies.emprendeuy.com (se puede desplazar)">
-            <img data-i18n-alt="cinniminies.a1" src="../img/proyectos/cinni-pagina.webp" width="640" height="2084" alt="Captura de la página completa de Cinniminies: portada con rolls de canela y el título «El roll que se desenrolla en capas de canela», el armador de cajas de 6, 12 o de 3 a 12 rolls, las tarjetas de sabores, el retiro en Paysandú, las preguntas frecuentes y el contacto por WhatsApp e Instagram" loading="lazy" decoding="async">
+    <!-- Dos vistas del mismo proyecto: lo que ve el cliente y el panel de gestión -->
+    <div class="vswitch" role="tablist" data-i18n-aria-label="cinniminies.v0" aria-label="Vistas del proyecto">
+      <span class="vswitch-ind" aria-hidden="true"></span>
+      <button class="vswitch-tab" role="tab" type="button" id="tab-sitio" aria-controls="vista-sitio" aria-selected="true" data-vista="sitio" data-i18n="cinniminies.v1">Sitio para clientes</button>
+      <button class="vswitch-tab" role="tab" type="button" id="tab-panel" aria-controls="vista-panel" aria-selected="false" tabindex="-1" data-vista="panel" data-i18n="cinniminies.v2">Panel de gestión</button>
+    </div>
+
+    <div class="vista" id="vista-sitio" role="tabpanel" aria-labelledby="tab-sitio" data-vista="sitio">
+      <!-- Momento: la página entera impresa, que se desliza dentro del marco mientras se baja -->
+      <div class="scene" data-scene="cinni">
+        <div class="stick">
+          <figure class="longprint">
+            <div class="lp-frame" tabindex="0" role="region" data-i18n-aria-label="cinniminies.lpAria" aria-label="Captura de la página completa de cinniminies.emprendeuy.com (se puede desplazar)">
+              <img data-i18n-alt="cinniminies.a1" src="../img/proyectos/cinni-pagina.webp" width="640" height="2084" alt="Captura de la página completa de Cinniminies: portada con rolls de canela y el título «El roll que se desenrolla en capas de canela», el armador de cajas de 6, 12 o de 3 a 12 rolls, las tarjetas de sabores, el retiro en Paysandú, las preguntas frecuentes y el contacto por WhatsApp e Instagram" loading="lazy" decoding="async">
+            </div>
+            <figcaption><span class="path">cinniminies.emprendeuy.com</span></figcaption>
+          </figure>
+          <div class="cinni-side">
+            <p data-i18n="cinniminies.13" class="tagline">Sitio para clientes<small>Menú, armador de cajas y pedido online</small></p>
+            <ul class="channels">
+              <li>
+                <span data-i18n="itspace.16" class="lab">Sitio web</span>
+                <a href="https://cinniminies.emprendeuy.com" target="_blank" rel="noopener">cinniminies.<wbr>emprendeuy.com</a>
+              </li>
+            </ul>
           </div>
-          <figcaption><span class="path">cinniminies.emprendeuy.com</span></figcaption>
-        </figure>
-        <div class="cinni-side">
-          <p data-i18n="cinniminies.13" class="tagline">Cinnamon Rolls hechos artesanalmente<small>Emprendimiento local sobre panadería</small></p>
-          <ul class="channels">
-            <li>
-              <span data-i18n="cinniminies.14" class="lab">Sitio</span>
-              <a href="https://cinniminies.emprendeuy.com" target="_blank" rel="noopener">cinniminies.<wbr>emprendeuy.com</a>
-            </li>
-            <li>
-              <span class="lab">Instagram</span>
-              <a href="https://www.instagram.com/cinniminies.pay/" target="_blank" rel="noopener">@cinniminies.pay</a>
-            </li>
-          </ul>
         </div>
+      </div>
+
+      <div class="table3">
+        <figure class="shot shot-web taped" style="--r:-1.6deg">
+          <img data-i18n-alt="cinniminies.11" src="../img/proyectos/cinni-inicio.webp" width="1200" height="750" alt="Portada del sitio de Cinniminies en la compu, con una foto de rolls de canela de fondo y el título en tipografía con serifa" loading="lazy" decoding="async">
+          <figcaption><span data-i18n="cinniminies.12">portada en la compu</span></figcaption>
+        </figure>
+        <figure class="taped phone" style="--r:1.8deg">
+          <img data-i18n-alt="cinniminies.a2" src="../img/proyectos/cinni-inicio-mobile.webp" width="390" height="844" alt="Portada de Cinniminies en un celular: una foto de rolls de canela de fondo, el título en tipografía con serifa y los botones «Ver el menú» y «Contactanos»" loading="lazy" decoding="async">
+        </figure>
+        <figure class="taped phone" style="--r:-1.2deg">
+          <img data-i18n-alt="cinniminies.a3" src="../img/proyectos/cinni-menu-mobile.webp" width="390" height="844" alt="El menú de Cinniminies en un celular: «Cuatro rolls. Ninguno apurado.» y el selector del tamaño de la caja, de 6 o 12 rolls o de 3 a 12 a gusto" loading="lazy" decoding="async">
+        </figure>
       </div>
     </div>
 
-    <div class="table3">
-      <figure class="taped" style="--r:-2.2deg">
-        <img data-i18n-alt="cinniminies.11" src="../img/cinni-oreo.webp" alt="Caja con seis rolls de canela cubiertos de glaseado y galleta de chocolate triturada" width="560" height="746" loading="lazy" decoding="async">
-        <figcaption data-i18n="cinniminies.12">Roll de Oreo</figcaption>
-      </figure>
-      <figure class="taped phone" style="--r:1.8deg">
-        <img data-i18n-alt="cinniminies.a2" src="../img/proyectos/cinni-inicio-mobile.webp" width="390" height="844" alt="Portada de Cinniminies en un celular: una foto de rolls de canela de fondo, el título en tipografía con serifa y los botones «Ver el menú» y «Contactanos»" loading="lazy" decoding="async">
-      </figure>
-      <figure class="taped phone" style="--r:-1.2deg">
-        <img data-i18n-alt="cinniminies.a3" src="../img/proyectos/cinni-menu-mobile.webp" width="390" height="844" alt="El menú de Cinniminies en un celular: «Cuatro rolls. Ninguno apurado.» y el selector del tamaño de la caja, de 6 o 12 rolls o de 3 a 12 a gusto" loading="lazy" decoding="async">
-      </figure>
+    <!-- El panel de gestión: capturas de /admin con datos de ejemplo -->
+    <div class="vista dash" id="vista-panel" role="tabpanel" aria-labelledby="tab-panel" data-vista="panel" hidden>
+      <p class="dash-lede" data-i18n="cinniminies.d2">La pantalla de inicio: la semana de pedidos hasta el sábado de horneado, lo pendiente (pedidos web, cobros, insumos para reponer) y el resumen del mes comparado con el mismo tramo del mes anterior. Los gráficos son SVG hechos a mano, sin librerías.</p>
+      <div class="dash-shots">
+        <figure class="shot shot-web taped" style="--r:-.8deg">
+          <img data-i18n-alt="cinniminies.pa1" src="../img/proyectos/cinni-panel.webp" width="1600" height="1189" alt="Panel /admin en la compu: semana de pedidos, tareas pendientes y accesos para cargar tandas, compras, gastos, ingresos y conteos de stock" loading="lazy" decoding="async">
+          <figcaption><span class="path">/admin/#/panel</span><span data-i18n="cinniminies.pc1">inicio</span></figcaption>
+        </figure>
+        <figure class="shot shot-web taped phone" style="--r:1.6deg">
+          <img data-i18n-alt="cinniminies.pa3" src="../img/proyectos/cinni-panel-mobile.webp" width="780" height="1688" alt="El panel en el celular: la semana de pedidos, los rolls para hornear el sábado y las tareas, con las pestañas de la app abajo" loading="lazy" decoding="async">
+          <figcaption><span data-i18n="cinniminies.pc3">PWA en el celular</span></figcaption>
+        </figure>
+        <figure class="shot shot-web taped wide" style="--r:.6deg">
+          <img data-i18n-alt="cinniminies.pa2" src="../img/proyectos/cinni-panel-resumen.webp" width="1400" height="784" alt="Resumen del mes en el panel: vendido, ganancia bruta, ventas, ticket promedio y gastado, con un gráfico de áreas de vendido y ganancia por mes y una barra de rolls vendidos por sabor" loading="lazy" decoding="async">
+          <figcaption><span data-i18n="cinniminies.pc2">resumen y gráficos</span></figcaption>
+        </figure>
+      </div>
+      <p class="dash-note" data-i18n="cinniminies.d3">Capturas del panel con datos de ejemplo: las ventas y los clientes reales no se publican.</p>
     </div>
   </article>
 
@@ -111,27 +136,43 @@
     <h2 class="detail-t brush" id="detail-title" data-i18n="p.detail" data-wipe>En detalle</h2>
     <div class="dgrid">
         <div class="block sel">
-          <h3 class="bh" data-i18n="d.cinniminies.1.t">El negocio</h3>
-          <p data-i18n="d.cinniminies.1.1">Un horno chico en Paysandú, sin local: se hornea para los sábados y cada caja se arma a mano. El sitio tiene que vender y, sobre todo, ordenar los pedidos que antes llegaban sueltos por WhatsApp e Instagram.</p>
+          <h3 class="bh" data-i18n="d.cinniminies.1.t">Arquitectura</h3>
+          <p data-i18n="d.cinniminies.1.1">Tres partes sobre el mismo proyecto de Supabase: la web pública, el panel <code>/admin</code> y las funciones de <code>api/</code> en Vercel. No hay framework ni paso de build: módulos ES servidos tal cual, y las únicas dependencias son las de las funciones (<code>@vercel/functions</code> y <code>web-push</code>).</p>
         </div>
-        <div class="block sel">
+        <div class="block sel" data-vista="sitio">
           <h3 class="bh" data-i18n="d.cinniminies.2.t">El pedido, de punta a punta</h3>
           <ul class="dl-list">
-            <li data-i18n="d.cinniminies.2.1"><strong>Armador de cajas</strong>: de 6 o de 12 rolls, o una caja propia de 3 a 12, y se completa con los sabores.</li>
-            <li data-i18n="d.cinniminies.2.2"><strong>Carrito</strong> que avisa cuando la caja está completa.</li>
-            <li data-i18n="d.cinniminies.2.3"><strong>Formulario con validación en vivo</strong>: por ejemplo, el WhatsApp tiene que ser un celular uruguayo de 9 dígitos que empiece con 09.</li>
-            <li data-i18n="d.cinniminies.2.4"><strong>Retiro o entrega</strong>, con el envío sumado al total.</li>
-            <li data-i18n="d.cinniminies.2.5"><strong>Pago</strong> en efectivo o por transferencia: cada pedido recibe un número para poner en el concepto, y se puede subir el comprobante.</li>
-            <li data-i18n="d.cinniminies.2.6"><strong>Códigos de descuento</strong> para quien recomienda a otra persona.</li>
+            <li data-i18n="d.cinniminies.2.1"><strong>Armador de cajas</strong> de 6, de 12 o de 3 a 12 a gusto; el carrito se guarda en <code>localStorage</code> con vencimiento y se depura contra el menú del día al volver.</li>
+            <li data-i18n="d.cinniminies.2.2"><strong>Validación en vivo</strong>: el WhatsApp tiene que cumplir <code>/^09[1-9]\d{6}$/</code>, un celular uruguayo.</li>
+            <li data-i18n="d.cinniminies.2.3"><strong><code>POST /api/pedidos</code></strong> vuelve a validar en el servidor, asigna el sábado de entrega según el cierre del jueves y devuelve un número para el concepto de la transferencia.</li>
+            <li data-i18n="d.cinniminies.2.4"><strong>Comprobante</strong>: la imagen se achica en el navegador (lado mayor 1200 px, WebP o JPEG) antes de subirla a Supabase Storage.</li>
+            <li data-i18n="d.cinniminies.2.5"><strong>Aviso push</strong> a los administradores con Web Push (VAPID) apenas entra el pedido.</li>
+            <li data-i18n="d.cinniminies.2.6"><strong>Códigos de recomendación</strong> con el descuento calculado en la base.</li>
           </ul>
         </div>
-        <div class="block sel">
-          <h3 class="bh" data-i18n="d.cinniminies.3.t">Para que lo encuentren</h3>
-          <p data-i18n="d.cinniminies.3.1">Las preguntas frecuentes responden lo que la gente busca («¿dónde compro cinnamon rolls en Paysandú?», sabores, envíos, pagos), así el sitio también trabaja como buscador local.</p>
+        <div class="block sel" data-vista="sitio">
+          <h3 class="bh" data-i18n="d.cinniminies.7.t">Menú y buscadores</h3>
+          <p data-i18n="d.cinniminies.7.1">El carrusel del menú dibuja cada roll en 3D con WebGL escrito a mano, en un solo contexto compartido y con la geometría separada del DOM para poder probarla. El menú y las preguntas frecuentes también van como datos estructurados (<code>Bakery</code>, <code>Menu</code>, <code>FAQPage</code>) para las búsquedas locales.</p>
+        </div>
+        <div class="block sel" data-vista="panel" hidden>
+          <h3 class="bh" data-i18n="d.cinniminies.8.t">Qué hace el panel</h3>
+          <p data-i18n="d.cinniminies.8.1">PWA instalable, con menú lateral en la compu y pestañas en el celular. Carga ventas, tandas, compras, gastos y conteos de stock; arma el plan de horneado y la lista de compras, y convierte los pedidos web en ventas. Tema claro y oscuro, y gráficos SVG sin librerías con colores validados para daltonismo.</p>
+        </div>
+        <div class="block sel" data-vista="panel" hidden>
+          <h3 class="bh" data-i18n="d.cinniminies.3.t">Reglas en la base</h3>
+          <p data-i18n="d.cinniminies.3.1">Lo que se guarda (precios, costos de receta, stock, descuentos) se calcula en Postgres: <code>calcular_venta</code>, <code>registrar_venta</code>, <code>plan_horneado</code>, <code>que_comprar</code>. El navegador muestra; no recalcula. El esquema evoluciona con 86 migraciones versionadas y las reglas tienen sus pruebas en SQL.</p>
+        </div>
+        <div class="block sel" data-vista="panel" hidden>
+          <h3 class="bh" data-i18n="d.cinniminies.5.t">Tareas programadas</h3>
+          <p data-i18n="d.cinniminies.5.1">Crons de Vercel: sugerencias de publicaciones para Instagram cada mañana, el cierre de mes el día 1 y la lista de compras para el horneado cada viernes, que llega como aviso push.</p>
+        </div>
+        <div class="block sel" data-vista="panel" hidden>
+          <h3 class="bh" data-i18n="d.cinniminies.4.t">Seguridad</h3>
+          <p data-i18n="d.cinniminies.4.1">RLS: solo los usuarios de <code>usuarios_admin</code> leen y escriben, y además desde dispositivos autorizados (cada uno manda una clave propia en el encabezado <code>x-dispositivo</code>). CSP y <code>X-Frame-Options: DENY</code> en <code>/admin</code>, y <code>supabase-js</code> fijado a una versión exacta.</p>
         </div>
         <div class="block sel">
-          <h3 class="bh" data-i18n="d.cinniminies.4.t">Cómo está hecho</h3>
-          <p data-i18n="d.cinniminies.4.1">HTML, CSS y JavaScript sin framework; del lado del servidor, Vercel Functions y Supabase, y notificaciones push.</p>
+          <h3 class="bh" data-i18n="d.cinniminies.6.t">Pruebas</h3>
+          <p data-i18n="d.cinniminies.6.1"><code>node --test</code> sobre las funciones de la API y la lógica del panel (con un cliente de Supabase falso), en GitHub Actions en cada PR. Las reglas de la base se prueban aparte, en SQL.</p>
         </div>
     </div>
   </section>

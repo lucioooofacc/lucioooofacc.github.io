@@ -1,5 +1,5 @@
 // ÍNDICE: riel 3D de proyectos (three.js).
-// Seis láminas curvas recorren una espiral horizontal detrás de la palabra ÍNDICE.
+// Cinco láminas curvas recorren una espiral horizontal detrás de la palabra ÍNDICE.
 // · Escritorio (html.reel-pin): la lámina queda fija y el scroll de la página mueve el riel.
 // · Celular / touch: se arrastra de costado; la página sigue bajando normal.
 // · Clic o Enter en la lámina del frente: abre la página del proyecto. En una de costado: la trae al frente.
@@ -13,9 +13,8 @@ import {
 // ─── Datos: un objeto por proyecto. El contexto se lee del ítem del índice (ya traducido). ───
 export const PROJECTS = [
   { id: 'selene', name: 'SELENE', theme: 'space', site: 'selene-space-apps.vercel.app', year: '2026', cover: 'img/selene-logo.webp', art: 'logo' },
-  { id: 'parkex', name: 'ParkEx', theme: 'paper', site: 'github.com/facuduarte-dev/ConnectaLab', year: '2026', cover: 'img/proyectos/parkex-tinkercad.webp', art: 'photo' },
+  { id: 'parkex', name: 'ParkEx', theme: 'paper', site: 'parkex.netlify.app', year: '2026', cover: 'img/proyectos/parkex-web.webp', art: 'photo' },
   { id: 'itspace', name: 'ITSpace', theme: 'slab', site: 'itspvm.duckdns.org', year: '2026', cover: 'img/proyectos/itspace-inicio.webp', art: 'photo' },
-  { id: 'coded-bias', name: 'Coded Bias', theme: 'paper', site: 'documental + speech', year: '2026', cover: null, art: 'timeline' },
   { id: 'escaneo', name: 'Escaneo IP', theme: 'slab', site: 'github.com/lucioooofacc/EscaneoIP', year: '2026', cover: 'img/proyectos/escaneo-web.webp', art: 'terminal' },
   { id: 'cinniminies', name: 'Cinniminies', theme: 'paper', site: 'cinniminies.emprendeuy.com', year: '2026', cover: 'img/proyectos/cinni-inicio.webp', art: 'photo' }
 ];
@@ -141,7 +140,7 @@ export function mount(opts) {
 
   // ─── Portadas: cada textura es la portada de un sitio, con la tipografía y la paleta del portfolio ───
   function contextOf(id) {
-    const v = document.querySelector('#indice .idx a[href="#' + id + '"] .v');
+    const v = document.querySelector('#indice .idx a[href="proyectos/' + id + '.html"] .v');
     return v ? v.textContent.trim() : '';
   }
   function loadImg(src) {
@@ -280,24 +279,6 @@ export function mount(opts) {
         ctx.fillStyle = '#F0F0EC'; ctx.fillRect(-8, -8, iw + 16, ih + 16);
         ctx.drawImage(img, 0, 0, iw, ih); ctx.restore();
       }
-    } else if (proj.art === 'timeline') {
-      ctx.fillStyle = th.ink;
-      setFont(ctx, 400, 'normal', 76, BRUSH);
-      wrap(ctx, '“Prejudice doesn’t disappear. It migrates.”', aw - 20).forEach((ln, k) => ctx.fillText(ln, ax + 6, ay + 82 + k * 86));
-      const clips = ['01 OPENING', '02 INTRO', '03 SIDE A', '04 SIDE B', '05 INTERVIEWS', '06 CONCLUSION'];
-      const ty = ay + ah - 150, cw = (aw - 70) / clips.length;
-      setFont(ctx, 600, 'normal', 15, MONO);
-      ctx.fillStyle = th.dim; ctx.fillText('V1', ax, ty + 40); ctx.fillText('A1', ax, ty + 112);
-      clips.forEach((c, k) => {
-        const x = ax + 56 + k * cw;
-        ctx.fillStyle = k === 5 ? th.ink : 'rgba(20,20,20,.1)'; ctx.fillRect(x, ty, cw - 6, 64);
-        ctx.strokeStyle = th.ink; ctx.lineWidth = 2; ctx.strokeRect(x + 1, ty + 1, cw - 8, 62);
-        ctx.fillStyle = k === 5 ? th.bg : th.ink; ctx.fillText(c.length > 12 ? c.slice(0, 11) + '…' : c, x + 10, ty + 38);
-      });
-      ctx.fillStyle = 'rgba(20,20,20,.1)'; ctx.fillRect(ax + 56, ty + 82, aw - 62, 44);
-      ctx.strokeRect(ax + 57, ty + 83, aw - 64, 42);
-      ctx.fillStyle = th.ink; ctx.fillText('07 MUSIC', ax + 66, ty + 110);
-      ctx.fillStyle = th.accent; ctx.fillRect(ax + 56 + cw * 5.4, ty - 18, 3, 162);
     }
     ctx.restore();
 

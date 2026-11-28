@@ -45,22 +45,23 @@
 
 <main>
 
-  <p class="crumbs"><a href="../#indice"><span aria-hidden="true">←</span> <span data-i18n="p.back">Volver al índice</span></a><span>2 / 6</span></p>
+  <p class="crumbs"><a href="../#indice"><span aria-hidden="true">←</span> <span data-i18n="p.back">Volver al índice</span></a><span>2 / 5</span></p>
 
   <!-- ═════════ 2 · PARKEX ═════════ -->
   <article class="plate proj" id="parkex" aria-labelledby="parkex-title">
     <header class="ph">
       <span class="n" aria-hidden="true">2</span>
       <h1 id="parkex-title">ParkEx</h1>
-      <a class="cta" href="https://github.com/facuduarte-dev/ConnectaLab" target="_blank" rel="noopener"><span data-i18n="ui.repo">Ver el repo</span><span class="arr" aria-hidden="true">↗</span></a>
+      <a class="cta" href="https://parkex.netlify.app/" target="_blank" rel="noopener"><span data-i18n="ui.site">Ver el sitio</span><span class="arr" aria-hidden="true">↗</span></a>
     </header>
     <div class="spec">
       <dl>
         <dt data-i18n="parkex.1">Contexto</dt><dd data-i18n="parkex.2">Concurso ConectaLab – Litoral Norte (UTU)</dd>
         <dt data-i18n="parkex.3">Equipo</dt><dd data-i18n="parkex.4">5 estudiantes del ITSP, con dos docentes tutores</dd>
         <dt data-i18n="parkex.5">Rol</dt><dd data-i18n="parkex.6">Cofundador · desarrollo de la plataforma</dd>
-        <dt data-i18n="parkex.7">Repositorio</dt><dd><a href="https://github.com/facuduarte-dev/ConnectaLab" target="_blank" rel="noopener">github.com/facuduarte-dev/ConnectaLab</a></dd>
-        <dt data-i18n="parkex.8">Stack</dt><dd data-i18n="parkex.9">Arduino Uno + HC-SR04 · Node.js + Express · PostgreSQL en Supabase · Realtime · Java + Tesseract OCR · HTML, CSS y JS sin framework</dd>
+        <dt data-i18n="parkex.7">Repositorio</dt><dd><a href="https://github.com/facuduarte-dev/ParkEx" target="_blank" rel="noopener">github.com/facuduarte-dev/ParkEx</a></dd>
+        <dt data-i18n="parkex.27">Sitio web</dt><dd><a href="https://parkex.netlify.app/" target="_blank" rel="noopener">parkex.netlify.app</a></dd>
+        <dt data-i18n="parkex.8">Stack</dt><dd data-i18n="parkex.9">Arduino Uno + HC-SR04 · Node.js + Express · PostgreSQL en Supabase · Realtime · Java + Tesseract OCR · HTML, CSS y JS</dd>
       </dl>
       <dl>
         <dt data-i18n="parkex.10">Descripción</dt>
@@ -71,31 +72,31 @@
     <!-- Momento: el plano en vivo a la izquierda; a la derecha, impresiones del código real que se apilan -->
     <div class="scene" data-scene="parkex">
       <div class="stick">
-        <div class="lot" role="group" aria-labelledby="lot-title">
-          <div class="lot-head">
-            <strong data-i18n="parkex.12" id="lot-title">Nivel 1 · plano en vivo</strong>
-            <span id="lot-count">7 libres de 12</span>
+        <!-- Réplica del sitio real (parkex.netlify.app): mismos niveles, plazas y coordenadas que
+             devuelve la API. Los eventos se simulan acá; el plano y el panel se arman en js/main.js. -->
+        <div class="lot px" role="group" aria-labelledby="lot-title">
+          <div class="px-chrome" aria-hidden="true"><span class="px-dots"><i></i><i></i><i></i></span><span class="px-url">parkex.netlify.app</span></div>
+          <div class="px-top">
+            <strong>Parking Shopping Paysandú</strong>
+            <small>Estado de plazas en tiempo real</small>
           </div>
-          <div class="row">
-            <div class="bay" data-n="01" data-state="libre"><span class="num">01</span><i class="car"></i><span class="tag"></span></div>
-            <div class="bay" data-n="02" data-state="ocupado"><span class="num">02</span><i class="car"></i><span class="tag"></span></div>
-            <div class="bay" data-n="03" data-state="ocupado"><span class="num">03</span><i class="car"></i><span class="tag"></span></div>
-            <div class="bay" data-n="04" data-state="libre"><span class="num">04</span><i class="car"></i><span class="tag"></span></div>
-            <div class="bay" data-n="05" data-state="ocupado"><span class="num">05</span><i class="car"></i><span class="tag"></span></div>
-            <div class="bay" data-n="06" data-state="libre" data-res="1" data-auth="no_aplica"><span class="num">06</span><i class="car"></i><span class="tag"></span></div>
+          <div class="px-body">
+            <div class="px-levels" id="lot-levels" role="group" aria-label="Niveles del estacionamiento"></div>
+            <div class="px-panel">
+              <div class="px-head">
+                <strong id="lot-title">Planta baja</strong>
+                <span class="px-live">En vivo</span>
+                <span class="px-chips" id="lot-count"></span>
+              </div>
+              <div class="px-plano" id="lot-plano"></div>
+              <ul class="px-legend">
+                <li><i class="e-libre"></i>Libre</li><li><i class="e-ocupado"></i>Ocupado</li><li><i class="e-reservado"></i>Reservado</li><li><i class="e-sin_datos"></i>Sin datos</li><li><i class="t-disc"></i>Plaza de discapacidad</li>
+              </ul>
+            </div>
+            <div class="px-detail" id="lot-detail"><p class="px-empty">Seleccione una plaza del plano para ver su detalle.</p></div>
           </div>
-          <div class="lane"><span data-i18n="parkex.13">CIRCULACIÓN →</span></div>
-          <div class="row b">
-            <div class="bay" data-n="07" data-state="libre"><span class="num">07</span><i class="car"></i><span class="tag"></span></div>
-            <div class="bay" data-n="08" data-state="ocupado"><span class="num">08</span><i class="car"></i><span class="tag"></span></div>
-            <div class="bay" data-n="09" data-state="libre"><span class="num">09</span><i class="car"></i><span class="tag"></span></div>
-            <div class="bay" data-n="10" data-state="libre"><span class="num">10</span><i class="car"></i><span class="tag"></span></div>
-            <div class="bay" data-n="11" data-state="libre"><span class="num">11</span><i class="car"></i><span class="tag"></span></div>
-            <div class="bay just" data-n="12" data-state="ocupado" data-res="1" data-auth="autorizado"><span class="num">12</span><i class="car"></i><span class="tag">AUT</span></div>
-          </div>
-          <p class="lot-log" id="lot-log" aria-live="off">POST /api/eventos · plaza 12 → ocupado<br>POST /api/lecturas · plaza 12 → autorizado</p>
           <div class="lot-foot">
-            <div class="legend"><span data-i18n="parkex.14"><i></i>libre</span><span data-i18n="parkex.15"><i class="l-occ"></i>ocupado</span><span data-i18n="parkex.16"><i class="l-res"></i>reservada (D)</span><span data-i18n="parkex.17"><i class="l-new"></i>último cambio</span></div>
+            <p class="lot-log" id="lot-log" aria-live="off">GET /api/niveles · GET /api/plazas · Realtime conectado</p>
             <button data-i18n="parkex.18" class="btn" id="lot-step" type="button">Simular evento</button>
           </div>
         </div>
@@ -121,6 +122,18 @@
         </div>
         <p class="deck-hint" aria-hidden="true"><span class="deck-n">1</span> / 3 · <span data-i18n="ui.swipe">deslizá</span> →</p>
       </div>
+    </div>
+
+    <!-- El sitio publicado, tal cual se ve hoy -->
+    <div class="px-shots">
+      <figure class="shot shot-web taped" style="--r:-1deg">
+        <img data-i18n-alt="parkex.a1" src="../img/proyectos/parkex-web.webp" width="1600" height="833" alt="Captura del sitio de ParkEx en escritorio: selector de niveles a la izquierda, el plano del Subsuelo 1 con sus treinta plazas en verde, una reservada en violeta y tres de discapacidad con borde azul, y el detalle de la plaza A01 a la derecha" loading="lazy" decoding="async">
+        <figcaption><span class="path">parkex.netlify.app</span><span data-i18n="parkex.p1">plano del nivel y detalle de plaza</span></figcaption>
+      </figure>
+      <figure class="shot shot-web taped phone" style="--r:1.8deg">
+        <img data-i18n-alt="parkex.a2" src="../img/proyectos/parkex-web-mobile.webp" width="780" height="1533" alt="El sitio de ParkEx en un celular: los niveles en dos tarjetas, el resumen de plazas libres, ocupadas y reservadas, y el plano debajo" loading="lazy" decoding="async">
+        <figcaption><span data-i18n="parkex.p2">en el celular</span></figcaption>
+      </figure>
     </div>
 
 
@@ -167,7 +180,7 @@
         <div class="block sel">
           <h3 class="bh" data-i18n="d.parkex.4.t">Stack completo</h3>
           <dl class="facts">
-            <div><dt data-i18n="d.parkex.4.1t">Sitio y panel</dt><dd data-i18n="d.parkex.4.1">HTML, CSS y JavaScript sin framework, plano en SVG</dd></div>
+            <div><dt data-i18n="d.parkex.4.1t">Sitio y panel</dt><dd data-i18n="d.parkex.4.1">HTML, CSS y JavaScript, plano en SVG</dd></div>
             <div><dt data-i18n="d.parkex.4.2t">API</dt><dd data-i18n="d.parkex.4.2">Node.js + Express</dd></div>
             <div><dt data-i18n="d.parkex.4.3t">Datos</dt><dd data-i18n="d.parkex.4.3">Supabase: PostgreSQL, Auth y Realtime</dd></div>
             <div><dt data-i18n="d.parkex.4.4t">Lector de matrículas</dt><dd data-i18n="d.parkex.4.4">Java 17, OpenCV y Tesseract OCR</dd></div>
